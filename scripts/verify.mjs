@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
-import { copyFileSync, mkdtempSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { copyFileSync, existsSync, mkdtempSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -903,7 +903,8 @@ await test('App keeps answers in memory only: its one network call goes to HISTO
   assert.equal(builtHtml.split('var HISTORY_ENDPOINT =').length - 1, 1, 'HISTORY_ENDPOINT is declared exactly once');
   const endpoint = builtHtml.match(ENDPOINT_PATTERN)[1];
   assert.ok(endpoint === '' || /^https:\/\/[^\s'"<>\\]+$/.test(endpoint), 'HISTORY_ENDPOINT must be empty or an https URL');
-  assert.doesNotMatch(builtHtml, /<link\b|<img\b|<iframe\b|<audio\b|\bsrc\s*=|@import|url\(\s*['"]?(?:https?:)?\/\//i);
+  const withoutAssetImages = builtHtml.replace(/<(?:img|source)\b[^>]*>/gi, (tag) => (/\b(?:src|srcset)="(?:assets\/[\w-]+\.jpg(?: [\w.]+)?(?:, )?)+"/.test(tag) && !/\/\/|https?:/i.test(tag) ? '' : tag));
+  assert.doesNotMatch(withoutAssetImages, /<link\b|<img\b|<source\b|<iframe\b|<audio\b|\bsrc\s*=|\bsrcset\s*=|@import|url\(\s*['"]?(?:https?:)?\/\//i, 'only relative assets/ images are allowed');
   assert.doesNotMatch(builtHtml, /\.(?:mp3|wav|ogg|m4a)\b/i, 'sounds are synthesised, never loaded');
 });
 
@@ -1535,6 +1536,47 @@ await test('Visual system uses no external asset URLs, fonts or data URIs', () =
   const { rules } = parseCss(css);
   const bodyFont = rules.find(rule => !rule.media && rule.selectors.includes('body'))?.declarations.get('font-family') ?? '';
   assert.match(bodyFont, /system-ui/, 'body uses a system font stack');
+});
+
+await test('Bandwidth Brothers banner sits above the hero with srcset, dimensions, priority and alt text', () => {
+  const m = builtHtml.match(/<div class="banner">\s*<picture>([\s\S]*?)<\/picture>\s*<\/div>/);
+  assert.ok(m, 'banner picture markup');
+  assert.ok(builtHtml.indexOf('<div class="banner">') < builtHtml.indexOf('<header'), 'banner precedes the hero');
+  assert.match(m[1], /<source media="\(max-width: 800px\)" srcset="assets\/banner-800\.jpg 1x, assets\/banner-1600\.jpg 2x">/);
+  const img = m[1].match(/<img\b[^>]*>/)[0];
+  assert.match(img, /\bsrcset="assets\/banner-1600\.jpg 1x"/);
+  assert.match(img, /\bwidth="1600"/); assert.match(img, /\bheight="900"/);
+  assert.match(img, /\bfetchpriority="high"/);
+  assert.match(img, /\balt="Bandwidth Brothers banner"/);
+  const css = builtHtml.match(/<style>([\s\S]*?)<\/style>/)[1];
+  assert.match(css, /\.banner img \{[^}]*aspect-ratio: 16 \/ 6;[^}]*object-fit: cover/);
+  assert.match(css, /max-width: 600px\) \{ \.banner img \{ aspect-ratio: 16 \/ 8;/);
+});
+
+await test('Class photo is a lazy, captioned figure with exact caption and alt text', () => {
+  const m = builtHtml.match(/<figure class="class-photo">([\s\S]*?)<\/figure>/);
+  assert.ok(m, 'class photo figure');
+  const img = m[1].match(/<img\b[^>]*>/)[0];
+  assert.match(img, /\bsrcset="assets\/class-photo-800\.jpg 800w, assets\/class-photo-1600\.jpg 1600w"/);
+  assert.match(img, /\bwidth="1600"/); assert.match(img, /\bheight="1200"/);
+  assert.match(img, /\bloading="lazy"/); assert.match(img, /\bdecoding="async"/);
+  assert.match(img, /\balt="SOAC 52 - 2026 class group photo"/);
+  assert.equal(m[1].match(/<figcaption>([\s\S]*?)<\/figcaption>/)[1], 'SOAC 52 - 2026');
+  const css = builtHtml.match(/<style>([\s\S]*?)<\/style>/)[1];
+  assert.match(css, /\.class-photo \{[^}]*max-width: 56rem;[^}]*border-radius: var\(--radius-lg\);[^}]*box-shadow:/);
+});
+
+await test('Photo srcsets reference the four asset files, and they exist on disk', () => {
+  const found = new Set([...builtHtml.matchAll(/\b(?:src|srcset)="([^"]*)"/g)].flatMap(x => x[1].split(',').map(p => p.trim().split(/\s+/)[0])).filter(p => /\.jpg$/.test(p)));
+  assert.deepEqual([...found].sort(), ['assets/banner-1600.jpg', 'assets/banner-800.jpg', 'assets/class-photo-1600.jpg', 'assets/class-photo-800.jpg']);
+  for (const f of found) assert.ok(existsSync(join(projectRoot, f)), f + ' must exist');
+});
+
+await test('Banner and photo are hidden in print and outside the landing view', () => {
+  const css = builtHtml.match(/<style>([\s\S]*?)<\/style>/)[1];
+  assert.match(css, /@media print \{[\s\S]*\.banner, \.class-photo[^{]*\{ display: none !important; \}/);
+  assert.match(css, /body:not\(\[data-view="landing"\]\) \.banner, body:not\(\[data-view="landing"\]\) \.class-photo \{ display: none; \}/);
+  assert.ok(/<body data-view="landing">/.test(builtHtml), 'body starts on the landing view');
 });
 
 if (failures > 0) {
