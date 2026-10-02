@@ -1,0 +1,537 @@
+[
+  {
+    "id": 1,
+    "difficulty": "medium",
+    "category": "Signal Support Concepts",
+    "tags": [
+      "signal operations",
+      "signal support operations",
+      "relationships"
+    ],
+    "prompt": "In a staff seminar, a lieutenant claims that Signal Operations, Signal Support Operations and Signal Support to Combined Arms Operations (CAO) are three names for the same activity. Which statement best corrects him?",
+    "options": [
+      "Signal Operations applies the services to the combat arms; Signal Support Operations connects the Army; Signal Support to CAO sustains the services",
+      "Signal Operations connects the Army; Signal Support Operations provides and sustains the services; Signal Support to CAO applies them to the combat arms",
+      "Signal Operations connects the Army; Signal Support Operations applies the services to the combat arms; Signal Support to CAO provides and sustains them",
+      "Signal Operations provides and sustains the services; Signal Support Operations connects the Army; Signal Support to CAO applies them to the combat arms"
+    ],
+    "answer": 1,
+    "explanation": "Page 1: Signal Operations connects the Army; Signal Support Operations provides and sustains the services behind that connection (C2 communication, cyberspace operations and EW, repair and maintenance, recovery and restoration); Signal Support to CAO applies those services so the different combat arms can work together.",
+    "sourceSlides": [
+      1
+    ]
+  },
+  {
+    "id": 2,
+    "difficulty": "medium",
+    "category": "Signal Support Concepts",
+    "tags": [
+      "combined arms operations",
+      "definition"
+    ],
+    "prompt": "In an exercise in Fort Magsaysay, infantry, armor and artillery are all present, but each attacks on its own timeline and axis with no coordination, and the enemy defeats them one at a time. Which element of Combined Arms Operations was missing?",
+    "options": [
+      "Nothing was missing, since several arms took part in the same exercise",
+      "A larger number of a single arm, enough to overwhelm the defending enemy",
+      "Synchronized, integrated use of the arms for mutually complementary effects",
+      "A signal unit to command the arms, since combined arms is a signal activity"
+    ],
+    "answer": 2,
+    "explanation": "Page 1: Combined Arms Operations integrates the different capabilities of an army to achieve mutually complementary effects; it is the synchronization, integration and seamless execution of Army capabilities. Mere presence of several arms is not combined arms.",
+    "sourceSlides": [
+      1
+    ]
+  },
+  {
+    "id": 3,
+    "difficulty": "medium",
+    "category": "Operational Environment",
+    "tags": [
+      "universally connected",
+      "vulnerabilities"
+    ],
+    "prompt": "A brigade's interconnected networks give every unit a common operational picture, but the staff warns that this dependence also gives an adversary openings. Which operational environment characteristic captures both points?",
+    "options": [
+      "Highly Urbanized",
+      "Collective Environment",
+      "Universally Connected",
+      "Politically, Economically, and Socially Constrained"
+    ],
+    "answer": 2,
+    "explanation": "Page 2: in a universally connected environment, interconnected communication and information networks enable mission command and a common operational picture, while creating vulnerabilities. The other characteristics concern urban terrain, cooperation with other organizations, and national and resource constraints.",
+    "sourceSlides": [
+      2
+    ]
+  },
+  {
+    "id": 4,
+    "difficulty": "medium",
+    "category": "Operational Environment",
+    "tags": [
+      "urban operation",
+      "signal environments"
+    ],
+    "prompt": "In an urban operation in a Mindanao city, buildings degrade radio coverage, the brigade relies on its network to exchange reports, and maneuver units, fire support and headquarters talk by radio. Which matching of these effects to signal environments is correct?",
+    "options": [
+      "Buildings: electromagnetic spectrum; report network: physical; radio links: cyberspace",
+      "Buildings: physical; report network: electromagnetic spectrum; radio links: cyberspace",
+      "Buildings: cyberspace; report network: cyberspace; radio links: physical",
+      "Buildings: physical; report network: cyberspace; radio links: electromagnetic spectrum"
+    ],
+    "answer": 3,
+    "explanation": "Page 3 gives this urban example: buildings affect movement and radio coverage (physical environment), networks support information exchange (cyberspace environment), and the electromagnetic spectrum enables radio communication between maneuver units, fire support and headquarters.",
+    "sourceSlides": [
+      3
+    ]
+  },
+  {
+    "id": 5,
+    "difficulty": "medium",
+    "category": "Operational Environment",
+    "tags": [
+      "highly urbanized",
+      "perspectives"
+    ],
+    "prompt": "Two officers analyze the same city. One assesses how buildings, civilians and protected facilities restrict movement and firepower; the other assesses how buildings and weather affect radio coverage and how interference threatens wireless links. How should the commander treat the two analyses?",
+    "options": [
+      "As a conflict, so the commander should keep the force-employment view and drop the other",
+      "As duplication, since both describe the Highly Urbanized characteristic in exactly the same way",
+      "As misplaced, since signal analysis belongs in PMESII-PT and not in operational planning",
+      "As complementary views: one of force employment, the other of where signal systems operate"
+    ],
+    "answer": 3,
+    "explanation": "Page 2: Combined Arms Operations considers the conditions affecting the employment of forces (here, Highly Urbanized), while Signal considers the environments in which communication, electronics and cyber systems operate (page 3). The two perspectives describe the same environment from different angles.",
+    "sourceSlides": [
+      2,
+      3
+    ]
+  },
+  {
+    "id": 6,
+    "difficulty": "medium",
+    "category": "Roles of Signal Support",
+    "tags": [
+      "coalition operations",
+      "sovereign network"
+    ],
+    "prompt": "During a bilateral exercise, a partner nation's battalion asks to plug its radios and computers directly into PANET and have the Philippine Army manage both networks as one. Which response matches the lesson?",
+    "options": [
+      "Establish links with the partner while each nation keeps its own sovereign network",
+      "Merge both networks under Army control, since joint operations need one common network",
+      "Refuse every link with the partner, since PANET is a secured Army intranet",
+      "Put the partner on the disaster-response net, since that net is unclassified"
+    ],
+    "answer": 0,
+    "explanation": "Page 5: in coalition operations Signal Support establishes communication links with partner nations while maintaining each nation's sovereign network. Joint operations concern the Army and other major services, and the disaster-response net is for HADR.",
+    "sourceSlides": [
+      5
+    ]
+  },
+  {
+    "id": 7,
+    "difficulty": "medium",
+    "category": "Roles of Signal Support",
+    "tags": [
+      "cyberspace operations",
+      "responsibilities"
+    ],
+    "prompt": "A brigade forms a cyber working group and must assign roles as the lesson describes them. Which assignment is accurate?",
+    "options": [
+      "Network operations to the Signal Corps; defensive cyber operations and active defense to intelligence units acting alone",
+      "Active defense to the Signal Corps acting alone; network operations and defensive cyber operations jointly with CMO units",
+      "Network operations and defensive cyber operations to the Signal Corps; active defense jointly with intelligence and CMO units",
+      "All three activities jointly with intelligence and CMO units, so none is a Signal Corps responsibility"
+    ],
+    "answer": 2,
+    "explanation": "Page 4: Information Network Operations and Defensive Cyber Operations are Signal Corps responsibilities, and Active Defense Operations is described as a collaborative effort with intelligence and civil-military operations units.",
+    "sourceSlides": [
+      4
+    ]
+  },
+  {
+    "id": 8,
+    "difficulty": "medium",
+    "category": "Roles of Signal Support",
+    "tags": [
+      "SMMART",
+      "maintenance"
+    ],
+    "prompt": "Radios in several companies keep failing because of operator handling errors and small faults; no facility or network has been damaged. Which Signal Support response fits best?",
+    "options": [
+      "Send a SMMART to inspect and repair the sets and to give the units refresher training",
+      "Deploy a restoration team to rebuild the companies' command and control communications",
+      "Call in the CSIRT to investigate each of the radio faults as a cybersecurity incident",
+      "Swap the faulty radios for commercial cell phones until replacement sets arrive"
+    ],
+    "answer": 0,
+    "explanation": "Pages 5 and 8: Signal Mobile Maintenance and Repair Teams visit units to inspect equipment, conduct repairs and provide refresher training. Restoration teams restore damaged command centers, communications and networks, and CSIRT responds to cybersecurity incidents.",
+    "sourceSlides": [
+      5,
+      8
+    ]
+  },
+  {
+    "id": 9,
+    "difficulty": "medium",
+    "category": "Systems and Technologies",
+    "tags": [
+      "radio selection",
+      "frequency category"
+    ],
+    "prompt": "An S6 recommends UHF radios for an operation in mountainous Abra solely because UHF is \"the highest frequency band we have.\" What is the best critique of this recommendation?",
+    "options": [
+      "None is needed; the highest band always gives the best range, clarity, and security for a mission",
+      "HF should be chosen instead, as the lowest band always covers mountains, valleys, and forests best",
+      "Band choice does not matter, as Combat Net Radio adapts each set to the terrain on its own",
+      "Frequency category alone is no basis; check coverage, terrain, interoperability, and security needs"
+    ],
+    "answer": 3,
+    "explanation": "Page 7: do not select a radio based only on its frequency category; determine whether the available equipment can meet the mission's coverage, terrain, interoperability and security requirements. Both \"always higher\" and \"always lower\" rules contradict that guidance.",
+    "sourceSlides": [
+      7
+    ]
+  },
+  {
+    "id": 10,
+    "difficulty": "medium",
+    "category": "Systems and Technologies",
+    "tags": [
+      "special purpose communication",
+      "COMSEC"
+    ],
+    "prompt": "A battalion staff wants to use an authorized commercial videoconference platform for (a) its weekly administrative meeting and (b) a briefing on tomorrow's convoy routes and timings. Which assessment matches the lesson?",
+    "options": [
+      "(a) and (b) are both acceptable, as an authorized platform is therefore suitable for every kind of traffic",
+      "(a) can suit routine use under COMSEC policy; (b) is sensitive and needs the appropriate authorized means",
+      "(a) and (b) are both prohibited, as commercial platforms may never be used by Army units for any purpose",
+      "(b) is preferred over (a), as operational briefings need the fastest platform that the staff has available"
+    ],
+    "answer": 1,
+    "explanation": "Page 7: special purpose systems such as commercial videoconferencing supplement fixed and tactical systems for routine or administrative communication under COMSEC policy, and the convenience of a platform does not automatically make it suitable for sensitive operational information. Page 18 adds that such devices must be used prudently and according to existing COMSEC policies.",
+    "sourceSlides": [
+      7,
+      18
+    ]
+  },
+  {
+    "id": 11,
+    "difficulty": "medium",
+    "category": "Systems and Technologies",
+    "tags": [
+      "ROIP",
+      "VoIP"
+    ],
+    "prompt": "A brigade wants its field radio nets to reach a distant headquarters through the Army's IP network, so that radio traffic travels over the network links. Which technology fits this requirement?",
+    "options": [
+      "Radio over IP (ROIP)",
+      "Voice over Internet Protocol (VoIP)",
+      "Bonifacio Telephone Exchange (BONTEX)",
+      "Ad hoc network technologies"
+    ],
+    "answer": 0,
+    "explanation": "Page 7: Radio over IP links radio communications through IP networks. Page 6: VoIP carries telephone conversations through an IP network and BONTEX connects Army telephone systems with higher headquarters; ad hoc technologies support tactical networking among participating equipment.",
+    "sourceSlides": [
+      6,
+      7
+    ]
+  },
+  {
+    "id": 12,
+    "difficulty": "medium",
+    "category": "Principles of Signal Support",
+    "tags": [
+      "redundant",
+      "shared infrastructure"
+    ],
+    "prompt": "A battalion command post has three laptops and two VoIP phones, all working over the same single microwave link to brigade. The commander calls this \"redundant communication.\" What is the best assessment?",
+    "options": [
+      "It is redundant, because five separate devices are available at the command post",
+      "It is not redundant, because every device depends on the same single link to brigade",
+      "It is scalable rather than redundant, because more devices can be added to the link later",
+      "It is redundant, because laptops and phones are two different kinds of communication system"
+    ],
+    "answer": 1,
+    "explanation": "Page 10: redundancy must address the connection, not merely the number of devices; several devices depending on the same failed infrastructure may all lose service. Redundancy means additional communication paths and backup capabilities.",
+    "sourceSlides": [
+      10
+    ]
+  },
+  {
+    "id": 13,
+    "difficulty": "medium",
+    "category": "Principles of Signal Support",
+    "tags": [
+      "interoperable",
+      "engineers"
+    ],
+    "prompt": "Infantry finds a minefield and calls for engineer support. Both units own serviceable radios, but their systems and operating arrangements do not allow them to exchange the request. Which principle failed, and what is the remedy?",
+    "options": [
+      "Interoperable: ensure the units' systems and operating arrangements allow the exchange",
+      "Redundant: issue the infantry a second radio so that a backup set can carry the call",
+      "Scalable: enlarge the battalion network so that the engineers fit in as additional users",
+      "Operations Focused: extend the radios' battery life to cover the full mission duration"
+    ],
+    "answer": 0,
+    "explanation": "Pages 9-10: interoperability means systems are compatible and follow standardized arrangements; owning radios alone does not guarantee it. The handout's example is infantry needing engineer support through a workable means of exchanging the request.",
+    "sourceSlides": [
+      9,
+      10
+    ]
+  },
+  {
+    "id": 14,
+    "difficulty": "medium",
+    "category": "Principles of Signal Support",
+    "tags": [
+      "operations focused",
+      "power and duration"
+    ],
+    "prompt": "A plan gives an infantry-armor team radios whose batteries last about eight hours, but the operation will run three days with no recharging or resupply planned. Which principle does the plan most directly violate?",
+    "options": [
+      "Scalable",
+      "Interoperable",
+      "Secured",
+      "Operations Focused"
+    ],
+    "answer": 3,
+    "explanation": "Page 9: under the Operations Focused principle, Signal Support is designed around what the force must accomplish, and signal personnel must consider the duration of operations, equipment readiness, power requirements and connectivity, so communication never limits the mission.",
+    "sourceSlides": [
+      9
+    ]
+  },
+  {
+    "id": 15,
+    "difficulty": "medium",
+    "category": "Tactical Considerations",
+    "tags": [
+      "facility location",
+      "projected operations"
+    ],
+    "prompt": "An S6 chooses a relay site that covers the companies' current positions well, but no vehicle can reach it and it will fall far behind the units once the planned advance begins. Which location considerations were neglected?",
+    "options": [
+      "Terrain and signal propagation",
+      "Positions of supported and support units",
+      "None, since good current coverage decides",
+      "Accessibility and projected operations"
+    ],
+    "answer": 3,
+    "explanation": "Page 12: facility locations must consider unit positions, terrain and propagation, projected operations, accessibility, and administrative and logistical requirements. Current coverage is good here, but the site is unreachable and will not suit the advance; a location good at the start may become unsuitable later.",
+    "sourceSlides": [
+      12
+    ]
+  },
+  {
+    "id": 16,
+    "difficulty": "medium",
+    "category": "Tactical Considerations",
+    "tags": [
+      "communication failure",
+      "hostile disruption"
+    ],
+    "prompt": "Which pairing of threats and planned provisions matches the lesson's requirements for preparing against communication failure and hostile disruption?",
+    "options": [
+      "Lost links: monitoring and response; EW: backups and repair; cyberattack: change procedures; compromised frequencies: jamming protection",
+      "Lost links: change procedures; EW: monitoring and response; cyberattack: jamming protection; compromised frequencies: backups and repair",
+      "Lost links: jamming protection; EW: change procedures; cyberattack: backups and repair; compromised frequencies: monitoring and response",
+      "Lost links: backups and repair; EW: jamming protection; cyberattack: monitoring and response; compromised frequencies: change procedures"
+    ],
+    "answer": 3,
+    "explanation": "Page 13: interrupted connectivity calls for redundant communication, repair, replacement and technical support; electronic warfare for protection against jamming and interception; cyberattacks for network monitoring and incident response; compromised frequencies for procedures to change frequencies.",
+    "sourceSlides": [
+      13
+    ]
+  },
+  {
+    "id": 17,
+    "difficulty": "medium",
+    "category": "Tactical Considerations",
+    "tags": [
+      "METAL",
+      "enemy",
+      "area of operations"
+    ],
+    "prompt": "During the Signal Estimate for a mountain operation, the S6 learns that the enemy has been intercepting and jamming friendly radios, and that ridgelines and long distances will separate the companies. Under which METAL factors should these two findings be recorded?",
+    "options": [
+      "Enemy for the interception and jamming; Area of Operations for the ridgelines and distances",
+      "Mission for the interception and jamming; Troops for the ridgelines and distances",
+      "Logistical Requirements for the interception; Enemy for the ridgelines and distances",
+      "Area of Operations for both findings, since both describe conditions that exist in the area"
+    ],
+    "answer": 0,
+    "explanation": "Page 11: Enemy covers enemy signal capabilities and threats such as interception, jamming or cyberattacks; Area of Operations covers conditions like mountains, forests, buildings and distances that affect coverage.",
+    "sourceSlides": [
+      11
+    ]
+  },
+  {
+    "id": 18,
+    "difficulty": "medium",
+    "category": "Signal Estimate and Requirements",
+    "tags": [
+      "communication requirements",
+      "commander's intent"
+    ],
+    "prompt": "An S6's draft \"requirements\" section is only a list of radio models and network terminals by unit. What does the lesson say is missing?",
+    "options": [
+      "Nothing, since a list of systems by unit already states the communication requirement",
+      "Who must exchange what information and when, drawn from the commander's intent",
+      "Only the frequencies, since requirements are complete once frequencies are assigned",
+      "The PACE plan, since a PACE plan replaces a separate statement of requirements"
+    ],
+    "answer": 1,
+    "explanation": "Page 15: translate the commander's intent into specific communication requirements; for each requirement identify who must exchange information, what information they need, and when they need the connection. Systems are selected afterward to meet those requirements.",
+    "sourceSlides": [
+      15
+    ]
+  },
+  {
+    "id": 19,
+    "difficulty": "medium",
+    "category": "Signal Estimate and Requirements",
+    "tags": [
+      "guidance sources",
+      "coordination"
+    ],
+    "prompt": "An S6 built the brigade's communication requirements after speaking only with the commander. Which sources should the S6 also have drawn guidance from?",
+    "options": [
+      "Other staff, higher, subordinate and adjacent units, SOPs, and the CEOI and CESI",
+      "Only higher headquarters, the logistics staff, and maintenance teams, as they control resources",
+      "Only subordinate units, their operators, and the CSIRT, as they run and defend the systems",
+      "No others, since the commander's intent alone already defines every requirement"
+    ],
+    "answer": 0,
+    "explanation": "Pages 13 and 15: the planner obtains guidance from the commander, other staff members, higher headquarters, subordinate units and adjacent units, SOPs, and the CEOI and CESI. Lesson: check connections across the force, including supporting and adjacent units.",
+    "sourceSlides": [
+      13,
+      15
+    ]
+  },
+  {
+    "id": 20,
+    "difficulty": "medium",
+    "category": "Signal Estimate and Requirements",
+    "tags": [
+      "available resources",
+      "shortfall"
+    ],
+    "prompt": "An operation needs eight communication links, but three of the radios meant for them are unserviceable. What is the planner's next step according to the lesson?",
+    "options": [
+      "Plan all eight links anyway, since unserviceable radios are often repaired in time for use",
+      "Drop the three links at once, since the unit can only plan with what works",
+      "Identify the shortfall and decide whether repair, reallocation or more support is needed",
+      "Ask to cancel that phase of the operation, since a shortfall makes it unsupportable"
+    ],
+    "answer": 2,
+    "explanation": "Page 15: compare requirements with what the unit can actually provide; when some equipment is unserviceable, the planner identifies the shortfall and determines whether repair, reallocation or additional support is needed.",
+    "sourceSlides": [
+      15
+    ]
+  },
+  {
+    "id": 21,
+    "difficulty": "medium",
+    "category": "Priorities, Continuity and Coordination",
+    "tags": [
+      "PACE",
+      "backup procedures"
+    ],
+    "prompt": "A battalion's plan lists only a Primary and an Emergency arrangement, and companies are told that backup details \"will be issued once the primary fails.\" What is the best assessment?",
+    "options": [
+      "It is acceptable, since the Emergency arrangement already covers every kind of failure",
+      "Its only gap is the missing Alternate; issuing backup details after the failure is fine",
+      "It lacks Alternate and Contingency arrangements, and units must know backups before failure",
+      "Its only gap is security; backup details should be withheld from units for COMSEC"
+    ],
+    "answer": 2,
+    "explanation": "Page 16: continuity planning requires Primary, Alternate, Contingency and Emergency plans, and units must know the backup procedures before communication fails (page 13: prepare recovery arrangements before the disruption occurs).",
+    "sourceSlides": [
+      13,
+      16
+    ]
+  },
+  {
+    "id": 22,
+    "difficulty": "medium",
+    "category": "Priorities, Continuity and Coordination",
+    "tags": [
+      "coordination",
+      "tentative plan"
+    ],
+    "prompt": "Before finalizing the tentative signal plan, the planner coordinates with four parties. Which pairing of party and what to confirm matches the lesson?",
+    "options": [
+      "Higher headquarters: that the plan supports the operational concept, priorities, and phases",
+      "Logistics and maintenance personnel: resources for sustained operation, repair, and replacement",
+      "Adjacent units: their requirements, capabilities, operating arrangements, and responsibilities",
+      "Commander and operations staff: the required connections and the support available"
+    ],
+    "answer": 1,
+    "explanation": "Page 16: logistics and maintenance personnel confirm resources for sustained operation, repair and replacement. The concept, priorities and phases are confirmed with the commander and operations staff; required connections and available support with higher headquarters; requirements and capabilities with subordinate and supporting units; adjacent units confirm necessary coordination links.",
+    "sourceSlides": [
+      16
+    ]
+  },
+  {
+    "id": 23,
+    "difficulty": "medium",
+    "category": "Security Measures and Protocols",
+    "tags": [
+      "availability",
+      "confidentiality"
+    ],
+    "prompt": "In one week, (1) jamming stops a headquarters from reaching its subordinate units during an operation, and (2) an unauthorized person obtains a copy of an operational report. Which security concerns were affected, in that order?",
+    "options": [
+      "Confidentiality, then availability",
+      "Confidentiality, then integrity",
+      "Availability, then confidentiality",
+      "Availability, then integrity"
+    ],
+    "answer": 2,
+    "explanation": "Page 17: availability means authorized users can access information and systems when needed (headquarters must be able to communicate with subordinates); confidentiality means information remains accessible only to authorized persons (an unauthorized person must not obtain an operational report).",
+    "sourceSlides": [
+      17
+    ]
+  },
+  {
+    "id": 24,
+    "difficulty": "medium",
+    "category": "Security Measures and Protocols",
+    "tags": [
+      "CSIRT",
+      "incident response"
+    ],
+    "prompt": "Staff notice suspicious activity on a headquarters network. One officer suggests that the section's computer-savvy lieutenant quietly investigate and fix it to avoid an embarrassing report. What should happen instead?",
+    "options": [
+      "Let the lieutenant fix it quietly, then file a report only if data turns out to be lost",
+      "Report through prescribed channels so first responders and the CSIRT can investigate and act",
+      "Disconnect the headquarters from PANET for the rest of the operation, without reporting",
+      "Ignore it until the network fails, since activity alone is not yet an incident worth reporting"
+    ],
+    "answer": 1,
+    "explanation": "Page 18: signal plans include procedures for employing first responders and the CSIRT, which maintains an incident response plan, investigates incidents, manages updates, remediates problems and recommends improvements. Personnel report suspicious activity through the prescribed channels so authorized responders can act.",
+    "sourceSlides": [
+      18
+    ]
+  },
+  {
+    "id": 25,
+    "difficulty": "medium",
+    "category": "Security Measures and Protocols",
+    "tags": [
+      "jamming",
+      "electronic protection"
+    ],
+    "prompt": "Interference disrupts a platoon's radio link during an operation. The platoon leader proposes inventing a new frequency and calling procedure on the spot. What should the platoon do?",
+    "options": [
+      "Adopt the improvised frequency and procedure, as speed matters most under jamming",
+      "Apply the authorized protection and backup procedures set for its equipment and unit",
+      "Keep transmitting on the jammed frequency, as moving would confuse adjacent units",
+      "Move all traffic to a commercial messaging app, as apps are not affected by jamming"
+    ],
+    "answer": 1,
+    "explanation": "Page 19: if interference disrupts a radio connection, personnel use the authorized protection and backup procedures established for their equipment and unit; protection capabilities such as frequency hopping must be planned and coordinated. Page 18: personnel use the applicable instructions rather than invent their own procedures.",
+    "sourceSlides": [
+      18,
+      19
+    ]
+  }
+]

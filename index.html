@@ -1,0 +1,2029 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Signal Support Mastery Quiz</title>
+  <style>
+    /* =====================================================================
+       DESIGN TOKENS. This page is the reference template for lesson quizzes.
+
+       Colour. Ratios are WCAG 2.1 contrast against --color-surface (#fbfaf3)
+       unless noted. Every text pair meets AA (4.5:1 body, 3:1 large text/UI).
+         --color-text            #1d2119  15.6:1  body copy
+         --color-muted           #464c3c   8.5:1  secondary copy, captions, dimmed options
+         --color-border          #7a8068   3.9:1  control borders (UI >= 3:1)
+         --color-border-subtle   #c3c7ae          decorative dividers only
+         --color-accent          #3f4d22   8.6:1  primary buttons (white text 9.1:1)
+         --color-focus           #1a4fd1   6.5:1  keyboard focus ring, 3px solid
+         --color-correct         #1c6530   6.8:1  (6.0:1 on --color-correct-bg, white on it 7.1:1)
+         --color-incorrect       #9e2418   7.4:1  (6.5:1 on --color-incorrect-bg, white on it 7.7:1)
+         --color-warning-text    #7a3e00   7.4:1 on --color-warning-bg
+         --color-brass           #e3b65a          hero accents on charcoal only (9.4:1 on #23281e)
+         Signal khaki            #c9b37a          hero artwork only, never text on light surfaces
+         Contour olive           #4f6232 / #3f5226 decorative map lines only, 0.22 / 0.40 opacity,
+                                 behind opaque cards, so no text pair changes
+         Difficulty accents (--mode-accent) reach >= 4.6:1 on their --mode-selected
+         tint and carry white text at >= 6:1. Difficulty is always named in text too.
+
+       Interaction states (colour is never the only signal):
+         unselected  2px --color-border, surface fill, outlined letter badge
+         hover       --mode-accent border, --mode-tint fill
+         focus       3px solid --color-focus outline, 2px offset
+         selected    --mode-accent border + inset ring, --mode-selected fill,
+                     filled letter badge, "Selected" tag with check icon
+         correct     --color-correct border + ring, --color-correct-bg fill,
+                     "Correct answer" tag with check icon
+         incorrect   --color-incorrect border + ring, --color-incorrect-bg fill,
+                     "Your answer" tag with cross icon
+         dimmed      subtle border, sunken fill, muted text (still 8:1)
+
+       Spacing:  --space-1 0.25rem · 2 0.5rem · 3 0.75rem · 4 1rem · 5 1.5rem · 6 2rem · 7 3rem
+       Type:     --text-xs 0.8125rem · sm 0.875rem · base 1rem · md 1.125rem · lg 1.375rem
+                 · xl 1.75rem · 2xl clamp(1.75rem, 1.2rem + 2vw, 2.5rem); line-height 1.5 body, 1.25 headings
+       Radii:    --radius-sm 0.375rem · md 0.5rem · lg 0.75rem · pill 999px
+       Shadows:  --shadow-sm resting cards · --shadow-md main card
+       Fonts:    system stacks only (--font-sans, --font-mono); no web fonts.
+       ===================================================================== */
+    :root {
+      --color-bg: #e7e8d6;
+      --color-surface: #fbfaf3;
+      --color-surface-sunken: #f1f1e6;
+      --color-text: #1d2119;
+      --color-muted: #464c3c;
+      --color-border: #7a8068;
+      --color-border-subtle: #c3c7ae;
+      --color-accent: #3f4d22;
+      --color-accent-hover: #2f3a19;
+      --color-accent-text: #ffffff;
+      --color-charcoal: #23281e;
+      --color-olive-deep: #4a4128;
+      --color-terrain: #5b6b3a;
+      --color-contour-minor: #4f6232;
+      --color-contour-major: #3f5226;
+      --contour-minor-opacity: 0.22;
+      --contour-major-opacity: 0.4;
+      --color-paper-green: #e4ead3;
+      --color-paper-cream: #efeddc;
+      --color-paper-sand: #f0e5cc;
+      --color-brass: #e3b65a;
+      --color-hero-text: #f3efdf;
+      --color-hero-muted: #d6d2bf;
+      --color-warning-bg: #fff0c7;
+      --color-warning-border: #9a5a00;
+      --color-warning-text: #7a3e00;
+      --color-correct: #1c6530;
+      --color-correct-bg: #e3f1e4;
+      --color-incorrect: #9e2418;
+      --color-incorrect-bg: #fbe6e2;
+      --color-self-bg: #fff4d1;
+      --color-self-border: #9a6a00;
+      --color-focus: #1a4fd1;
+      --band-mastery: #1c6530;
+      --band-proficient: #3f4d22;
+      --band-developing: #8a5700;
+      --band-review: #9e2418;
+
+      --space-1: 0.25rem;
+      --space-2: 0.5rem;
+      --space-3: 0.75rem;
+      --space-4: 1rem;
+      --space-5: 1.5rem;
+      --space-6: 2rem;
+      --space-7: 3rem;
+
+      --text-xs: 0.8125rem;
+      --text-sm: 0.875rem;
+      --text-base: 1rem;
+      --text-md: 1.125rem;
+      --text-lg: 1.375rem;
+      --text-xl: 1.75rem;
+      --text-2xl: clamp(1.75rem, 1.2rem + 2vw, 2.5rem);
+
+      --radius-sm: 0.375rem;
+      --radius-md: 0.5rem;
+      --radius-lg: 0.75rem;
+      --radius-pill: 999px;
+
+      --shadow-sm: 0 1px 2px rgba(35, 40, 30, 0.12), 0 1px 6px rgba(35, 40, 30, 0.08);
+      --shadow-md: 0 2px 4px rgba(35, 40, 30, 0.1), 0 8px 24px rgba(35, 40, 30, 0.14);
+
+      --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+      --font-mono: ui-monospace, "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+
+      --mode-accent: var(--color-accent);
+      --mode-tint: #eef0e2;
+      --mode-selected: #e3e8cf;
+      --mode-glow: var(--color-brass);
+    }
+    /* Difficulty identities. The difficulty is always also named in text. */
+    .theme-easy, .mode-easy { --mode-accent: #2d6a2f; --mode-tint: #eef1e3; --mode-selected: #dcebd0; --mode-glow: #8fd17a; }
+    .theme-medium, .mode-medium { --mode-accent: #8a5700; --mode-tint: #f7eed6; --mode-selected: #f5e3b8; --mode-glow: #f2b441; }
+    .theme-hard, .mode-hard { --mode-accent: #a63d17; --mode-tint: #f8e6dc; --mode-selected: #f7d9cb; --mode-glow: #ff8a5c; }
+
+    *, *::before, *::after { box-sizing: border-box; }
+    [hidden] { display: none !important; }
+    html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--color-bg);
+      color: var(--color-text);
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+      font-size: var(--text-base);
+      line-height: 1.5;
+      overflow-wrap: anywhere;
+    }
+    h1, h2, h3, h4 { line-height: 1.25; }
+    h2 { font-size: var(--text-lg); margin: var(--space-6) 0 var(--space-3); }
+    h3 { font-size: var(--text-md); margin: var(--space-5) 0 var(--space-3); }
+    h4 { font-size: var(--text-base); margin: var(--space-4) 0 var(--space-2); }
+    p { margin: 0 0 var(--space-3); }
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0 0 0 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    /* Decorative tactical-map layer: fixed, clipped and inert, so it never adds page width. */
+    .terrain {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      overflow: hidden;
+      pointer-events: none;
+    }
+    .terrain {
+      background: linear-gradient(155deg, var(--color-paper-green) 0%, var(--color-paper-cream) 48%, var(--color-paper-sand) 100%);
+    }
+    .terrain svg { display: block; width: 100%; height: 100%; }
+    /* Topographic contours: thin olive lines, index contours darker; strokes stay hairline at any zoom. */
+    .terrain .contours { fill: none; stroke-linejoin: round; stroke-linecap: round; }
+    .terrain .contours path { stroke: var(--color-contour-minor); stroke-opacity: var(--contour-minor-opacity); stroke-width: 1; vector-effect: non-scaling-stroke; }
+    .terrain .contours path.major { stroke: var(--color-contour-major); stroke-opacity: var(--contour-major-opacity); stroke-width: 1.6; }
+
+    /* Signal Support hero */
+    .hero {
+      background: linear-gradient(135deg, var(--color-charcoal) 0%, var(--color-olive-deep) 100%);
+      color: var(--color-hero-text);
+      border-bottom: 6px solid var(--mode-glow);
+      overflow: hidden;
+    }
+    .hero-inner {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+      gap: var(--space-5);
+      align-items: center;
+      width: 100%;
+      max-width: 72rem;
+      margin: 0 auto;
+      padding: var(--space-5) var(--space-4);
+    }
+    .hero-copy { min-width: 0; }
+    .eyebrow { margin: 0; font-size: var(--text-sm); font-weight: 700; letter-spacing: 0.04em; color: var(--color-brass); }
+    h1 { margin: var(--space-1) 0 var(--space-2); font-size: var(--text-2xl); }
+    .hero-lede { margin: 0; color: var(--color-hero-muted); max-width: 34rem; }
+    .hero-tools { display: flex; flex-wrap: wrap; gap: var(--space-2); margin-top: var(--space-4); }
+    .hero-art { min-width: 0; }
+    .hero-art svg { display: block; width: 100%; max-width: 100%; height: auto; }
+    .hero-art text { font-family: var(--font-mono); font-size: 9px; font-weight: 700; letter-spacing: 0.08em; }
+    body[data-view="quiz"] .hero-inner, body[data-view="results"] .hero-inner { padding-top: var(--space-4); padding-bottom: var(--space-4); }
+    body[data-view="quiz"] .hero-art svg, body[data-view="results"] .hero-art svg { max-height: 12rem; }
+
+    /* Sound toggle: speaker icon plus visible On/Off text; aria-pressed carries the state. */
+    .sound-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+      padding: var(--space-2) var(--space-3);
+      border: 2px solid var(--color-brass);
+      background: rgba(20, 24, 17, 0.55);
+      color: var(--color-hero-text);
+      font-size: var(--text-sm);
+    }
+    .sound-toggle:hover:not(:disabled) { background: rgba(20, 24, 17, 0.85); border-color: var(--color-hero-text); }
+    .sound-toggle svg { width: 1.25rem; height: 1.25rem; flex: none; }
+    .sound-toggle .sound-waves { display: inline; }
+    .sound-toggle .sound-mute { display: none; }
+    .sound-toggle[aria-pressed="false"] .sound-waves { display: none; }
+    .sound-toggle[aria-pressed="false"] .sound-mute { display: inline; }
+    .sound-state { font-weight: 700; color: var(--color-brass); }
+    /* Link back to the quiz hub, styled to match the sound toggle. */
+    .hub-link {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+      min-height: 44px;
+      padding: var(--space-2) var(--space-3);
+      border: 2px solid var(--color-brass);
+      border-radius: var(--radius-sm);
+      background: rgba(20, 24, 17, 0.55);
+      color: var(--color-hero-text);
+      font-size: var(--text-sm);
+      font-weight: 600;
+      text-decoration: none;
+    }
+    .hub-link:hover { background: rgba(20, 24, 17, 0.85); border-color: var(--color-hero-text); text-decoration: underline; }
+    .hub-arrow { color: var(--color-brass); font-weight: 700; }
+
+    /* Artwork parts. Rest states are the static artwork shown with reduced motion.
+       #tank is the signal vehicle, #tank-gun its telescoping mast, #muzzle-blast the beam leaving the dish,
+       #dust the radio waves at the mast head, #shell the data packet and #objective the COMMANDER node. */
+    #objective { color: var(--mode-glow); }
+    #tank-gun { transform-box: fill-box; transform-origin: 50% 100%; }
+    #muzzle-blast { opacity: 0.7; transform-box: fill-box; transform-origin: 0% 100%; }
+    #shell { opacity: 0; transform: translate(118px, 128px); }
+    #dust .dust-puff { opacity: 0; transform-box: fill-box; transform-origin: center; }
+    #objective .impact-pulse { opacity: 0; transform-box: fill-box; transform-origin: center; }
+    .link-line { stroke-dashoffset: 0; }
+
+    /* One 4-second message cycle plays when the art appears: the mast rises, the dish transmits, a packet
+       runs dish -> COMMANDER -> armor and the COMMANDER node pulses. Nothing loops, so no pause control is needed. */
+    #tank-gun { animation: mast-raise 4s ease-out 1 both; }
+    #muzzle-blast { animation: beam-pulse 4s ease-out 1 both; }
+    #shell { animation: packet-flow 4s linear 1 both; }
+    #dust .dust-puff { animation: wave-ring 4s ease-out 1 both; }
+    #dust .dust-puff:nth-child(2) { animation-delay: 0.2s; }
+    #dust .dust-puff:nth-child(3) { animation-delay: 0.4s; }
+    #objective .impact-pulse { animation: command-pulse 4s ease-out 1 both; }
+    .link-line { animation: link-flow 4s linear 1 both; }
+
+    @keyframes mast-raise {
+      0% { transform: scaleY(0.4); }
+      22%, 100% { transform: scaleY(1); }
+    }
+    @keyframes beam-pulse {
+      0%, 22% { opacity: 0; transform: scale(0.4); }
+      27% { opacity: 1; transform: scale(1); }
+      40% { opacity: 0.4; transform: scale(1.15); }
+      100% { opacity: 0.7; transform: scale(1); }
+    }
+    @keyframes wave-ring {
+      0%, 20% { opacity: 0; transform: scale(0.4); }
+      26% { opacity: 0.9; transform: scale(1); }
+      60%, 100% { opacity: 0; transform: scale(2.4); }
+    }
+    @keyframes packet-flow {
+      0%, 25.9% { opacity: 0; transform: translate(118px, 128px); }
+      26% { opacity: 1; transform: translate(118px, 128px); }
+      50% { opacity: 1; transform: translate(318px, 66px); }
+      54% { opacity: 1; transform: translate(318px, 66px); }
+      78% { opacity: 1; transform: translate(339px, 176px); }
+      79%, 100% { opacity: 0; transform: translate(339px, 176px); }
+    }
+    @keyframes command-pulse {
+      0%, 49% { opacity: 0; transform: scale(0.4); }
+      52% { opacity: 1; transform: scale(0.8); }
+      80%, 100% { opacity: 0; transform: scale(2.2); }
+    }
+    @keyframes link-flow {
+      from { stroke-dashoffset: 36; }
+      to { stroke-dashoffset: 0; }
+    }
+    @keyframes view-enter {
+      from { opacity: 0; transform: translateY(0.5rem); }
+      to { opacity: 1; transform: none; }
+    }
+
+    /* Main card */
+    .app {
+      width: calc(100% - 2rem);
+      max-width: 52rem;
+      margin: var(--space-5) auto var(--space-6);
+      padding: var(--space-5);
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-top: 6px solid var(--mode-accent);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-md);
+    }
+    .view { animation: view-enter 0.3s ease-out both; }
+    .view > h2:first-child { margin-top: 0; }
+
+    button {
+      font: inherit;
+      min-height: 44px;
+      min-width: 44px;
+      padding: var(--space-3) var(--space-4);
+      border: 2px solid var(--color-accent);
+      border-radius: var(--radius-sm);
+      background: var(--color-accent);
+      color: var(--color-accent-text);
+      font-weight: 600;
+      line-height: 1.25;
+      cursor: pointer;
+      transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+    }
+    button:hover:not(:disabled) { background: var(--color-accent-hover); border-color: var(--color-accent-hover); }
+    button.secondary { background: var(--color-surface); color: var(--color-accent); }
+    button.secondary:hover:not(:disabled) { background: var(--mode-tint); color: var(--color-accent-hover); }
+    button.compact { padding: var(--space-2) var(--space-3); font-size: var(--text-sm); }
+    button:disabled { cursor: not-allowed; opacity: 0.55; }
+    :focus-visible { outline: 3px solid var(--color-focus); outline-offset: 2px; }
+    .hero :focus-visible { outline-color: #ffffff; }
+
+    /* Icons are drawn in CSS with currentColor, always paired with text. */
+    .icon { position: relative; display: inline-block; flex: none; width: 1em; height: 1em; vertical-align: -0.125em; }
+    .icon::before, .icon::after { content: ""; position: absolute; }
+    .icon-check::before { left: 0.32em; top: 0.06em; width: 0.34em; height: 0.64em; border: solid currentColor; border-width: 0 0.16em 0.16em 0; transform: rotate(45deg); }
+    .icon-cross::before, .icon-cross::after { left: 0.42em; top: 0.02em; width: 0.16em; height: 0.96em; border-radius: 0.08em; background: currentColor; transform: rotate(45deg); }
+    .icon-cross::after { transform: rotate(-45deg); }
+    .icon-alert::before { left: 0.42em; top: 0.04em; width: 0.16em; height: 0.6em; border-radius: 0.08em; background: currentColor; }
+    .icon-alert::after { left: 0.42em; top: 0.78em; width: 0.16em; height: 0.18em; border-radius: 0.08em; background: currentColor; }
+    .icon-dot::before { left: 0.3em; top: 0.3em; width: 0.4em; height: 0.4em; border-radius: 50%; background: currentColor; }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.375rem;
+      padding: 0.125rem 0.625rem;
+      border-radius: var(--radius-pill);
+      font-size: var(--text-sm);
+      font-weight: 700;
+      line-height: 1.5;
+      white-space: nowrap;
+    }
+    .tag-selected { background: var(--mode-accent); color: #ffffff; }
+    .tag-correct { background: var(--color-correct); color: #ffffff; }
+    .tag-incorrect { background: var(--color-incorrect); color: #ffffff; }
+    .tag-strength { background: var(--color-correct-bg); color: var(--color-correct); border: 1px solid var(--color-correct); }
+    .tag-gap { background: var(--color-incorrect-bg); color: var(--color-incorrect); border: 1px solid var(--color-incorrect); }
+    .tag-you { background: var(--color-accent); color: #ffffff; font-size: var(--text-xs); padding: 0 var(--space-2); }
+
+    /* Landing */
+    .field { margin: 0 0 var(--space-5); }
+    .field-label { display: block; margin-bottom: var(--space-1); font-weight: 700; }
+    .field-help { margin: 0 0 var(--space-2); font-size: var(--text-sm); color: var(--color-muted); }
+    .text-input {
+      display: block;
+      width: 100%;
+      max-width: 26rem;
+      min-height: 44px;
+      padding: var(--space-2) var(--space-3);
+      border: 2px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      background: #ffffff;
+      color: var(--color-text);
+      font: inherit;
+      transition: border-color 0.15s ease;
+    }
+    .text-input:hover { border-color: var(--color-accent); }
+    .text-input[aria-invalid="true"] { border-color: var(--color-incorrect); }
+    .field-message { display: flex; gap: var(--space-2); align-items: baseline; margin: var(--space-2) 0 0; color: var(--color-incorrect); font-weight: 600; }
+
+    .study-warning {
+      border: 2px solid var(--color-warning-border);
+      border-left-width: 8px;
+      border-radius: var(--radius-md);
+      background: var(--color-warning-bg);
+      padding: var(--space-4);
+    }
+    .study-warning p { margin-top: 0; }
+    .study-warning strong { color: var(--color-warning-text); }
+    .study-confirm {
+      display: flex;
+      gap: var(--space-3);
+      align-items: flex-start;
+      min-height: 44px;
+      padding: var(--space-2) 0;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .study-confirm input { flex: none; width: 1.5rem; height: 1.5rem; margin: 0.1rem 0 0; accent-color: var(--color-accent); }
+
+    .mode-hint { color: var(--color-muted); }
+    .mode-list {
+      display: grid;
+      gap: var(--space-3);
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr));
+    }
+    .mode-button {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: var(--space-1);
+      text-align: left;
+      padding: var(--space-4);
+      background: var(--mode-tint);
+      color: var(--color-text);
+      border: 2px solid var(--color-border);
+      border-left: 10px solid var(--mode-accent);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-sm);
+    }
+    .mode-button:hover:not(:disabled) { background: var(--color-surface); border-color: var(--mode-accent); color: var(--color-text); }
+    .mode-name { font-size: var(--text-md); font-weight: 700; color: var(--mode-accent); }
+    .mode-desc { font-size: 0.9375rem; font-weight: 400; }
+    .privacy-note, .question-category, .results-reminder { color: var(--color-muted); }
+    .privacy-note { margin-top: var(--space-5); font-size: var(--text-sm); }
+
+    /* Quiz */
+    .quiz-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: var(--space-2) var(--space-4); margin-bottom: var(--space-3); }
+    .quiz-head h2 { margin: 0; }
+    .student-line { margin: 0; font-size: var(--text-sm); color: var(--color-muted); }
+    .student-line strong { color: var(--color-text); }
+    .quiz-progress label { font-size: var(--text-sm); font-weight: 600; color: var(--color-muted); }
+    .quiz-status { font-size: var(--text-sm); color: var(--color-muted); }
+    progress { display: block; width: 100%; height: 0.75rem; accent-color: var(--mode-accent); }
+    .question-heading { margin: var(--space-5) 0 var(--space-1); }
+    .question-category { margin: 0 0 var(--space-4); font-size: var(--text-sm); }
+    fieldset { min-width: 0; margin: 0; padding: 0; border: 0; }
+    legend { display: block; max-width: 100%; margin-bottom: var(--space-4); padding: 0; font-size: var(--text-md); font-weight: 600; line-height: 1.45; white-space: normal; }
+
+    .option {
+      position: relative;
+      display: flex;
+      gap: var(--space-3);
+      align-items: flex-start;
+      min-height: 44px;
+      margin-bottom: var(--space-2);
+      padding: var(--space-3) var(--space-4) var(--space-3) var(--space-3);
+      border: 2px solid var(--color-border);
+      border-radius: var(--radius-md);
+      background: var(--color-surface);
+      cursor: pointer;
+      transition: border-color 0.15s ease, background-color 0.15s ease, box-shadow 0.15s ease;
+    }
+    /* The native radio stays in the tab order and drives keyboard selection; the letter badge is its visual. */
+    .option input { position: absolute; top: 50%; left: 1.25rem; width: 1px; height: 1px; margin: 0; opacity: 0; }
+    .option-letter {
+      display: inline-flex;
+      flex: none;
+      align-items: center;
+      justify-content: center;
+      width: 2rem;
+      height: 2rem;
+      border: 2px solid var(--color-border);
+      border-radius: 50%;
+      background: var(--color-surface);
+      color: var(--color-text);
+      font-weight: 700;
+    }
+    .option-body { flex: 1; min-width: 0; padding-top: 0.2rem; }
+    .option-text { display: block; }
+    .option-tags { display: flex; flex-wrap: wrap; gap: var(--space-2); margin-top: var(--space-2); }
+    .option-tags:empty { display: none; }
+    .option:hover:not(.option-correct):not(.option-incorrect):not(.option-selected):not(.option-locked) { border-color: var(--mode-accent); background: var(--mode-tint); }
+    .option:focus-within { outline: 3px solid var(--color-focus); outline-offset: 2px; }
+    .option:has(input:focus:not(:focus-visible)) { outline-color: transparent; }
+    .option-selected { border-color: var(--mode-accent); background: var(--mode-selected); box-shadow: inset 0 0 0 1px var(--mode-accent); }
+    .option-selected .option-letter { border-color: var(--mode-accent); background: var(--mode-accent); color: #ffffff; }
+    .option-locked { cursor: default; }
+    .option-correct { border-color: var(--color-correct); background: var(--color-correct-bg); box-shadow: inset 0 0 0 1px var(--color-correct); }
+    .option-correct .option-letter { border-color: var(--color-correct); background: var(--color-correct); color: #ffffff; }
+    .option-incorrect { border-color: var(--color-incorrect); background: var(--color-incorrect-bg); box-shadow: inset 0 0 0 1px var(--color-incorrect); }
+    .option-incorrect .option-letter { border-color: var(--color-incorrect); background: var(--color-incorrect); color: #ffffff; }
+    .option-dimmed { border-color: var(--color-border-subtle); background: var(--color-surface-sunken); color: var(--color-muted); }
+    .option-dimmed .option-letter { border-color: var(--color-border-subtle); background: var(--color-surface-sunken); color: var(--color-muted); }
+
+    .validation-message { display: flex; gap: var(--space-2); align-items: baseline; margin-top: var(--space-3); color: var(--color-incorrect); font-weight: 600; }
+
+    .feedback {
+      margin-top: var(--space-5);
+      border: 2px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      background: var(--color-surface);
+      box-shadow: var(--shadow-sm);
+      overflow: hidden;
+      animation: view-enter 0.25s ease-out both;
+    }
+    .feedback-correct { border-color: var(--color-correct); }
+    .feedback-incorrect { border-color: var(--color-incorrect); }
+    .feedback-header { display: flex; align-items: center; gap: var(--space-3); margin: 0; padding: var(--space-3) var(--space-4); font-size: var(--text-lg); font-weight: 700; }
+    .feedback-correct .feedback-header { background: var(--color-correct-bg); color: var(--color-correct); }
+    .feedback-incorrect .feedback-header { background: var(--color-incorrect-bg); color: var(--color-incorrect); }
+    .feedback-mark { display: inline-flex; flex: none; align-items: center; justify-content: center; width: 2rem; height: 2rem; border-radius: 50%; color: #ffffff; font-size: 1rem; }
+    .feedback-correct .feedback-mark { background: var(--color-correct); }
+    .feedback-incorrect .feedback-mark { background: var(--color-incorrect); }
+    .feedback-body { padding: var(--space-4); }
+    .answer-line { margin: 0 0 var(--space-2); padding: var(--space-2) var(--space-3); border-left: 4px solid var(--color-border); border-radius: var(--radius-sm); background: var(--color-surface-sunken); }
+    .answer-line-correct { border-left-color: var(--color-correct); background: var(--color-correct-bg); }
+    .answer-line-incorrect { border-left-color: var(--color-incorrect); background: var(--color-incorrect-bg); }
+    .answer-label { font-weight: 700; }
+    .explanation { margin-top: var(--space-4); padding-top: var(--space-4); border-top: 1px solid var(--color-border-subtle); }
+    .section-label { margin: 0 0 var(--space-1); font-size: var(--text-xs); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-muted); }
+    .explanation-text { margin: 0; max-width: 68ch; line-height: 1.6; }
+    .source-ref { margin: var(--space-3) 0 0; font-size: var(--text-sm); color: var(--color-muted); }
+    .quiz-actions, .results-actions { display: flex; flex-wrap: wrap; gap: var(--space-3); margin-top: var(--space-5); }
+
+    /* Results */
+    .score-card {
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr);
+      gap: var(--space-5);
+      align-items: center;
+      padding: var(--space-5);
+      border: 1px solid var(--color-border);
+      border-left: 8px solid var(--band-color, var(--mode-accent));
+      border-radius: var(--radius-lg);
+      background: var(--mode-tint);
+      box-shadow: var(--shadow-sm);
+    }
+    .band-mastery { --band-color: var(--band-mastery); }
+    .band-proficient { --band-color: var(--band-proficient); }
+    .band-developing { --band-color: var(--band-developing); }
+    .band-needs-review { --band-color: var(--band-review); }
+    .score-figure { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 8.5rem; height: 8.5rem; border: 6px solid var(--band-color, var(--mode-accent)); border-radius: 50%; background: var(--color-surface); text-align: center; }
+    .score-percent { font-size: 2.25rem; font-weight: 800; line-height: 1; }
+    .score-count { margin-top: var(--space-1); font-size: var(--text-sm); color: var(--color-muted); }
+    .score-meta { min-width: 0; }
+    .score-meta p { margin: 0 0 var(--space-2); }
+    .meta-label { display: block; font-size: var(--text-xs); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-muted); }
+    .meta-value { font-weight: 700; }
+    .band-badge { display: inline-flex; align-items: center; gap: var(--space-2); padding: var(--space-1) var(--space-3); border-radius: var(--radius-pill); background: var(--band-color, var(--mode-accent)); color: #ffffff; font-size: var(--text-md); font-weight: 700; }
+    .band-description { color: var(--color-text); }
+
+    .history-save { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2) var(--space-3); margin-top: var(--space-4); padding: var(--space-2) var(--space-3); border: 1px solid var(--color-border-subtle); border-radius: var(--radius-md); background: var(--color-surface-sunken); font-size: var(--text-sm); }
+    .history-save p { display: flex; gap: var(--space-2); align-items: baseline; margin: 0; }
+    .history-save:empty { display: none; }
+    .save-failed { border-color: var(--color-incorrect); background: var(--color-incorrect-bg); color: var(--color-incorrect); font-weight: 600; }
+    .save-saved { border-color: var(--color-correct); background: var(--color-correct-bg); color: var(--color-correct); font-weight: 600; }
+    .results-reminder { margin-top: var(--space-4); font-size: var(--text-sm); }
+
+    .table-wrap { max-width: 100%; overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; background: var(--color-surface); }
+    caption { text-align: left; padding-bottom: var(--space-2); color: var(--color-muted); font-size: var(--text-sm); }
+    th, td { padding: var(--space-2) var(--space-3); border-bottom: 1px solid var(--color-border-subtle); text-align: left; vertical-align: middle; }
+    thead th { border-bottom: 2px solid var(--color-border); font-size: var(--text-sm); color: var(--color-muted); }
+    .topic-count { min-width: 9rem; }
+    .bar { position: relative; display: block; height: 0.5rem; margin-top: var(--space-1); border-radius: var(--radius-pill); background: var(--color-border-subtle); overflow: hidden; }
+    .bar::after { content: ""; position: absolute; top: 0; bottom: 0; left: 75%; width: 2px; background: var(--color-text); }
+    .bar-fill { display: block; height: 100%; border-radius: var(--radius-pill); }
+    .bar-strength { background: var(--color-correct); }
+    .bar-gap { background: var(--color-incorrect); }
+    .topic-lists { display: grid; gap: var(--space-4); grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr)); }
+    .topic-lists ul { margin: 0; padding-left: var(--space-5); }
+
+    .review-list { margin: 0; padding: 0; list-style: none; }
+    .review-item { margin-bottom: var(--space-4); padding: var(--space-4); border: 1px solid var(--color-border-subtle); border-left: 6px solid var(--color-border); border-radius: var(--radius-md); background: var(--color-surface); }
+    .review-correct { border-left-color: var(--color-correct); }
+    .review-incorrect { border-left-color: var(--color-incorrect); }
+    .review-head { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2) var(--space-3); margin: 0 0 var(--space-2); }
+    .review-topic { font-size: var(--text-sm); color: var(--color-muted); }
+    .review-prompt { font-weight: 600; }
+
+    /* Class score history */
+    .history-panel { margin-top: var(--space-6); padding-top: var(--space-5); border-top: 2px solid var(--color-border-subtle); }
+    .section-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--space-2) var(--space-4); }
+    .section-head h2 { margin: 0; }
+    .section-intro { margin-top: var(--space-2); color: var(--color-muted); font-size: var(--text-sm); }
+    .history-filters { display: flex; flex-wrap: wrap; gap: var(--space-2); margin-bottom: var(--space-3); }
+    .filter-button { background: var(--color-surface); color: var(--color-accent); padding: var(--space-2) var(--space-4); border-radius: var(--radius-pill); }
+    .filter-button:hover:not(:disabled) { background: var(--mode-tint); color: var(--color-accent-hover); }
+    .filter-button[aria-pressed="true"], .filter-button[aria-pressed="true"]:hover:not(:disabled) { background: var(--color-accent); color: #ffffff; }
+    .history-status { display: flex; gap: var(--space-2); align-items: baseline; padding: var(--space-3); border-radius: var(--radius-md); background: var(--color-surface-sunken); }
+    .status-error { background: var(--color-incorrect-bg); color: var(--color-incorrect); font-weight: 600; }
+    .status-not-configured { background: var(--color-warning-bg); color: var(--color-warning-text); }
+    .status-ready { padding: 0; background: transparent; color: var(--color-muted); font-size: var(--text-sm); }
+    .history-table td { font-variant-numeric: tabular-nums; }
+    .history-row-self td { background: var(--color-self-bg); }
+    .history-row-self td:first-child { box-shadow: inset 4px 0 0 var(--color-self-border); }
+    .history-name-text { font-weight: 600; }
+
+    /* Narrow screens: stack the hero and every control row. */
+    @media (max-width: 760px) {
+      .hero-inner { grid-template-columns: 1fr; gap: var(--space-3); padding: var(--space-4); }
+      .hero-art svg { max-height: 13rem; margin: 0 auto; }
+      body[data-view="quiz"] .hero-art, body[data-view="results"] .hero-art, body[data-view="quiz"] .hero-lede, body[data-view="results"] .hero-lede { display: none; }
+      .hero-tools { margin-top: var(--space-3); }
+      .app { width: calc(100% - 1rem); margin: var(--space-3) auto var(--space-5); padding: var(--space-4); }
+      .mode-list { grid-template-columns: 1fr; }
+      .quiz-actions, .results-actions { flex-direction: column; }
+      .quiz-actions button, .results-actions button { width: 100%; }
+      .score-card { grid-template-columns: 1fr; justify-items: center; text-align: center; padding: var(--space-4); }
+      th, td { padding: var(--space-2); }
+    }
+    /* Very narrow screens: history rows become labelled cards so the page never scrolls sideways. */
+    @media (max-width: 560px) {
+      .history-table thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+      .history-table, .history-table tbody, .history-table tr, .history-table td { display: block; width: 100%; }
+      .history-table tr { margin-bottom: var(--space-2); padding: var(--space-2) var(--space-3); border: 1px solid var(--color-border-subtle); border-radius: var(--radius-md); }
+      .history-table td { display: flex; justify-content: space-between; gap: var(--space-3); padding: var(--space-1) 0; border: 0; }
+      .history-table td::before { content: attr(data-label); font-weight: 700; color: var(--color-muted); }
+      .history-row-self { border-color: var(--color-self-border); background: var(--color-self-bg); }
+      .history-row-self td:first-child { box-shadow: none; }
+    }
+
+    /* Reduced motion: stop every animation and transition; the static artwork stays visible. */
+    @media (prefers-reduced-motion: reduce) {
+      #tank-gun, #muzzle-blast, #shell, #dust .dust-puff, #dust .dust-puff:nth-child(2), #dust .dust-puff:nth-child(3), #objective .impact-pulse, .link-line, .view, .feedback, button, .option, .text-input {
+        animation: none !important;
+        transition: none !important;
+      }
+      #tank-gun { transform: none; }
+      #muzzle-blast { opacity: 0.7; transform: none; }
+      #dust .dust-puff { opacity: 0; }
+      #shell { opacity: 1; transform: translate(218px, 97px); }
+      #objective .impact-pulse { opacity: 0.6; transform: none; }
+    }
+
+    @media print {
+      body { background: #ffffff; }
+      .terrain, .hero-art, .hero-tools, .results-actions, .noscript, .history-panel, .history-save { display: none !important; }
+      .hero { background: #ffffff; color: #000000; border-bottom: 2px solid #000000; }
+      .eyebrow, .hero-lede { color: #000000; }
+      .app { box-shadow: none; border: 0; margin: 0 auto; }
+      .review-item { break-inside: avoid; }
+    }
+  </style>
+</head>
+<body data-view="landing">
+  <div class="terrain" aria-hidden="true">
+    <svg viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false"><g class="contours"><path d="M233 0l12 9 9 5 11 8 5 2 8 6 3 1 9 6 12 6 4 1 9 4 11 2 10-1 9-6 3-5 3-3 6-13 5-16 1-6"/><path d="M204 0l11 8 23 20 5 3 20 19 8 6 25 25 6 8 8 8 18 25 9 16 5 7 9 18 2 2 6 11 9 14 6 8 12 12 7 6 5 3 12 6 16 4 12-1 10-5 3-5 2-8-1-12-3-10-2-3-7-16-6-10-2-5-8-12-2-5-5-7-9-18-2-6-4-8-2-8-2-4-3-12 0-4-3-15 0-9-1-4 0-42"/><path d="M181 0l0 1 5 3 12 10 24 23 6 4 14 14 12 15 8 8 3 5 8 9 15 22 2 5 5 7 9 18 2 2 14 29 6 10 2 5 3 4 4 9 18 25 14 14 19 14 18 9 6 2 18 5 14 2 20 0 20-5 9-4 8-8 5-8 2-7 0-12-2-11-3-9-6-13-8-15-5-7-2-5-8-11-8-14-3-3-5-8-2-5-5-7-9-18-2-2-3-8-6-12-5-14 0-2-1-1 0-3-3-8 0-4-3-12 0-4-2-9 0-7-1-4 0-12-1-2"/><path d="M160 0l17 14 8 8 2 1 34 34 28 35 12 18 2 5 2 2 10 17 8 16 1 4 13 26 2 6 10 20 3 4 7 14 15 22 20 20 8 6 13 8 19 9 8 3 28 7 16 2 32 0 8-1 16-3 19-8 6-4 10-10 3-5 4-12 0-12-5-20-2-6-5-10-20-33-22-31-18-28-2-5-5-7-12-24-1-4-4-8-1-5-2-3-5-20-1-1 0-3-3-12-3-26"/><path d="M140 0l8 7 6 4 12 11 36 36 10 12 3 5 4 4 5 8 6 7 10 17 5 7 2 5 2 2 4 9 4 6 2 6 5 9 0 2 9 18 2 7 5 10 2 6 17 36 15 24 13 15 6 6 11 9 9 6 13 7 16 7 11 4 3 0 26 7 24 3 8 0 4 1 20 0 4-1 12 0 20-3 20-6 20-10 7-5 8-10 5-10 2-6 1-10-1-4 0-5-3-11-2-4-2-7-8-15-11-18-23-33-8-10-7-11-5-6-1-3-3-3-6-9-1-3-2-2-5-9-2-2-2-5-3-4-11-22-7-20-3-6-5-19-1-9-2-8-1-14M966 0l1 1 3 0 20 5 8 0 4 1 16-1 8-2 9-4" class="major"/><path d="M122 0l19 17 2 1 8 8 8 6 9 9 6 8 19 20 3 5 12 15 11 17 5 8 6 12 2 2 6 14 2 2 8 19 0 2 3 5 4 12 4 8 10 28 10 23 2 3 2 6 5 8 2 5 15 21 14 14 6 5 3 1 6 5 5 2 2 2 14 7 2 0 5 3 8 2 6 3 3 0 32 8 4 0 3 1 24 3 8 0 4 1 36 0 4-1 20-1 8-2 9-1 19-5 6-2 10-5 4-1 6-3 6-5 3-1 14-15 5-9 3-16-1-12-3-12-3-5 0-2-2-5-7-13-15-23-8-10-6-9-7-8-17-24-7-8-12-18-3-3-4-8-6-8-1-3-6-9-11-22-5-14-2-3-1-5-1-1 0-3-2-4-4-16-1-9-2-7-1-10M918 0l8 5 16 8 32 14 12 3 8 3 20 4 24 0 18-5 2-2 7-4 9-9 4-7 2-2 3-8"/><path d="M103 0l7 6 5 3 14 13 2 1 34 34 19 23 1 3 8 10 13 20 4 9 3 4 8 16 11 26 3 10 2 4 2 8 5 12 3 12 2 4 6 20 6 16 3 5 0 2 2 5 6 12 11 17 4 5 13 13 9 8 17 10 4 1 10 5 14 4 4 2 3 0 1 1 20 5 4 0 12 3 5 0 3 1 24 3 8 0 4 1 20 0 4 1 36-1 4-1 8 0 23-3 6-2 3 0 20-5 20-7 21-11 3-3 6-4 9-9 7-11 0-2 4-13 0-12-4-16-1-1-2-7-6-12-5-7-1-3-3-3-1-3-11-15-7-8-9-13-10-11-7-10-6-6-9-13-4-4-6-8-16-23-19-33-12-28 0-3-1-1-8-31 0-6-1-3 0-4-1-2M887 0l1 0 6 5 3 1 3 3 3 1 11 8 9 5 2 2 5 2 4 3 16 8 2 2 16 8 19 8 2 0 20 8 3 0 22 6 12 1 3 1 17 0 16-4 9-5 7-6 1-3 6-9 3-11 2-4 3-16 1-14M0 454l9-11 7-14 0-2 2-5 1-8 0-16-3-11 0-3-7-16-9-14"/><path d="M84 0l11 8 18 16 8 6 25 25 22 27 19 28 21 42 10 30 2 4 3 12 2 4 7 27 0 3 8 28 0 2 1 1 0 3 2 4 4 14 2 3 7 17 2 2 5 9 8 9 10 9 13 9 12 6 4 1 5 3 2 0 5 2 12 3 4 2 8 1 16 4 4 0 8 2 12 1 3 1 5 0 12 2 8 0 4 1 8 0 4 1 16 0 4 1 44 0 4-1 12 0 12-2 8 0 16-3 4 0 24-6 3 0 26-9 2 0 28-14 11-9 10-10 3-4 5-9 3-9 0-18-3-13-8-17-4-7-2-2-1-3-4-6-4-4-3-5-3-3-1-3-9-11-22-25-4-6-15-16-7-10-5-5-6-9-16-20-3-6-3-3-1-3-8-12-13-26-4-10-5-16-5-20 0-4-2-7 0-7M861 0l9 7 11 7 3 3 11 7 3 3 4 2 3 3 13 8 11 8 14 8 7 5 5 2 7 5 42 21 20 7 6 3 8 2 3 2 5 1 1 1 3 0 4 2 50 13 3 0 19 5 4 0 16 4 8 0 3-1 1-2 0-4-4-16 0-4-6-28-5-40 0-8-2-12 0-8-1-6M1200 140l-10-2-4 0-12-3-7 0-2 1 0 6 2 8 0 3 1 1 3 12 2 4 3 9 0 2 8 22 0 2 7 17 0 2 2 3 7 20M0 490l2-2 5-2 8-6 19-18 6-8 9-16 2-8 2-4 1-8 0-16-4-16-4-9-13-21-15-18-18-18"/><path d="M64 0l11 7 6 6 13 9 37 36 13 15 7 10 4 4 13 19 2 5 4 7 2 2 3 6 1 4 2 4 2 2 5 14 2 3 1 5 1 1 2 7 2 4 3 12 1 1 0 3 8 32 0 4 4 20 1 12 2 8 2 20 2 8 0 4 4 15 0 3 2 6 8 17 6 8 10 9 11 7 13 6 7 2 1 1 31 8 9 1 8 2 32 4 8 0 4 1 8 0 16 2 40 1 4 1 40 0 4-1 16 0 4-1 8 0 4-1 17-1 3-1 12-1 8-2 4 0 12-3 3 0 6-2 3 0 8-3 28-8 26-11 6-4 10-5 12-9 11-12 1-3 2-2 2-4 3-8 0-4 1-3 0-13-3-12-3-8-6-12-6-8-4-7-7-8-6-9-5-5 0-1-21-22-4-6-24-25-1-2-8-8-6-8-10-11-9-13-7-8-4-7-8-11-2-5-7-11-9-18 0-2-4-9-7-24 0-4-3-16 0-6M837 0l8 7 3 1 14 12 12 8 14 12 3 1 3 3 5 3 4 4 8 5 3 3 9 6 10 8 9 5 11 8 3 1 3 3 3 1 12 8 52 26 4 1 16 8 5 2 2 0 9 5 6 2 22 11 4 3 5 2 2 2 20 13 6 5 14 14 10 12 1 3 8 10 14 23 9 18 2 2 15 31M1164 0l4 17 0 3 4 14 4 10 0 2 1 1 7 17 2 2 5 9 9 12M0 517l15-7 24-14 15-13 13-13 5-6 12-18 5-10 6-22 0-12-4-16-11-18-14-17-9-9-15-12-8-8-5-3-12-10-6-6-5-3-6-5"/><path d="M44 0l27 19 6 6 10 7 27 26 24 29 4 7 8 11 2 5 7 11 9 18 0 2 8 19 0 3 2 7 2 4 3 12 0 4 3 12 2 16 0 8 1 4 0 32-1 4-1 16-2 8-1 9-7 22-9 16-8 7-6 3-4 1-8 0-8-1-16-5-8-4-6-2-26-13-12-8-5-2-2-2-9-5-2-2-3-1-19-12-3-3-14-8-3-3-6-3M540 0l1 2 0 8 2 15 2 6 0 3 2 4 5 18 16 32 2 2 5 9 18 24 16 18 1 2 13 13 4 6 56 56 3 4 12 12 20 28 6 12 4 14 1 6 0 12-1 6-3 6-1 4-9 12-13 12-9 5-7 5-16 8-4 1-5 3-2 0-9 4-24 7-4 2-32 8-4 0-11 3-9 1-8 2-32 4-8 0-16 2-16 0-4 1-96 0-4-1-32 0-4-1-24 0-4-1-36-1-4-1-8 0-4-1-8 0-4-1-8 0-4-1-8 0-12-2-12 0-4-1-17 1-7 2-7 3-9 6-6 6-46 56-17 17-8 6-18 16-12 9-9 5-2 2-32 16-16 5M813 0l8 7 3 1 11 9 28 23 18 16 10 7 6 6 13 9 16 14 20 14 9 5 2 2 20 13 9 4 4 3 32 16 6 2 47 24 2 2 11 6 12 8 9 8 5 3 24 24 10 12 8 12 3 3 1 3 2 2 5 9 2 2 10 17 21 40M1187 0l1 6 2 4 5 16 5 11" class="major"/><path d="M21 0l2 2 3 1 20 13 8 6 4 4 13 9 10 10 3 2 25 26 10 12 1 3 8 10 15 27 9 19 2 6 4 16 2 5 3 15 2 16 0 24-3 16 0 4-2 5 0 2-8 19-5 6-11 10-10 5-8 2-12 1-16-2-8-2-4-2-16-5-10-4-34-17-12-8-6-3M561 0l0 10 2 16 5 20 1 1 5 15 8 16 2 2 1 3 7 12 3 3 12 17 6 6 11 14 41 41 8 6 38 36 8 6 6 6 4 6 16 17 7 11 2 2 7 14 0 2 2 4 2 8 1 12-3 16-4 8-10 13-23 17-8 3-9 5-2 0-5 3-24 9-12 3-4 2-20 5-12 4-8 2-4 0-28 7-4 0-32 6-32 4-8 0-16 2-12 0-4 1-20 0-4 1-36 0-4 1-40 0-4 1-24 0-4 1-16 0-4 1-12 0-4 1-20 1-3 1-6 0-3 1-20 2-12 3-4 0-8 2-1 1-7 1-4 2-14 4-26 13-12 8-3 1-8 7-24 17-20 17-20 14-4 4-9 5-11 8-5 2-12 8-8 3-9 5-2 0-13 6-22 6M789 0l0 1 5 3 16 14 10 7 13 12 14 11 34 32 14 11 10 10 23 19 3 1 3 3 12 8 3 3 3 1 2 2 9 5 2 2 5 2 4 3 9 4 10 6 16 7 19 10 6 2 38 20 27 18 12 10 22 22 19 25 8 13 8 11 2 5 4 7 2 2 24 47"/><path d="M0 233l15 8 38 15 3 0 14 4 8 1 16 0 12-3 5-2 10-7 6-6 9-18 4-15 1-8 0-16-2-16-2-8 0-3-1-1-3-12-2-4-2-7-2-3-4-10-3-4-7-14-8-12-8-9-1-3-8-8 0-1-30-29-5-3-9-8-11-7-3-3-30-18M585 0l-1 18 2 16 5 18 2 3 2 7 8 16 14 21 3 3 6 9 8 8 6 8 17 17 8 6 16 15 23 19 9 6 20 17 5 3 4 4 5 3 12 10 22 22 5 6 10 15 7 16 2 8 1 8 0 12-5 19-10 14-6 6-18 13-17 8-16 6-24 7-4 2-10 3-3 0-29 8-3 0-27 7-3 0-6 2-3 0-20 5-4 0-7 2-9 1-8 2-4 0-8 2-48 6-8 0-12 2-12 0-4 1-12 0-4 1-12 0-4 1-16 0-4 1-32 1-4 1-32 2-12 2-8 0-9 2-11 1-8 2-4 0-12 3-4 0-32 8-4 2-12 3-16 6-33 16-31 19-24 17-16 10-10 8-3 1-6 5-5 2-16 11-23 12-13 6-4 1-5 3-11 3-4 2-7 1-1 1-14 3M761 0l17 12 23 20 8 6 28 27 2 1 58 59 3 2 8 8 10 7 4 4 8 6 20 13 5 2 2 2 18 9 13 5 3 2 11 4 8 4 4 1 14 7 13 5 18 9 2 2 11 6 14 9 16 13 27 27 1 2 4 4 3 5 3 3 11 16 17 28 2 5 6 10 24 49"/><path d="M618 0l-2 3 0 2-2 5-2 12 0 12 2 8 0 4 2 5 0 2 8 19 2 2 5 9 2 2 7 11 14 17 17 17 8 6 11 10 20 14 10 8 3 1 3 3 8 4 11 8 12 7 3 1 2 2 9 5 2 2 5 2 7 5 14 8 3 3 9 6 15 14 8 11 4 7 7 17 4 20 0 20-1 8-3 12-4 10-8 12-13 13-9 6-19 9-18 5-4 2-3 0-1 1-24 6-4 0-24 6-4 0-15 4-9 1-20 5-4 0-6 2-3 0-11 3-4 0-16 4-4 0-2 1-3 0-7 2-4 0-12 3-4 0-8 2-16 2-20 4-20 2-3 1-17 1-12 2-8 0-24 3-12 0-4 1-8 0-3 1-9 0-12 2-8 0-40 5-3 1-4 0-2 1-11 1-16 4-4 0-8 2-1 1-3 0-16 4-4 2-3 0-1 1-2 0-10 4-17 5-3 2-14 5-42 21-17 10-2 2-11 6-25 17-39 25-11 6-2 2-5 2-4 3-22 11-17 6-3 2-2 0-4 2-18 5-3 0-7 2-4 0-2 1M726 0l25 16 3 3 4 2 33 27 25 25 6 8 15 16 11 15 12 14 8 12 10 12 20 20 7 6 15 9 26 12 9 3 2 0 9 4 28 8 10 4 2 0 1 1 18 6 3 2 16 6 18 9 32 22 26 26 1 3 12 14 11 16 7 12 1 3 2 2 4 7 11 22 7 17 8 16 7 17 2 3 6 16 1 1M0 212l10 5 8 3 32 9 8 1 12 0 8-1 4-1 13-6 10-10 4-6 1-4 2-3 0-3 3-10 0-20-3-18-3-10-3-8-9-18-9-15-19-24-14-14-23-19-11-7-2-2-9-5-2-2-8-4M1172 800l-9-14-2-5-4-4-4-6-11-11-8-3-8 0-5 3-5 6-9 16-7 18"/><path d="M672 16l-6 2-10 6-5 10-1 4 0 12 3 12 5 12 3 4 1 3 18 22 6 6 6 4 5 5 9 6 3 3 9 6 5 2 2 2 5 2 4 3 6 3 22 8 16 4 16 0 7-2 3-2 5-5 2-10 0-4-3-11 0-3-11-22-18-24-21-21-6-5-9-6-3-3-9-6-3-1-2-2-16-8-19-6-5 0-4-1-10 1M0 190l2 0 8 3 20 5 16 1 12-2 12-5 11-12 4-14 1-8-1-12-5-19-7-15-11-18-12-15-14-14-6-4-5-5-1 0-9-8-14-9-1 0M1200 510l-9-24-11-36-2-4-6-20-2-4-9-27-3-5-1-4-5-10-7-17-8-15-11-18-9-13-6-6-1-2-23-23-9-6-3-3-9-6-5-2-2-2-18-9-7-2-12-5-24-6-4 0-2-1-14-2-8 0-4-1-16 0-19 3-12 5-3 2-10 10-7 17-3 12 0 4-3 12 0 4-2 8 0 4-3 11 0 3-4 14-4 9 0 2-6 12-9 11-8 7-6 4-3 1-2 2-4 1-10 5-3 0-27 7-4 0-8 2-36 4-8 2-28 3-20 4-17 2-7 2-4 0-12 3-4 0-28 6-4 0-12 3-4 0-7 2-9 1-12 3-4 0-32 6-12 1-8 2-64 8-8 0-16 2-3 1-6 0-3 1-28 3-8 2-4 0-7 2-9 1-16 4-4 0-10 3-3 0-7 2-4 2-16 4-1 1-11 3-9 4-2 0-9 4-4 1-23 10-22 11-15 9-12 6-7 5-5 2-8 5-3 3-14 8-35 24-5 2-18 12-5 2-12 8-18 9-16 6-3 2-22 7-3 0-6 2-4 0-8 2-6 0M1200 674l0-2-8-19 0-2-7-14-5-7-4-5-10-9-8-5-12-6-12-3-8-1-12 0-8 2-4 0-10 4-12 8-8 9-9 18-7 28-2 16-1 20-1 4 0 12-1 4 0 12-1 4-1 20-1 3-1 13-2 8 0 4-2 10"/><path d="M0 161l18 2 8-1 7-2 9-7 4-7 2-8-1-12-4-12-9-16-2-2-1-3-5-6-14-14-12-9M1007 800l1-6 1-1 0-3 2-8 0-4 2-8 1-16 1-4 0-8 1-4 0-28 1-4 0-28-1-4 0-36 1-4 0-20 3-24 3-12 3-8 4-8 7-8 11-10 17-7 1-1 2 0 10-4 16-4 1-1 11-3 20-10 12-12 7-16 3-16 0-16-1-4-1-16-2-8 0-4-5-20-3-7 0-3-15-35-2-2-2-5-12-18-19-22-12-10-7-5-9-5-2-2-10-5-16-5-4-2-4 0-12-3-20 0-16 3-13 6-6 5-3 1-2 2-6 8-9 16-3 8-3 12-2 4-10 40-7 16-3 4-1 3-7 8-5 3-3 3-13 6-10 3-22 3-96 3-4 1-20 1-12 2-8 0-16 2-8 2-11 1-9 2-4 0-12 3-16 2-7 2-9 1-16 4-4 0-8 2-3 0-6 2-3 0-8 2-4 0-12 3-4 0-8 2-4 0-8 2-4 0-32 6-20 2-8 2-12 1-8 2-12 1-8 2-16 2-12 3-3 0-6 2-3 0-27 7-3 0-14 4-16 6-8 2-24 9-5 3-2 0-5 3-11 4-18 9-10 6-9 4-4 3-5 2-2 2-26 15-82 56-42 24-2 0-5 3-24 9-24 5-14 1" class="major"/><path d="M1008 312l6-1 17 1 15 5 4 3 5 2 9 6 11 10 13 16 2 5 6 9 4 10 6 20 1 8 0 20-3 12-7 13-5 6-11 8-15 6-3 0-6 2-7 1-8 0-4 1-16 0-4-1-8 0-20-4-7-3-8-7-4-6-2-7-1-1-3-16-1-8 0-16-1-4 1-8 0-16 3-19 1-1 3-12 6-12 5-7 6-6 6-4 4-2 10-3M976 800l3-10 2-4 2-8 2-16 2-8 0-8 2-16 0-52-1-4 0-12-1-4-1-20-2-12 0-8-4-32-2-8-2-18-1-2-1-12-5-24-1-9-4-15-4-10-5-6-5-4-16-7-24-6-4 0-2-1-3 0-15-4-4 0-12-3-4 0-2-1-10-1-20-4-16-2-8 0-12-2-12 0-4-1-56 0-4 1-20 1-40 5-8 2-16 2-12 3-4 0-12 3-3 0-6 2-3 0-16 4-4 0-11 3-3 0-6 2-4 0-16 4-4 0-16 4-4 0-16 4-4 0-28 6-4 0-12 3-9 1-7 2-4 0-20 5-3 0-6 2-3 0-40 11-4 2-20 6-9 4-2 0-5 3-14 5-22 11-8 3-2 2-26 13-12 7-53 35-15 12-17 12-4 4-8 5-9 8-9 6-8 7-18 12-6 5-5 2-12 8-18 9-10 4-11 3-13 2-18 0"/><path d="M948 800l2-6 4-8 8-32 3-24 0-12 1-4-1-40-1-4 0-8-3-23-2-9 0-4-4-16-1-8-9-30-2-3-2-7-5-11-8-15-11-15-14-14-5-3-10-8-26-13-4-1-5-3-15-4-4-2-3 0-1-1-20-5-4 0-12-3-5 0-11-2-20-1-4-1-36 0-4 1-12 0-4 1-16 1-3 1-6 0-15 3-4 0-8 2-4 0-32 7-4 0-15 4-3 0-26 7-3 0-35 9-3 0-30 8-3 0-14 4-4 0-14 4-3 0-27 7-4 2-28 7-1 1-15 4-3 2-17 5-9 4-2 0-5 3-14 5-50 25-24 15-5 2-11 8-7 4-3 3-11 7-3 3-9 6-12 10-16 15-8 6-25 25-6 8-8 8-17 24-6 13-3 12 0 8 3 12 11 16 12 12 8 6"/><path d="M919 800l4-6 8-16 5-14 0-2 1-1 0-3 4-16 3-24 0-36-1-4 0-12-2-16-3-12 0-4-2-6 0-3-5-19-2-4 0-3-2-3-3-10-8-16-1-4-14-21-13-16-17-14-13-9-9-4-12-7-7-3-14-4-6-3-36-8-16-2-8 0-4-1-44 0-4 1-8 0-32 4-24 5-4 0-15 4-3 0-58 15-4 2-44 12-7 3-3 0-10 4-32 9-7 3-3 0-6 3-8 2-4 2-3 0-3 2-34 12-3 2-5 1-8 4-4 1-16 8-4 1-2 2-6 2-10 5-6 4-20 10-12 8-5 2-19 14-3 1-8 7-13 9-29 28-17 20-14 25-5 19 0 16 2 8 5 12 9 13 6 7 17 14 1 0"/><path d="M889 800l1-2 6-6 6-9 11-22 7-25 0-3 2-7 1-16 1-4 0-24-1-4 0-8-3-24-7-28-2-4-2-8-2-4-2-7-5-9-1-4-10-17-15-19-12-12-15-11-17-11-8-3-9-5-2 0-9-4-13-4-35-7-8-1-12 0-4-1-28 0-4 1-9 0-3 1-16 1-8 2-16 2-36 9-3 0-1 1-20 5-7 3-3 0-10 4-14 4-6 3-8 2-3 2-5 1-1 1-18 6-3 2-10 4-7 2-5 3-4 1-10 5-14 5-5 3-2 0-9 5-26 11-2 2-8 3-12 7-4 1-15 9-5 2-4 3-9 4-2 2-9 5-2 2-3 1-24 16-3 3-12 8-12 10-18 18-1 3-8 9-4 6-6 12-4 12-1 16 3 12 5 10 5 6 13 12 13 7 15 6 3 0 1 1 16 3 12 0 8 1 4-1 12 0 16-2 3-1 6 0 7-2 4 0 8-2 12-1 16-3 24-1 4-1 12 0 4 1 12 0 3 1 6 0 3 1 12 1 12 3 4 0 42 11 3 0 7 3 12 3 5 2 2 0"/><path d="M852 800l12-8 16-17 7-12 1-3 2-2 1-4 5-10 0-3 6-23 2-16 0-28-3-24-4-16 0-3-1-1 0-2-4-10-2-8-3-5-9-20-12-18-5-6-18-18-21-15-5-2-12-7-17-6-3-2-3 0-4-2-12-3-4 0-7-2-3 0-2-1-16-1-4-1-36 0-4 1-16 1-20 4-4 0-19 5-3 0-25 8-3 0-14 6-8 2-1 1-34 14-32 16-9 6-8 4-7 5-5 2-13 9-3 3-6 3-9 8-3 1-17 14-8 8-2 1-6 7-4 3-19 23-8 16-1 6 0 11 3 6 10 10 6 3 4 1 5 3 2 0 9 4 13 4 2 0 23 8 2 0 1 1 3 0 4 2 8 2 3 2 5 1 1 1 18 6 1 1 8 2 8 4 20 7 5 3 2 0 29 12 10 3 3 2 18 6 1 1 5 1 3 2 8 3 32 10" class="major"/><path d="M789 800l17-3 4-2 9-3 2 0 14-7 12-9 9-9 9-11 5-10 2-2 4-10 3-12 2-4 0-4 2-8 1-8 0-32-3-19-2-6-1-7-2-4-4-14-13-26-12-17-14-15-15-11-3-3-12-7-21-10-23-7-33-5-32 0-4 1-16 1-8 2-9 1-31 8-1 1-11 3-9 4-2 0-5 3-14 5-2 2-8 3-15 9-5 2-33 24-17 17-9 12-8 15-4 14-1 8 1 8 3 12 13 20 14 14 11 9 22 15 16 9 7 5 9 4 4 3 16 8 6 2 14 7 6 2 10 5 7 2 3 2 10 3 4 2 37 11 3 0 20 5 16 2"/><path d="M664 535l-8 1-14 4-4 2-16 5-25 12-2 2-14 8-3 3-9 6-18 18-4 5-8 13-2 6-2 3 0 3-2 4-1 8 0 12 3 12 3 8 4 8 2 2 1 3 3 3 3 5 22 22 5 3 12 10 17 11 12 6 2 2 9 4 6 4 16 6 10 5 8 3 2 0 1 1 5 1 4 2 18 5 3 0 11 3 4 0 8 2 16 1 4 1 20 0 16-2 16-4 19-8 6-4 11-9 6-6 11-16 7-16 5-20 1-8 0-24-2-16-7-25-2-3-4-11-8-14-2-2-7-11-18-18-7-6-14-9-16-8-7-2-4-2-13-4-3 0-12-3-16-2-28 0-24 3-6 2"/><path d="M672 550l-22 6-8 3-24 12-18 13-16 17-7 12-4 9-2 8-1 12 1 8 4 15 10 18 3 3 3 5 22 22 5 3 3 3 3 1 6 5 3 1 3 3 10 5 2 2 6 3 4 1 9 5 23 8 27 7 13 2 8 0 4 1 20-1 14-2 20-7 6-3 13-9 11-12 1-3 6-9 7-18 3-21-1-20-2-13-2-7-5-12 0-2-7-14-2-2-1-3-3-3-6-9-15-15-2-1-4-4-18-11-21-9-3 0-1-1-12-3-16-2-32 0-8 2-10 1"/><path d="M688 567l-14 3-4 2-14 4-2 2-7 3-15 10-16 17-8 16 0 3-2 7 0 12 1 8 8 19 12 17 6 6 16 13 17 11 8 3 9 5 2 0 9 4 16 4 1 1 23 3 12 0 16-2 16-5 4-2 14-10 9-10 6-9 5-14 3-18-1-16-1-7-1-1-3-12-6-13-13-19-10-10-3-1-10-8-15-8-10-4-11-3-13-2-28 0-6 1"/><path d="M696 591l-1 1-3 0-10 3-13 6-3 3-5 3-8 8-2 3-4 8-3 12 0 8 2 8 0 3 4 9 9 13 12 11 7 5 20 10 8 3 8 2 16 2 8 0 16-3 9-4 12-9 5-6 5-9 4-15-1-16-3-11-2-3-2-6-6-9-11-12-15-10-18-7-5 0-12-2-18 1" class="major"/></g></svg>
+  </div>
+
+  <header class="site-header hero">
+    <div class="hero-inner">
+      <div class="hero-copy">
+        <p class="eyebrow">Philippine Army · Module 3 · Signal Support</p>
+        <h1>Signal Support Mastery Quiz</h1>
+        <p class="hero-lede">A practice aid for the Signal Support in Combined Arms Operations lesson: 75 situational questions across Easy, Medium, and Hard.</p>
+        <div class="hero-tools">
+          <button type="button" id="btn-sound" class="sound-toggle" aria-pressed="true">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z" fill="currentColor"/>
+              <path class="sound-waves" d="M15.5 9a4.2 4.2 0 0 1 0 6M18.2 6.5a8 8 0 0 1 0 11"/>
+              <path class="sound-mute" d="M16 9.5l5 5M21 9.5l-5 5"/>
+            </svg>
+            <span>Sound effects</span>
+            <span id="sound-state" class="sound-state" aria-hidden="true">On</span>
+          </button>
+          <a id="hub-link" class="hub-link" href="https://atticus-42.github.io/quiz-hub/#module-3"><span class="hub-arrow" aria-hidden="true">&#8592;</span> All quizzes</a>
+        </div>
+      </div>
+      <div id="hero-art" class="hero-art" aria-hidden="true">
+        <svg viewBox="0 0 480 250" aria-hidden="true" focusable="false">
+          <path d="M0 50H480M0 100H480M0 150H480M0 200H480M80 0V250M160 0V250M240 0V250M320 0V250M400 0V250" fill="none" stroke="#f3efdf" stroke-opacity="0.08" stroke-width="1"/>
+          <g class="terrain-contour" fill="none" stroke="#c9b37a" stroke-opacity="0.28" stroke-width="1.2" stroke-dasharray="3 5">
+            <path d="M150 214Q230 150 320 160T480 150"/>
+            <path d="M190 214Q250 172 330 178T480 172"/>
+            <path d="M0 150Q60 132 130 140"/>
+          </g>
+          <text x="12" y="18" fill="#e3b65a">SIGNAL SUPPORT · COMBINED ARMS OPS</text>
+          <text x="12" y="31" fill="#d6d2bf">CONNECT · COMMUNICATE · COORDINATE</text>
+          <path class="hill" d="M0 214C80 208 160 216 240 212C320 208 400 216 480 210V250H0Z" fill="#3f4a2c"/>
+          <path d="M0 226C80 222 160 230 240 226C320 222 400 232 480 226" fill="none" stroke="#5a6340" stroke-width="1.5"/>
+          <g class="link-lines" fill="none" stroke="#e3b65a" stroke-opacity="0.8" stroke-width="1.6" stroke-dasharray="6 3" stroke-linecap="round">
+            <path class="link-line" d="M118 128L296 70"/>
+            <path class="link-line" d="M118 128L232 180"/>
+            <path class="link-line" d="M118 128L322 182"/>
+            <path class="link-line" d="M118 128L412 182"/>
+            <path class="link-line" d="M322 80L339 176"/>
+          </g>
+          <g class="arm-marker arm-infantry" fill="#2a2f24" stroke="#d6d2bf" stroke-width="1.8">
+            <rect x="232" y="176" width="34" height="22" rx="1"/>
+            <path d="M232 176L266 198M266 176L232 198" fill="none"/>
+            <path d="M249 198V212" fill="none" stroke-opacity="0.6"/>
+          </g>
+          <g class="arm-marker arm-armor" fill="#2a2f24" stroke="#d6d2bf" stroke-width="1.8">
+            <rect x="322" y="176" width="34" height="22" rx="1"/>
+            <rect x="328" y="181" width="22" height="12" rx="6" fill="none"/>
+            <path d="M339 198V212" fill="none" stroke-opacity="0.6"/>
+          </g>
+          <g class="arm-marker arm-artillery" fill="#2a2f24" stroke="#d6d2bf" stroke-width="1.8">
+            <rect x="412" y="176" width="34" height="22" rx="1"/>
+            <circle cx="429" cy="187" r="3.5" fill="#d6d2bf" stroke="none"/>
+            <path d="M429 198V212" fill="none" stroke-opacity="0.6"/>
+          </g>
+          <text x="249" y="240" fill="#d6d2bf" text-anchor="middle">INFANTRY</text>
+          <text x="339" y="240" fill="#d6d2bf" text-anchor="middle">ARMOR</text>
+          <text x="429" y="240" fill="#d6d2bf" text-anchor="middle">ARTILLERY</text>
+          <text x="96" y="240" fill="#d6d2bf" text-anchor="middle">SIGNAL</text>
+          <g id="dust" fill="none" stroke="#e3b65a" stroke-width="1.6">
+            <circle class="dust-puff" cx="58" cy="70" r="6"/>
+            <circle class="dust-puff" cx="58" cy="70" r="10"/>
+            <circle class="dust-puff" cx="58" cy="70" r="14"/>
+          </g>
+          <g id="tank">
+            <ellipse cx="96" cy="216" rx="72" ry="4" fill="#1b1f16" fill-opacity="0.5"/>
+            <g id="tank-gun">
+              <rect x="55" y="74" width="6" height="84" rx="1" fill="#a3a98c" stroke="#1f231b" stroke-width="1.5"/>
+              <path d="M54 102H62M54 130H62" stroke="#1f231b" stroke-width="1.5"/>
+              <path d="M44 76H72M48 70L58 64L68 70" fill="none" stroke="#d6d2bf" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <circle cx="58" cy="64" r="2.5" fill="#e3b65a"/>
+            </g>
+            <rect x="30" y="156" width="98" height="44" rx="3" fill="#6b7a45" stroke="#1f231b" stroke-width="2"/>
+            <path d="M44 166H74V192H44Z" fill="#586636" stroke="#1f231b" stroke-width="1.5"/>
+            <path d="M86 170H118M86 178H118M86 186H118" stroke="#1f231b" stroke-opacity="0.45" stroke-width="1.5"/>
+            <path d="M130 200V182L138 172H160L168 186V200Z" fill="#586636" stroke="#1f231b" stroke-width="2" stroke-linejoin="round"/>
+            <path d="M141 176H158L163 186H141Z" fill="#c9d3c0" fill-opacity="0.55"/>
+            <rect x="24" y="198" width="146" height="9" rx="3" fill="#2a2f24" stroke="#1f231b" stroke-width="2"/>
+            <circle cx="50" cy="206" r="9" fill="#2a2f24" stroke="#1f231b" stroke-width="2"/><circle cx="50" cy="206" r="3.5" fill="#8a8f78"/>
+            <circle cx="80" cy="206" r="9" fill="#2a2f24" stroke="#1f231b" stroke-width="2"/><circle cx="80" cy="206" r="3.5" fill="#8a8f78"/>
+            <circle cx="148" cy="206" r="9" fill="#2a2f24" stroke="#1f231b" stroke-width="2"/><circle cx="148" cy="206" r="3.5" fill="#8a8f78"/>
+            <path d="M108 156V146" stroke="#1f231b" stroke-width="3"/>
+            <g transform="translate(110 144) rotate(-30)">
+              <path d="M-15 0A15 7 0 0 0 15 0Z" fill="#d9dcc8" stroke="#1f231b" stroke-width="2" stroke-linejoin="round"/>
+              <path d="M0 2V-13" stroke="#1f231b" stroke-width="1.8"/>
+              <circle cx="0" cy="-14" r="2.2" fill="#1f231b"/>
+            </g>
+            <g id="muzzle-blast" fill="none" stroke="#ffd166" stroke-width="2" stroke-linecap="round">
+              <path d="M124 122A9 9 0 0 1 128 131"/>
+              <path d="M128 115A16 16 0 0 1 135 131"/>
+              <path d="M132 108A23 23 0 0 1 142 131"/>
+            </g>
+          </g>
+          <g id="objective" fill="none" stroke="currentColor" stroke-width="1.5">
+            <circle class="impact-pulse" cx="320" cy="66" r="20" stroke-width="2.5"/>
+            <rect x="298" y="54" width="44" height="26" rx="2" fill="#2a2f24" stroke-width="2"/>
+            <path d="M298 80V92" stroke-width="2"/>
+            <path d="M306 61H334M306 67H334M306 73H326" stroke-opacity="0.55"/>
+            <text x="320" y="47" fill="currentColor" stroke="none" text-anchor="middle">COMMANDER</text>
+          </g>
+          <g id="shell">
+            <rect x="-5" y="-4" width="10" height="8" rx="2" fill="#ffd166" stroke="#1f231b" stroke-width="1.5"/>
+          </g>
+        </svg>
+      </div>
+    </div>
+  </header>
+
+  <main id="app" class="app">
+    <noscript><p class="noscript">This quiz needs JavaScript enabled in your browser.</p></noscript>
+
+    <section id="view-landing" class="view view-landing" aria-labelledby="landing-heading">
+      <h2 id="landing-heading">Before you begin</h2>
+      <div class="field">
+        <label class="field-label" for="student-name">Your name or username</label>
+        <p id="student-name-help" class="field-help">2 to 40 characters. Shown on your results and in the class score history.</p>
+        <input type="text" id="student-name" class="text-input" name="student-name" autocomplete="name" maxlength="40" spellcheck="false" required aria-describedby="student-name-help student-name-message">
+        <p id="student-name-message" class="field-message" aria-live="polite" hidden></p>
+      </div>
+      <div id="study-warning" class="study-warning">
+        <p><strong>This mock examination is a practice aid only.</strong> It cannot replace studying the complete Signal Support in Combined Arms Operations lesson, and repeated attempts are not a substitute for that study.</p>
+        <label class="study-confirm" for="study-confirm">
+          <input type="checkbox" id="study-confirm" autocomplete="off">
+          <span>I understand that I must study the complete lesson and not rely only on this mock examination.</span>
+        </label>
+      </div>
+
+      <h2 id="difficulty-heading" tabindex="-1">Choose a difficulty</h2>
+      <p id="mode-hint" class="mode-hint" role="status" aria-live="polite">To enable the difficulty buttons, enter your name and check the study confirmation above.</p>
+      <div id="mode-list" class="mode-list" role="group" aria-labelledby="difficulty-heading">
+        <button type="button" id="mode-easy" class="mode-button mode-easy" disabled aria-describedby="mode-hint">
+          <span class="mode-name">Easy</span>
+          <span class="mode-desc">25 questions. One primary doctrinal judgment in each situation.</span>
+        </button>
+        <button type="button" id="mode-medium" class="mode-button mode-medium" disabled aria-describedby="mode-hint">
+          <span class="mode-name">Medium</span>
+          <span class="mode-desc">25 questions. Compare, diagnose, and choose among plausible options.</span>
+        </button>
+        <button type="button" id="mode-hard" class="mode-button mode-hard" disabled aria-describedby="mode-hint">
+          <span class="mode-name">Hard</span>
+          <span class="mode-desc">25 questions. Integrate several concepts under competing constraints.</span>
+        </button>
+      </div>
+      <p class="privacy-note">No login and no tracking. Your answers stay in this browser tab and are cleared when you refresh or close it. When your instructor has set up the class history, finishing an attempt sends your name, difficulty, score, percentage, mastery band and finish time to the class history sheet. Your individual answers are never sent.</p>
+    </section>
+
+    <section id="view-quiz" class="view view-quiz" hidden aria-labelledby="quiz-heading">
+      <div class="quiz-head">
+        <h2 id="quiz-heading">Examination</h2>
+        <p id="quiz-student" class="student-line"></p>
+      </div>
+      <div class="quiz-progress">
+        <label for="quiz-progress">Answers checked</label>
+        <progress id="quiz-progress" max="25" value="0"></progress>
+        <p id="quiz-status" class="quiz-status" role="status" aria-live="polite"></p>
+      </div>
+      <h3 id="question-heading" class="question-heading" tabindex="-1">Question</h3>
+      <p id="question-category" class="question-category"></p>
+      <div id="question-area" class="question-area"></div>
+      <p id="validation-message" class="validation-message" role="alert" tabindex="-1" hidden></p>
+      <div id="answer-feedback" class="feedback" tabindex="-1" hidden></div>
+      <div class="quiz-actions">
+        <button type="button" id="btn-prev" class="secondary">Previous question</button>
+        <button type="button" id="btn-check">Check answer</button>
+        <button type="button" id="btn-next">Next question</button>
+        <button type="button" id="btn-finish">View results</button>
+      </div>
+    </section>
+
+    <section id="view-results" class="view view-results" hidden aria-labelledby="results-heading">
+      <h2 id="results-heading" tabindex="-1">Results</h2>
+      <div id="results-summary" class="results-summary"></div>
+      <div id="history-save" class="history-save">
+        <p id="history-save-message" role="status" aria-live="polite"></p>
+        <button type="button" id="btn-history-retry" class="secondary compact" hidden>Retry saving</button>
+      </div>
+      <p class="results-reminder">This score is practice feedback only. Study the complete lesson; do not rely only on this mock examination.</p>
+      <div class="results-actions">
+        <button type="button" id="btn-print" class="secondary">Print or save results</button>
+        <button type="button" id="btn-retake">Retake same difficulty</button>
+        <button type="button" id="btn-choose" class="secondary">Choose another difficulty</button>
+        <button type="button" id="btn-history" class="secondary">View class score history</button>
+      </div>
+      <section class="results-topics" aria-labelledby="topics-heading">
+        <h3 id="topics-heading">Topic analysis</h3>
+        <div class="table-wrap">
+          <table id="results-categories" class="topic-table">
+            <caption>Correct answers by primary topic. A topic is a strength at 75% or higher and a gap below 75%; the line on each bar marks 75%.</caption>
+            <thead>
+              <tr><th scope="col">Topic</th><th scope="col">Correct</th><th scope="col">Result</th></tr>
+            </thead>
+            <tbody id="results-categories-body"></tbody>
+          </table>
+        </div>
+        <div class="topic-lists">
+          <div>
+            <h4>Strengths</h4>
+            <ul id="results-strengths" class="results-strengths"></ul>
+          </div>
+          <div>
+            <h4>Gaps to review in the lesson</h4>
+            <ul id="results-gaps" class="results-gaps"></ul>
+          </div>
+        </div>
+      </section>
+      <section class="results-review" aria-labelledby="review-heading">
+        <h3 id="review-heading">Full answer review</h3>
+        <ol id="results-review" class="review-list"></ol>
+      </section>
+    </section>
+
+    <section id="view-unavailable" class="view view-unavailable" hidden aria-labelledby="unavailable-heading">
+      <h2 id="unavailable-heading" tabindex="-1">Quiz unavailable</h2>
+      <p>The quiz is unavailable because its question data could not be loaded or did not pass validation, so no examination can start. Please try again later or inform your instructor.</p>
+    </section>
+
+    <section id="history-panel" class="history-panel" aria-labelledby="history-heading" hidden>
+      <div class="section-head">
+        <h2 id="history-heading" tabindex="-1">Class score history</h2>
+        <button type="button" id="btn-history-refresh" class="secondary compact">Refresh</button>
+      </div>
+      <p class="section-intro">Recent attempts from your class, newest first. Rows with your name are marked “You”.</p>
+      <div class="history-filters" role="group" aria-label="Show attempts for">
+        <button type="button" id="history-filter-all" class="filter-button" aria-pressed="true">All</button>
+        <button type="button" id="history-filter-easy" class="filter-button" aria-pressed="false">Easy</button>
+        <button type="button" id="history-filter-medium" class="filter-button" aria-pressed="false">Medium</button>
+        <button type="button" id="history-filter-hard" class="filter-button" aria-pressed="false">Hard</button>
+      </div>
+      <p id="history-status" class="history-status" role="status" aria-live="polite"></p>
+      <div id="history-table-wrap" class="table-wrap" hidden>
+        <table id="history-table" class="history-table">
+          <caption class="sr-only">Recent class attempts, newest first</caption>
+          <thead>
+            <tr><th scope="col">Name</th><th scope="col">Mode</th><th scope="col">Score</th><th scope="col">%</th><th scope="col">Band</th><th scope="col">Date</th></tr>
+          </thead>
+          <tbody id="history-body"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <script type="application/json" id="questions-easy">[{"id":1,"difficulty":"easy","category":"Signal Support Concepts","tags":["signal support to CAO","definitions"],"prompt":"At a task force briefing in Nueva Ecija, the S6 says: \"Our part is to apply our communication services so the infantry, armor, artillery and engineers can coordinate and be employed as one force.\" Which lesson term best names what the S6 is describing?","options":["Signal Operations across the Philippine Army infrastructure","Combined Arms Operations as an approach to warfare","Signal Support Operations as a general provision of services","Signal Support to Combined Arms Operations"],"answer":3,"explanation":"Page 1 defines Signal Support to Combined Arms Operations as the application of signal services to connect and enable coordination among infantry, armor, artillery, engineers and other capabilities. Signal Operations connects the whole Army, Signal Support Operations provides the services in general, and Combined Arms Operations is the integrating approach itself, not the signal contribution to it.","sourceSlides":[1]},{"id":2,"difficulty":"easy","category":"Signal Support Concepts","tags":["signal support operations","services"],"prompt":"During an operation in Bicol, four requests reach the brigade staff on the same morning. Which request falls within Signal Support Operations as the lesson defines it?","options":["Synchronize the infantry and armor movement toward the objective","Restore a command post network that a power surge disrupted","Align the artillery fire plan with the maneuver timeline","Distribute relief goods to evacuees with partner agencies"],"answer":1,"explanation":"Page 1 lists the Signal Support Operations services: command and control communication, cyberspace operations and electronic warfare, signal repair and maintenance, and signal recovery and restoration. Restoring a disrupted network is signal recovery and restoration; synchronizing maneuver and fires is Combined Arms Operations, and distributing relief goods is not a signal service.","sourceSlides":[1]},{"id":3,"difficulty":"easy","category":"Operational Environment","tags":["archipelagic","operational environment"],"prompt":"A task force must coordinate battalions on three islands separated by straits, and the few available ferries limit how quickly troops and supplies can move between them. Which characteristic of the Philippine Army operational environment is chiefly shaping this problem?","options":["Universally Connected","Archipelagic","Collective Environment","Highly Urbanized"],"answer":1,"explanation":"Page 2: the archipelagic characteristic means islands, mountains, coastlines and bodies of water affect maneuver, transportation, logistics and coordination of forces. Separated islands and limited sea movement are exactly that effect.","sourceSlides":[2]},{"id":4,"difficulty":"easy","category":"Operational Environment","tags":["physical environment","signal environments"],"prompt":"A battalion's radios test serviceable, yet a ridge blocks coverage to a company in a valley and typhoon winds have damaged the antennas at the hilltop relay. Which signal operational environment is chiefly causing the communication problem?","options":["The electromagnetic spectrum environment","The physical environment","The cyberspace environment","The collective environment"],"answer":1,"explanation":"Page 3: the physical environment (islands, mountains, forests, buildings and weather) affects coverage, signal propagation, equipment placement and the survival of communication assets. The spectrum environment concerns interference and electronic warfare, the cyberspace environment concerns networks, configurations and users, and \"collective environment\" is a Combined Arms characteristic, not a signal environment.","sourceSlides":[3]},{"id":5,"difficulty":"easy","category":"Operational Environment","tags":["METT-TC","PMESII-PT"],"prompt":"The S2 has described the province in terms of its political, economic, social, information and infrastructure conditions. The S3 now analyzes the assigned task, the enemy, terrain and weather, troops and support available, time available and civil considerations. Which framework is the S3 applying?","options":["METT-TC","PMESII-PT","METAL","Connect, Sustain, and Recover"],"answer":0,"explanation":"Page 3: commanders analyze conditions using PMESII-PT (Political, Military, Economic, Social, Information, Infrastructure, Physical Environment, Time) and METT-TC (Mission, Enemy, Terrain and Weather, Troops and Support Available, Time Available, Civil Considerations). The S3's factors are METT-TC; METAL guides the Signal Estimate.","sourceSlides":[3]},{"id":6,"difficulty":"easy","category":"Roles of Signal Support","tags":["recovery and restoration","roles"],"prompt":"A typhoon damages the communication facilities of a brigade headquarters in Eastern Samar, and the commander can no longer reach the battalions. Which Signal Support role addresses this situation most directly?","options":["Recover and restore disrupted communication","Keep equipment ready through repair and maintenance","Support cyberspace operations and electronic warfare","Enable command and control through fixed systems"],"answer":0,"explanation":"Page 5: Signal Support must restore communication when equipment, facilities or networks are damaged by disasters, attacks or other incidents; the typhoon example is given under this role. Repair and maintenance keeps equipment serviceable during operations, which is not the same as restoring damaged facilities.","sourceSlides":[5]},{"id":7,"difficulty":"easy","category":"Roles of Signal Support","tags":["HADR","disaster-response net"],"prompt":"An Army battalion joins flood relief in Pampanga and must coordinate with local government responders and NGOs. How should Signal Support arrange that coordination?","options":["Admit the civilian responders to the secured operational net so all share one net","Avoid any radio contact with civilian responders to protect communication security","Set up a disaster-response radio net separate from the Army's secured operational net","Route civilian coordination through a partner nation's sovereign network"],"answer":2,"explanation":"Pages 5 and 19: in humanitarian assistance and disaster response, Signal Support connects military units and other response organizations, and the disaster-response radio net remains separate from the Army's secured operational net. Refusing contact defeats the role; merging nets breaks the required separation.","sourceSlides":[5,19]},{"id":8,"difficulty":"easy","category":"Roles of Signal Support","tags":["electronic warfare","EW objectives"],"prompt":"A brigade training plan organizes Signal Support's electronic warfare contribution around \"intercept, decrypt and exploit.\" A reviewer says the plan should follow the lesson's broad objectives instead. Which set should the plan use?","options":["Connect, sustain, and recover","Confidentiality, integrity, and availability","Primary, alternate, and contingency","Support, attack, and protect"],"answer":3,"explanation":"Pages 4 and 8 state the three broad electronic warfare objectives: support, attack and protect. Connect-Sustain-Recover is the Signal Support framework, confidentiality-integrity-availability are the security concerns, and PACE describes backup arrangements.","sourceSlides":[4,8]},{"id":9,"difficulty":"easy","category":"Systems and Technologies","tags":["DBTOCS","fixed communication"],"prompt":"A brigade headquarters displaces to a field location but still needs the Army telephone, information-system and coordination services it uses in garrison. Which system is designed to extend fixed communication services to the brigade headquarters?","options":["The Bonifacio Telephone Exchange (BONTEX)","The Combat Net Radio (CNR) networks","The Deployable Brigade TOC System (DBTOCS)","The Radio over IP (ROIP) links"],"answer":2,"explanation":"Page 6: DBTOCS extends fixed communication services to brigade headquarters. BONTEX connects Army telephone systems with higher headquarters, CNR provides radio networks for operating units, and ROIP links radio communications through IP networks.","sourceSlides":[6]},{"id":10,"difficulty":"easy","category":"Systems and Technologies","tags":["tactical communication","voice"],"prompt":"A company commander has new data terminals and proposes dropping voice nets from the company's tactical communication plan for the coming field operation. Which response is most consistent with the lesson?","options":["Drop the voice nets, since data terminals now replace voice both on the move and at the halt","Keep voice only at the halt, since data terminals are meant to serve units on the move","Move the voice traffic to PANET, since it is the secured and managed Army intranet","Keep the voice nets, since voice remains the foundation of tactical communication"],"answer":3,"explanation":"Page 6: tactical communication systems support communication both on the move and on the halt, and voice communication remains the foundation of tactical communication. PANET is a fixed, managed intranet, not a tactical voice net.","sourceSlides":[6]},{"id":11,"difficulty":"easy","category":"Systems and Technologies","tags":["cyberspace domains","logical domain"],"prompt":"A headquarters computer is powered on, its cables and switch work, and an authorized clerk is logged in, yet it cannot exchange reports because the firewall configuration is wrong. In which cyberspace domain does the fault lie?","options":["The logical domain","The physical domain","The people domain","The electromagnetic domain"],"answer":0,"explanation":"Pages 7-8: the logical domain covers network topology, firewall configurations and internet protocols. The physical domain is the equipment, the people domain is the users; the handout's own example notes a computer needs correct configurations, not just power and users.","sourceSlides":[7,8]},{"id":12,"difficulty":"easy","category":"Principles of Signal Support","tags":["redundant","principles"],"prompt":"A battalion planner insists that every company keep a second, independent transmission path and that key data be replicated at the alternate command post. Which principle of Signal Support is the planner applying?","options":["Scalable","Interoperable","Redundant","Operations Focused"],"answer":2,"explanation":"Page 10: redundancy means additional communication paths and backup capabilities, including multiple transmission paths, backups, self-healing strategies and data replication.","sourceSlides":[10]},{"id":13,"difficulty":"easy","category":"Principles of Signal Support","tags":["scalable","principles"],"prompt":"Mid-operation, a battalion receives an attached tank company, an artillery battery and an engineer platoon. They already use compatible radios and the same SOPs, but the battalion net was sized only for its organic companies. Which principle is now most at issue?","options":["Scalable","Interoperable","Redundant","Secured"],"answer":0,"explanation":"Page 10: scalability means Signal Support can expand and be tailored to the size, situation and phases of an operation; the handout's example is a battalion receiving armor, artillery and engineer elements. Compatibility is already stated, so interoperability is not the gap.","sourceSlides":[10]},{"id":14,"difficulty":"easy","category":"Principles of Signal Support","tags":["secured","COMSEC"],"prompt":"A platoon leader wants to send movement orders and unit locations through a popular commercial messaging app because it is fast and everyone already has it. Which principle of Signal Support is most directly at stake?","options":["Operations Focused","Scalable","Interoperable","Secured"],"answer":3,"explanation":"Page 10: the Secured principle requires compliance with COMSEC regardless of the technology used, and a convenient platform must be assessed against those requirements before it carries operational information such as orders and locations.","sourceSlides":[10]},{"id":15,"difficulty":"easy","category":"Tactical Considerations","tags":["METAL","troops"],"prompt":"While preparing the Signal Estimate, the S6 finds that the battalion has enough radios, but two of its four radio operators are away on schooling and no technician is assigned. Under which METAL factor does this finding belong?","options":["Logistical Requirements","Troops","Mission","Area of Operations"],"answer":1,"explanation":"Page 11: under METAL, Troops means available personnel and their readiness to provide Signal Support, such as whether trained operators and technicians are available. Logistical Requirements covers power, replacement equipment, repair support and transportation.","sourceSlides":[11]},{"id":16,"difficulty":"easy","category":"Tactical Considerations","tags":["coverage","site survey"],"prompt":"A radio check from the command post succeeds, but the company will operate behind a mountain where the link has proven unreliable. What should the signal planner do?","options":["Survey the area to find coverage gaps where the troops will operate and arrange support","Issue the company extra radios of the same type so that more sets keep the link alive","Accept the command post radio check, since it has already proved that the link works","Switch the company to a higher frequency category of radio, whatever the coverage"],"answer":0,"explanation":"Page 12: planners must consider terrain and propagation, conduct site survey or reconnaissance to determine coverage and gaps, and verify coverage against where troops will actually operate. Page 7 warns not to select a radio on frequency category alone.","sourceSlides":[7,12]},{"id":17,"difficulty":"easy","category":"Tactical Considerations","tags":["priorities","commander's guidance"],"prompt":"Communication requirements for an attack exceed what the battalion can support at the same time. The commander's guidance names the main effort's links as the priority. How should the signal planner allocate the limited resources?","options":["Support the requests in the order they were received until the resources run out","Spread the resources evenly so that every request receives at least partial support","Recommend support to the main effort's links first, as the commander's guidance directs","Favor the links that are easiest to install, whatever role they play in the mission"],"answer":2,"explanation":"Page 13: planners compare requirements with resources and establish priorities based on supportability and importance to mission accomplishment; the commander's guidance determines the required means and priorities. Lesson: allocate limited resources according to mission importance.","sourceSlides":[13]},{"id":18,"difficulty":"easy","category":"Signal Estimate and Requirements","tags":["signal estimate","planning sequence"],"prompt":"A newly assigned S6 starts choosing radios and network equipment for an operation before the mission has been analyzed. According to the lesson, what should come first?","options":["Publish the C4S Annex, then adjust it as the mission is analyzed","Understand the mission and prepare the Signal Estimate using METAL","Prepare the PACE plan, since communication failure is very likely","Request extra funds, so equipment shortages do not limit the plan"],"answer":1,"explanation":"Page 14: the first planning step is to understand the mission and prepare the Signal Estimate, using METAL, before selecting communication systems. Page 9 adds: determine the communication requirement first, then select and support the systems.","sourceSlides":[9,14]},{"id":19,"difficulty":"easy","category":"Signal Estimate and Requirements","tags":["TLP","MDMP"],"prompt":"A platoon leader preparing a short-notice patrol must work out how the platoon will communicate. Alongside which process does the lesson place signal planning for a small unit like this?","options":["Military Decision-Making Process (MDMP)","PMESII-PT analysis","Communication-Electronics Standing Instructions (CESI)","Troop Leading Procedures (TLP)"],"answer":3,"explanation":"Page 14: the Signal Estimate and Signal Planning Process work alongside the Military Decision-Making Process and, for small units, Troop Leading Procedures.","sourceSlides":[14]},{"id":20,"difficulty":"easy","category":"Signal Estimate and Requirements","tags":["engineers","communication requirements"],"prompt":"For a combined arms attack, the S6 lists who must communicate and why. For the engineer platoon that will breach an obstacle belt, which communication requirement should the plan provide?","options":["Exchange support requests through established procedures","Receive supply, maintenance, and transportation requirements","Coordinate mobility support with the maneuver units","Direct the force and coordinate with higher and adjacent units"],"answer":2,"explanation":"Page 15: the illustrative requirement for engineers is to coordinate mobility support with maneuver units. The other options are the listed requirements of artillery, logistics elements and headquarters.","sourceSlides":[15]},{"id":21,"difficulty":"easy","category":"Priorities, Continuity and Coordination","tags":["PACE","alternate"],"prompt":"A company's primary VHF net fails because of an equipment fault; there is no jamming. Its plan lists a planned substitute for primary failure, an option for a specified disruption such as jamming, and a last-resort means. Which arrangement should the company use now?","options":["The Contingency arrangement","The Emergency arrangement","The Alternate arrangement","The Primary net on a new frequency"],"answer":2,"explanation":"Page 16: Alternate is the planned substitute if the primary arrangement fails; Contingency is an additional option for a specified disruption or situation; Emergency is used when other planned options cannot meet the urgent requirement.","sourceSlides":[16]},{"id":22,"difficulty":"easy","category":"Priorities, Continuity and Coordination","tags":["coordination","plan changes"],"prompt":"After the signal plan is approved, the operations staff moves a battalion's assembly area ten kilometers north. What should the signal planner do?","options":["Check whether the coverage and support arrangements must change as well","Keep the approved plan unchanged, since it has already been approved","Wait for the battalion to report a loss of communication, then react","Ask the operations staff to keep units inside the original coverage"],"answer":0,"explanation":"Page 17: if the operations staff changes a unit's movement or location, the signal planner checks whether coverage and support arrangements must also change. Page 16 says coordination confirms the plan supports the operational concept and phases, so signal follows the operation, not the reverse.","sourceSlides":[16,17]},{"id":23,"difficulty":"easy","category":"Security Measures and Protocols","tags":["integrity","security concerns"],"prompt":"An intruder alters a transmitted instruction so that a company receives the wrong rendezvous grid, although the message was neither disclosed nor delayed. Which security concern was violated?","options":["Confidentiality","Integrity","Availability","Interoperability"],"answer":1,"explanation":"Page 17: integrity means information remains accurate and is protected from unauthorized alteration; the handout's example is a transmitted instruction changed by an intruder. Confidentiality concerns disclosure and availability concerns access when needed.","sourceSlides":[17]},{"id":24,"difficulty":"easy","category":"Security Measures and Protocols","tags":["CESI","CEOI"],"prompt":"A new radio operator says: \"I have the specific operating instructions for this operation, but I do not understand how they are meant to be used.\" Which document is designed to explain that?","options":["The Communication-Electronics Operating Instructions (CEOI)","The unit Standard Operating Procedures (SOPs)","The Signal Estimate prepared with METAL","The Communication-Electronics Standing Instructions (CESI)"],"answer":3,"explanation":"Page 18: the CEOI provides specific operating instructions (\"what to do\"), while the CESI explains the use of the CEOI (\"how to do\"). SOPs provide established unit procedures for signal systems and activities.","sourceSlides":[18]},{"id":25,"difficulty":"easy","category":"Security Measures and Protocols","tags":["compromise","frequencies"],"prompt":"During a firefight in the Sulu area, a patrol loses a radio that may now be in enemy hands. What should the patrol do?","options":["Report the loss and follow the unit's prescribed compromise procedures","Have the operator pick a new frequency and tell only his own squad","Keep the current frequencies, since only one radio was lost","Shift the patrol to personal cell phones for the rest of the mission"],"answer":0,"explanation":"Page 19: lost or captured equipment can compromise radio frequencies; personnel report the incident and follow the prescribed compromise procedures, and authorized personnel determine and coordinate the changes, because a compromise can affect several units.","sourceSlides":[19]}]</script>
+  <script type="application/json" id="questions-medium">[{"id":1,"difficulty":"medium","category":"Signal Support Concepts","tags":["signal operations","signal support operations","relationships"],"prompt":"In a staff seminar, a lieutenant claims that Signal Operations, Signal Support Operations and Signal Support to Combined Arms Operations (CAO) are three names for the same activity. Which statement best corrects him?","options":["Signal Operations applies the services to the combat arms; Signal Support Operations connects the Army; Signal Support to CAO sustains the services","Signal Operations connects the Army; Signal Support Operations provides and sustains the services; Signal Support to CAO applies them to the combat arms","Signal Operations connects the Army; Signal Support Operations applies the services to the combat arms; Signal Support to CAO provides and sustains them","Signal Operations provides and sustains the services; Signal Support Operations connects the Army; Signal Support to CAO applies them to the combat arms"],"answer":1,"explanation":"Page 1: Signal Operations connects the Army; Signal Support Operations provides and sustains the services behind that connection (C2 communication, cyberspace operations and EW, repair and maintenance, recovery and restoration); Signal Support to CAO applies those services so the different combat arms can work together.","sourceSlides":[1]},{"id":2,"difficulty":"medium","category":"Signal Support Concepts","tags":["combined arms operations","definition"],"prompt":"In an exercise in Fort Magsaysay, infantry, armor and artillery are all present, but each attacks on its own timeline and axis with no coordination, and the enemy defeats them one at a time. Which element of Combined Arms Operations was missing?","options":["Nothing was missing, since several arms took part in the same exercise","A larger number of a single arm, enough to overwhelm the defending enemy","Synchronized, integrated use of the arms for mutually complementary effects","A signal unit to command the arms, since combined arms is a signal activity"],"answer":2,"explanation":"Page 1: Combined Arms Operations integrates the different capabilities of an army to achieve mutually complementary effects; it is the synchronization, integration and seamless execution of Army capabilities. Mere presence of several arms is not combined arms.","sourceSlides":[1]},{"id":3,"difficulty":"medium","category":"Operational Environment","tags":["universally connected","vulnerabilities"],"prompt":"A brigade's interconnected networks give every unit a common operational picture, but the staff warns that this dependence also gives an adversary openings. Which operational environment characteristic captures both points?","options":["Highly Urbanized","Collective Environment","Universally Connected","Politically, Economically, and Socially Constrained"],"answer":2,"explanation":"Page 2: in a universally connected environment, interconnected communication and information networks enable mission command and a common operational picture, while creating vulnerabilities. The other characteristics concern urban terrain, cooperation with other organizations, and national and resource constraints.","sourceSlides":[2]},{"id":4,"difficulty":"medium","category":"Operational Environment","tags":["urban operation","signal environments"],"prompt":"In an urban operation in a Mindanao city, buildings degrade radio coverage, the brigade relies on its network to exchange reports, and maneuver units, fire support and headquarters talk by radio. Which matching of these effects to signal environments is correct?","options":["Buildings: electromagnetic spectrum; report network: physical; radio links: cyberspace","Buildings: physical; report network: electromagnetic spectrum; radio links: cyberspace","Buildings: cyberspace; report network: cyberspace; radio links: physical","Buildings: physical; report network: cyberspace; radio links: electromagnetic spectrum"],"answer":3,"explanation":"Page 3 gives this urban example: buildings affect movement and radio coverage (physical environment), networks support information exchange (cyberspace environment), and the electromagnetic spectrum enables radio communication between maneuver units, fire support and headquarters.","sourceSlides":[3]},{"id":5,"difficulty":"medium","category":"Operational Environment","tags":["highly urbanized","perspectives"],"prompt":"Two officers analyze the same city. One assesses how buildings, civilians and protected facilities restrict movement and firepower; the other assesses how buildings and weather affect radio coverage and how interference threatens wireless links. How should the commander treat the two analyses?","options":["As a conflict, so the commander should keep the force-employment view and drop the other","As duplication, since both describe the Highly Urbanized characteristic in exactly the same way","As misplaced, since signal analysis belongs in PMESII-PT and not in operational planning","As complementary views: one of force employment, the other of where signal systems operate"],"answer":3,"explanation":"Page 2: Combined Arms Operations considers the conditions affecting the employment of forces (here, Highly Urbanized), while Signal considers the environments in which communication, electronics and cyber systems operate (page 3). The two perspectives describe the same environment from different angles.","sourceSlides":[2,3]},{"id":6,"difficulty":"medium","category":"Roles of Signal Support","tags":["coalition operations","sovereign network"],"prompt":"During a bilateral exercise, a partner nation's battalion asks to plug its radios and computers directly into PANET and have the Philippine Army manage both networks as one. Which response matches the lesson?","options":["Establish links with the partner while each nation keeps its own sovereign network","Merge both networks under Army control, since joint operations need one common network","Refuse every link with the partner, since PANET is a secured Army intranet","Put the partner on the disaster-response net, since that net is unclassified"],"answer":0,"explanation":"Page 5: in coalition operations Signal Support establishes communication links with partner nations while maintaining each nation's sovereign network. Joint operations concern the Army and other major services, and the disaster-response net is for HADR.","sourceSlides":[5]},{"id":7,"difficulty":"medium","category":"Roles of Signal Support","tags":["cyberspace operations","responsibilities"],"prompt":"A brigade forms a cyber working group and must assign roles as the lesson describes them. Which assignment is accurate?","options":["Network operations to the Signal Corps; defensive cyber operations and active defense to intelligence units acting alone","Active defense to the Signal Corps acting alone; network operations and defensive cyber operations jointly with CMO units","Network operations and defensive cyber operations to the Signal Corps; active defense jointly with intelligence and CMO units","All three activities jointly with intelligence and CMO units, so none is a Signal Corps responsibility"],"answer":2,"explanation":"Page 4: Information Network Operations and Defensive Cyber Operations are Signal Corps responsibilities, and Active Defense Operations is described as a collaborative effort with intelligence and civil-military operations units.","sourceSlides":[4]},{"id":8,"difficulty":"medium","category":"Roles of Signal Support","tags":["SMMART","maintenance"],"prompt":"Radios in several companies keep failing because of operator handling errors and small faults; no facility or network has been damaged. Which Signal Support response fits best?","options":["Send a SMMART to inspect and repair the sets and to give the units refresher training","Deploy a restoration team to rebuild the companies' command and control communications","Call in the CSIRT to investigate each of the radio faults as a cybersecurity incident","Swap the faulty radios for commercial cell phones until replacement sets arrive"],"answer":0,"explanation":"Pages 5 and 8: Signal Mobile Maintenance and Repair Teams visit units to inspect equipment, conduct repairs and provide refresher training. Restoration teams restore damaged command centers, communications and networks, and CSIRT responds to cybersecurity incidents.","sourceSlides":[5,8]},{"id":9,"difficulty":"medium","category":"Systems and Technologies","tags":["radio selection","frequency category"],"prompt":"An S6 recommends UHF radios for an operation in mountainous Abra solely because UHF is \"the highest frequency band we have.\" What is the best critique of this recommendation?","options":["None is needed; the highest band always gives the best range, clarity, and security for a mission","HF should be chosen instead, as the lowest band always covers mountains, valleys, and forests best","Band choice does not matter, as Combat Net Radio adapts each set to the terrain on its own","Frequency category alone is no basis; check coverage, terrain, interoperability, and security needs"],"answer":3,"explanation":"Page 7: do not select a radio based only on its frequency category; determine whether the available equipment can meet the mission's coverage, terrain, interoperability and security requirements. Both \"always higher\" and \"always lower\" rules contradict that guidance.","sourceSlides":[7]},{"id":10,"difficulty":"medium","category":"Systems and Technologies","tags":["special purpose communication","COMSEC"],"prompt":"A battalion staff wants to use an authorized commercial videoconference platform for (a) its weekly administrative meeting and (b) a briefing on tomorrow's convoy routes and timings. Which assessment matches the lesson?","options":["(a) and (b) are both acceptable, as an authorized platform is therefore suitable for every kind of traffic","(a) can suit routine use under COMSEC policy; (b) is sensitive and needs the appropriate authorized means","(a) and (b) are both prohibited, as commercial platforms may never be used by Army units for any purpose","(b) is preferred over (a), as operational briefings need the fastest platform that the staff has available"],"answer":1,"explanation":"Page 7: special purpose systems such as commercial videoconferencing supplement fixed and tactical systems for routine or administrative communication under COMSEC policy, and the convenience of a platform does not automatically make it suitable for sensitive operational information. Page 18 adds that such devices must be used prudently and according to existing COMSEC policies.","sourceSlides":[7,18]},{"id":11,"difficulty":"medium","category":"Systems and Technologies","tags":["ROIP","VoIP"],"prompt":"A brigade wants its field radio nets to reach a distant headquarters through the Army's IP network, so that radio traffic travels over the network links. Which technology fits this requirement?","options":["Radio over IP (ROIP)","Voice over Internet Protocol (VoIP)","Bonifacio Telephone Exchange (BONTEX)","Ad hoc network technologies"],"answer":0,"explanation":"Page 7: Radio over IP links radio communications through IP networks. Page 6: VoIP carries telephone conversations through an IP network and BONTEX connects Army telephone systems with higher headquarters; ad hoc technologies support tactical networking among participating equipment.","sourceSlides":[6,7]},{"id":12,"difficulty":"medium","category":"Principles of Signal Support","tags":["redundant","shared infrastructure"],"prompt":"A battalion command post has three laptops and two VoIP phones, all working over the same single microwave link to brigade. The commander calls this \"redundant communication.\" What is the best assessment?","options":["It is redundant, because five separate devices are available at the command post","It is not redundant, because every device depends on the same single link to brigade","It is scalable rather than redundant, because more devices can be added to the link later","It is redundant, because laptops and phones are two different kinds of communication system"],"answer":1,"explanation":"Page 10: redundancy must address the connection, not merely the number of devices; several devices depending on the same failed infrastructure may all lose service. Redundancy means additional communication paths and backup capabilities.","sourceSlides":[10]},{"id":13,"difficulty":"medium","category":"Principles of Signal Support","tags":["interoperable","engineers"],"prompt":"Infantry finds a minefield and calls for engineer support. Both units own serviceable radios, but their systems and operating arrangements do not allow them to exchange the request. Which principle failed, and what is the remedy?","options":["Interoperable: ensure the units' systems and operating arrangements allow the exchange","Redundant: issue the infantry a second radio so that a backup set can carry the call","Scalable: enlarge the battalion network so that the engineers fit in as additional users","Operations Focused: extend the radios' battery life to cover the full mission duration"],"answer":0,"explanation":"Pages 9-10: interoperability means systems are compatible and follow standardized arrangements; owning radios alone does not guarantee it. The handout's example is infantry needing engineer support through a workable means of exchanging the request.","sourceSlides":[9,10]},{"id":14,"difficulty":"medium","category":"Principles of Signal Support","tags":["operations focused","power and duration"],"prompt":"A plan gives an infantry-armor team radios whose batteries last about eight hours, but the operation will run three days with no recharging or resupply planned. Which principle does the plan most directly violate?","options":["Scalable","Interoperable","Secured","Operations Focused"],"answer":3,"explanation":"Page 9: under the Operations Focused principle, Signal Support is designed around what the force must accomplish, and signal personnel must consider the duration of operations, equipment readiness, power requirements and connectivity, so communication never limits the mission.","sourceSlides":[9]},{"id":15,"difficulty":"medium","category":"Tactical Considerations","tags":["facility location","projected operations"],"prompt":"An S6 chooses a relay site that covers the companies' current positions well, but no vehicle can reach it and it will fall far behind the units once the planned advance begins. Which location considerations were neglected?","options":["Terrain and signal propagation","Positions of supported and support units","None, since good current coverage decides","Accessibility and projected operations"],"answer":3,"explanation":"Page 12: facility locations must consider unit positions, terrain and propagation, projected operations, accessibility, and administrative and logistical requirements. Current coverage is good here, but the site is unreachable and will not suit the advance; a location good at the start may become unsuitable later.","sourceSlides":[12]},{"id":16,"difficulty":"medium","category":"Tactical Considerations","tags":["communication failure","hostile disruption"],"prompt":"Which pairing of threats and planned provisions matches the lesson's requirements for preparing against communication failure and hostile disruption?","options":["Lost links: monitoring and response; EW: backups and repair; cyberattack: change procedures; compromised frequencies: jamming protection","Lost links: change procedures; EW: monitoring and response; cyberattack: jamming protection; compromised frequencies: backups and repair","Lost links: jamming protection; EW: change procedures; cyberattack: backups and repair; compromised frequencies: monitoring and response","Lost links: backups and repair; EW: jamming protection; cyberattack: monitoring and response; compromised frequencies: change procedures"],"answer":3,"explanation":"Page 13: interrupted connectivity calls for redundant communication, repair, replacement and technical support; electronic warfare for protection against jamming and interception; cyberattacks for network monitoring and incident response; compromised frequencies for procedures to change frequencies.","sourceSlides":[13]},{"id":17,"difficulty":"medium","category":"Tactical Considerations","tags":["METAL","enemy","area of operations"],"prompt":"During the Signal Estimate for a mountain operation, the S6 learns that the enemy has been intercepting and jamming friendly radios, and that ridgelines and long distances will separate the companies. Under which METAL factors should these two findings be recorded?","options":["Enemy for the interception and jamming; Area of Operations for the ridgelines and distances","Mission for the interception and jamming; Troops for the ridgelines and distances","Logistical Requirements for the interception; Enemy for the ridgelines and distances","Area of Operations for both findings, since both describe conditions that exist in the area"],"answer":0,"explanation":"Page 11: Enemy covers enemy signal capabilities and threats such as interception, jamming or cyberattacks; Area of Operations covers conditions like mountains, forests, buildings and distances that affect coverage.","sourceSlides":[11]},{"id":18,"difficulty":"medium","category":"Signal Estimate and Requirements","tags":["communication requirements","commander's intent"],"prompt":"An S6's draft \"requirements\" section is only a list of radio models and network terminals by unit. What does the lesson say is missing?","options":["Nothing, since a list of systems by unit already states the communication requirement","Who must exchange what information and when, drawn from the commander's intent","Only the frequencies, since requirements are complete once frequencies are assigned","The PACE plan, since a PACE plan replaces a separate statement of requirements"],"answer":1,"explanation":"Page 15: translate the commander's intent into specific communication requirements; for each requirement identify who must exchange information, what information they need, and when they need the connection. Systems are selected afterward to meet those requirements.","sourceSlides":[15]},{"id":19,"difficulty":"medium","category":"Signal Estimate and Requirements","tags":["guidance sources","coordination"],"prompt":"An S6 built the brigade's communication requirements after speaking only with the commander. Which sources should the S6 also have drawn guidance from?","options":["Other staff, higher, subordinate and adjacent units, SOPs, and the CEOI and CESI","Only higher headquarters, the logistics staff, and maintenance teams, as they control resources","Only subordinate units, their operators, and the CSIRT, as they run and defend the systems","No others, since the commander's intent alone already defines every requirement"],"answer":0,"explanation":"Pages 13 and 15: the planner obtains guidance from the commander, other staff members, higher headquarters, subordinate units and adjacent units, SOPs, and the CEOI and CESI. Lesson: check connections across the force, including supporting and adjacent units.","sourceSlides":[13,15]},{"id":20,"difficulty":"medium","category":"Signal Estimate and Requirements","tags":["available resources","shortfall"],"prompt":"An operation needs eight communication links, but three of the radios meant for them are unserviceable. What is the planner's next step according to the lesson?","options":["Plan all eight links anyway, since unserviceable radios are often repaired in time for use","Drop the three links at once, since the unit can only plan with what works","Identify the shortfall and decide whether repair, reallocation or more support is needed","Ask to cancel that phase of the operation, since a shortfall makes it unsupportable"],"answer":2,"explanation":"Page 15: compare requirements with what the unit can actually provide; when some equipment is unserviceable, the planner identifies the shortfall and determines whether repair, reallocation or additional support is needed.","sourceSlides":[15]},{"id":21,"difficulty":"medium","category":"Priorities, Continuity and Coordination","tags":["PACE","backup procedures"],"prompt":"A battalion's plan lists only a Primary and an Emergency arrangement, and companies are told that backup details \"will be issued once the primary fails.\" What is the best assessment?","options":["It is acceptable, since the Emergency arrangement already covers every kind of failure","Its only gap is the missing Alternate; issuing backup details after the failure is fine","It lacks Alternate and Contingency arrangements, and units must know backups before failure","Its only gap is security; backup details should be withheld from units for COMSEC"],"answer":2,"explanation":"Page 16: continuity planning requires Primary, Alternate, Contingency and Emergency plans, and units must know the backup procedures before communication fails (page 13: prepare recovery arrangements before the disruption occurs).","sourceSlides":[13,16]},{"id":22,"difficulty":"medium","category":"Priorities, Continuity and Coordination","tags":["coordination","tentative plan"],"prompt":"Before finalizing the tentative signal plan, the planner coordinates with four parties. Which pairing of party and what to confirm matches the lesson?","options":["Higher headquarters: that the plan supports the operational concept, priorities, and phases","Logistics and maintenance personnel: resources for sustained operation, repair, and replacement","Adjacent units: their requirements, capabilities, operating arrangements, and responsibilities","Commander and operations staff: the required connections and the support available"],"answer":1,"explanation":"Page 16: logistics and maintenance personnel confirm resources for sustained operation, repair and replacement. The concept, priorities and phases are confirmed with the commander and operations staff; required connections and available support with higher headquarters; requirements and capabilities with subordinate and supporting units; adjacent units confirm necessary coordination links.","sourceSlides":[16]},{"id":23,"difficulty":"medium","category":"Security Measures and Protocols","tags":["availability","confidentiality"],"prompt":"In one week, (1) jamming stops a headquarters from reaching its subordinate units during an operation, and (2) an unauthorized person obtains a copy of an operational report. Which security concerns were affected, in that order?","options":["Confidentiality, then availability","Confidentiality, then integrity","Availability, then confidentiality","Availability, then integrity"],"answer":2,"explanation":"Page 17: availability means authorized users can access information and systems when needed (headquarters must be able to communicate with subordinates); confidentiality means information remains accessible only to authorized persons (an unauthorized person must not obtain an operational report).","sourceSlides":[17]},{"id":24,"difficulty":"medium","category":"Security Measures and Protocols","tags":["CSIRT","incident response"],"prompt":"Staff notice suspicious activity on a headquarters network. One officer suggests that the section's computer-savvy lieutenant quietly investigate and fix it to avoid an embarrassing report. What should happen instead?","options":["Let the lieutenant fix it quietly, then file a report only if data turns out to be lost","Report through prescribed channels so first responders and the CSIRT can investigate and act","Disconnect the headquarters from PANET for the rest of the operation, without reporting","Ignore it until the network fails, since activity alone is not yet an incident worth reporting"],"answer":1,"explanation":"Page 18: signal plans include procedures for employing first responders and the CSIRT, which maintains an incident response plan, investigates incidents, manages updates, remediates problems and recommends improvements. Personnel report suspicious activity through the prescribed channels so authorized responders can act.","sourceSlides":[18]},{"id":25,"difficulty":"medium","category":"Security Measures and Protocols","tags":["jamming","electronic protection"],"prompt":"Interference disrupts a platoon's radio link during an operation. The platoon leader proposes inventing a new frequency and calling procedure on the spot. What should the platoon do?","options":["Adopt the improvised frequency and procedure, as speed matters most under jamming","Apply the authorized protection and backup procedures set for its equipment and unit","Keep transmitting on the jammed frequency, as moving would confuse adjacent units","Move all traffic to a commercial messaging app, as apps are not affected by jamming"],"answer":1,"explanation":"Page 19: if interference disrupts a radio connection, personnel use the authorized protection and backup procedures established for their equipment and unit; protection capabilities such as frequency hopping must be planned and coordinated. Page 18: personnel use the applicable instructions rather than invent their own procedures.","sourceSlides":[18,19]}]</script>
+  <script type="application/json" id="questions-hard">[{"id":1,"difficulty":"hard","category":"Signal Support Concepts","tags":["signal operations","storage and security"],"prompt":"A brigade has excellent connectivity among all its units, but its staff store reports on an open shared drive and pass them without protection. A reviewer argues that Signal Operations is satisfied because \"every unit is connected.\" Which rebuttal is best supported by the lesson?","options":["Storage and security belong to intelligence units, so the reviewer is right that connecting every unit is enough","Signal Operations also enables the storage and security of information, so connection alone is not enough","Signal Operations covers only tactical radios, so the open shared drive is an administrative matter outside it","Security applies only to commercial devices under COMSEC, so Army-owned drives and links need no protection"],"answer":1,"explanation":"Page 1: Signal Operations connects Army units and enables the transmission, storage and security of information; Signal Support Operations includes cyberspace operations and electronic warfare. Page 4: establishing communication is only part of the task; the information and systems must also be protected. Page 17: COMSEC governs all communication services regardless of technology.","sourceSlides":[1,4,17]},{"id":2,"difficulty":"hard","category":"Signal Support Concepts","tags":["command and control","signal support role"],"prompt":"After a failed attack, an after-action review blames the S6 because the commander's orders were unclear, although every net worked and delivered them on time. Which judgment fits the lesson?","options":["Signal Support exercises command and control on the commander's behalf, so the S6 answers for the content of every order sent","Combined Arms Operations is defined as a signal activity, so the S6 owns any failure to synchronize the attacking arms in time","Signal Support provides the connection the commander uses for C2, so a working net that carried unclear orders is no signal failure","Signal Support Operations includes C2 communication, so every command and control failure is by definition a signal failure"],"answer":2,"explanation":"Page 4: command and control means the commander directs the forces under their authority; Signal Support provides the communication systems, and the commander uses that connection to exercise C2. Page 5 calls Signal Support to Combined Arms Operations an application of that C2 role, and page 1 defines CAO as an approach to warfare, not a signal activity.","sourceSlides":[1,4,5]},{"id":3,"difficulty":"hard","category":"Operational Environment","tags":["disaster-prone","collective environment","culturally diverse"],"prompt":"A brigade in Mindanao is ordered into typhoon relief in an indigenous community while keeping its security tasks, working alongside government agencies and NGOs. Which assessment of the operational environment is fully accurate?","options":["Disaster-Prone: relief taken on alongside warfighting; Collective: work with agencies and NGOs; Culturally Diverse: customs shape legitimacy and support","Disaster-Prone: warfighting tasks set aside during relief; Collective: work with agencies and NGOs; Culturally Diverse: customs shape legitimacy and support","Disaster-Prone: relief taken on alongside warfighting; Collective: only partner militaries take part; Culturally Diverse: customs shape legitimacy and support","Disaster-Prone: relief taken on alongside warfighting; Collective: work with agencies and NGOs; Culturally Diverse: customs affect only maneuver routes"],"answer":0,"explanation":"Pages 2-3: Disaster-Prone means units undertake disaster response and humanitarian assistance alongside their warfighting responsibilities; Collective Environment means operations involve government agencies, NGOs and partner nations; Culturally Diverse means traditions, beliefs and practices must be considered to establish legitimacy and gain public support.","sourceSlides":[2,3]},{"id":4,"difficulty":"hard","category":"Operational Environment","tags":["PMESII-PT","METT-TC","METAL"],"prompt":"Three staff products are prepared for one operation: (1) a broad description of the province across political, military, economic, social, information, infrastructure, physical and time factors; (2) a mission-specific analysis including troops and support available and civil considerations; (3) a Signal Estimate of enemy signal threats, signal personnel, area conditions and logistical needs. Which frameworks were used, in order?","options":["METT-TC, PMESII-PT, METAL","PMESII-PT, METAL, METT-TC","METAL, METT-TC, PMESII-PT","PMESII-PT, METT-TC, METAL"],"answer":3,"explanation":"Page 3: PMESII-PT covers Political, Military, Economic, Social, Information, Infrastructure, Physical Environment and Time; METT-TC covers Mission, Enemy, Terrain and Weather, Troops and Support Available, Time Available and Civil Considerations. Page 11: METAL (Mission, Enemy, Troops, Area of Operations, Logistical Requirements) guides the Signal Estimate.","sourceSlides":[3,11]},{"id":5,"difficulty":"hard","category":"Operational Environment","tags":["politically constrained","available resources"],"prompt":"A battalion requests an expensive new satellite system for an upcoming operation, but higher headquarters denies it because of national priorities and budget limits. Which planning response best fits the lesson?","options":["Treat the denial as temporary, plan as if the system will still arrive, and correct the plan once the operation has begun","Treat personal cell phones as the replacement, since they cost nothing, need no installation, and are already in every unit","Treat low-priority units as unsupported, drop their links quietly, and avoid telling the commander about the resulting gap","Treat it as a resource constraint, plan with what is actually available and ready, and set priorities by the commander's guidance"],"answer":3,"explanation":"Page 2: in a politically, economically and socially constrained environment, national priorities and resource limitations influence capability development and operations. Page 12: plan with the resources actually available and ready. Page 13: compare requirements with resources and set priorities under the commander's guidance.","sourceSlides":[2,12,13]},{"id":6,"difficulty":"hard","category":"Roles of Signal Support","tags":["connect sustain recover","capabilities"],"prompt":"A brigade deploying to Eastern Visayas in typhoon season lists its Signal Support capabilities under the Connect, Sustain, and Recover framework. Which allocation is correct?","options":["Connect: tactical radios and network links; Sustain: maintenance, power and SMMART visits; Recover: restoration teams and CSIRT","Connect: restoration teams and CSIRT; Sustain: tactical radios and network links; Recover: maintenance, power and SMMART visits","Connect: tactical radios and network links; Sustain: restoration teams and CSIRT; Recover: maintenance, power and SMMART visits","Connect: maintenance, power and SMMART visits; Sustain: tactical radios and network links; Recover: restoration teams and CSIRT"],"answer":0,"explanation":"Pages 5-6: Connect establishes connectivity among units, Sustain maintains it throughout operations, and Recover repairs and restores communication when attacked or destroyed. Pages 8-9 ask, for Sustain, what personnel, power, maintenance, protection and support keep the systems operating, and for Recover, what alternate connections and restoration capabilities exist (deployable restoration teams, CSIRT).","sourceSlides":[5,6,8,9]},{"id":7,"difficulty":"hard","category":"Roles of Signal Support","tags":["cyberspace operations","protect the network"],"prompt":"With the brigade network fully established, the S6 moves the network-defense personnel to installation tasks, saying \"connection is our mission; defense comes later if something happens.\" Which assessment is best supported?","options":["Sound: network defense belongs to intelligence units alone, so signal personnel are better used for installation work","Unsound only if no CSIRT exists; a CSIRT on call makes standing network defense by signal personnel unnecessary","Unsound: Signal Support also operates and defends networks, and its role includes protecting the systems it establishes","Unsound only because the EW objective \"protect\" needs the personnel more; the network itself needs no cyber defense"],"answer":2,"explanation":"Page 3: Signal Support enables communication and also protects, maintains and restores the systems used for it. Page 4: in cyberspace its roles include operating Army information networks and defending them; Defensive Cyber Operations is a Signal Corps responsibility; establishing communication is only part of the task.","sourceSlides":[3,4]},{"id":8,"difficulty":"hard","category":"Roles of Signal Support","tags":["joint","coalition","HADR"],"prompt":"After an earthquake in Central Luzon, an Army brigade works with Philippine Navy units, a partner nation's relief contingent and civilian responders at once. Which set of signal arrangements matches the lesson?","options":["Navy: links with sovereign networks kept; partner: compatible equipment, coordinated operators; civilians: a separate unclassified relief net","Navy: compatible equipment, coordinated operators; partner: one merged network; civilians: access to the secured operational net","Navy: a separate unclassified relief net; partner: links with sovereign networks kept; civilians: compatible equipment, coordinated operators","Navy: compatible equipment, coordinated operators; partner: links with sovereign networks kept; civilians: a separate unclassified relief net"],"answer":3,"explanation":"Page 5: joint operations need interoperability with other major services through compatible equipment and coordinated radio operators; coalition operations establish links with partner nations while keeping each nation's sovereign network; in HADR the disaster-response net stays separate from the secured operational net. Page 19 adds that the disaster-response net is unclassified and unsecured.","sourceSlides":[5,19]},{"id":9,"difficulty":"hard","category":"Systems and Technologies","tags":["determining systems","field unit"],"prompt":"A battalion will deploy to a remote island. Its companies must communicate while moving, its command post must reach Army information systems, and the services must stay available for weeks. Which package best meets these requirements?","options":["PANET terminals for moving companies, combat net radio at the command post, and CSIRT support for radio repairs","Commercial phones for all operational traffic, BONTEX at the command post, and electro-optic repair support","Ad hoc links for the command post only, VoIP phones for the moving companies, and no planned maintenance support","Tactical radios on combat nets for movement, a PANET link at the command post, and maintenance and restoration support"],"answer":3,"explanation":"Page 9: a field unit may need tactical radios during movement, a connection to Army information networks at its command post, and maintenance and restoration support; determine the requirement first. Page 6: PANET is the secured Army intranet; tactical systems support communication on the move. Page 8: CSIRT handles cybersecurity incidents and the electro-optic facility supports night fighting systems.","sourceSlides":[6,8,9]},{"id":10,"difficulty":"hard","category":"Systems and Technologies","tags":["support capabilities","SMTF","electro-optic"],"prompt":"A planner lists SMTF, SMMART, the DND-AFP electro-optic repair facility and CSIRT under \"communication technologies to be employed.\" A reviewer flags the list. Which correction is right?","options":["Keep them as listed, since they are electromagnetic spectrum technologies that carry the brigade's traffic","Reclassify them as support capabilities and organizations that keep the technologies available","Remove them from the plan, since maintenance and incident response play no part in signal planning","Reclassify them as fixed communication systems, since each one is a facility that connects headquarters"],"answer":1,"explanation":"Page 8: SMTF conduct radio repairs, SMMART visit units to inspect, repair and train, the DND-AFP electro-optic facility supports repair of night fighting systems, and CSIRT responds to cybersecurity incidents. These are support capabilities and organizations rather than communication technologies; they keep the technologies available.","sourceSlides":[8]},{"id":11,"difficulty":"hard","category":"Systems and Technologies","tags":["electromagnetic spectrum","people domain"],"prompt":"A battalion's radios and network devices are all serviceable, yet (a) hostile interference disrupts its radio nets and (b) unauthorized users are found on its network. Which analysis is most accurate?","options":["Serviceable gear does ensure a link: (a) is a physical-domain issue of terrain; (b) is a logical-domain issue of firewalls","Serviceable gear does not ensure a link: (a) is a logical-domain issue of protocols; (b) is a spectrum issue of interference","Serviceable gear does not ensure a link: (a) is a spectrum issue as hostile forces use it too; (b) is a people-domain issue","Serviceable gear does ensure a link: (a) and (b) are both solved by issuing more radios and computers"],"answer":2,"explanation":"Page 8: equipment availability alone does not guarantee a working connection; friendly and hostile forces both use the spectrum, so interference or hostile activity can disrupt serviceable radios. Pages 7-8: the people domain is the individuals interacting with Army networks, and the handout notes a computer also needs authorized users.","sourceSlides":[7,8]},{"id":12,"difficulty":"hard","category":"Principles of Signal Support","tags":["five principles","plan review"],"prompt":"A combined arms signal plan (1) supports movement and the full duration; (2) lets infantry, armor, artillery, engineers and HQ all exchange information; (3) runs every link over one path with no backup; (4) is sized for today's battalion with no provision for the units attached in phase 2; and (5) sends orders through an unauthorized commercial app. Which principles does it fail?","options":["Operations Focused, Interoperable, and Secured","Redundant, Interoperable, and Scalable","Redundant, Scalable, and Secured","Operations Focused, Redundant, and Scalable"],"answer":2,"explanation":"Page 11 gives the check for each principle: Operations Focused (supports mission, movement and duration), Interoperable (all elements exchange information), Redundant (communication continues if a connection fails), Scalable (adapts when units are added), Secured (complies with COMSEC). Items 3, 4 and 5 fail the last three checks.","sourceSlides":[11]},{"id":13,"difficulty":"hard","category":"Principles of Signal Support","tags":["redundant","secured","trade-off"],"prompt":"The only alternate path available for a company's operational traffic is an unauthorized commercial messaging app. The S3 wants it listed as the Alternate so the plan \"has redundancy.\" What should the signal planner recommend?","options":["Accept the app as the alternate because redundancy outweighs security whenever the primary path has failed","Accept the app for orders and locations only because that traffic is brief and is sent infrequently","Reject the app because backups must meet COMSEC, and report the shortfall if no authorized path exists","Leave the plan with no alternate because an empty backup line is safer than reporting a shortfall"],"answer":2,"explanation":"Page 19: backup arrangements must also comply with applicable security requirements. Page 10: a working connection must also meet the required security standard. Page 13: when requirements exceed capability, the planner identifies the shortfall and recommends priorities under the commander's guidance.","sourceSlides":[10,13,19]},{"id":14,"difficulty":"hard","category":"Principles of Signal Support","tags":["scalable","phases"],"prompt":"An operation has three phases: preparation at home station, movement by sea to another island, and a deployed phase in which artillery and engineer elements are attached. How should Signal Support apply the Scalable principle?","options":["Provide C2 networks at home station, en route and deployed, tailoring them as the force and phases change","Provide C2 networks for the deployed phase only, since home station and sea movement are admin and transport matters","Provide one fixed network size for all phases, since stability, simplicity, and predictability are what it requires","Provide more sets of the same devices in each phase, since added devices satisfy the scalability principle"],"answer":0,"explanation":"Page 10: scalability means Signal Support can expand and be tailored to the size, situation and phases of an operation, with networks that support command and control at home station, en route and in deployed environments, including when elements are added or the force reorganizes.","sourceSlides":[10]},{"id":15,"difficulty":"hard","category":"Tactical Considerations","tags":["usable capability","equipment personnel funds"],"prompt":"For a two-week operation, a battalion reports: 10 radios on hand, of which 3 are unserviceable and 2 others are committed to another unit; 6 trained operators, of whom 2 are deploying elsewhere; funds for installing a relay, but none for its operation or maintenance. What is the soundest planning conclusion?","options":["10 radios, 6 operators, and adequate funds, since the relay installation is paid for","5 radios, 4 operators, and a shortfall in operation and maintenance funds to report","5 radios, 6 operators, and adequate funds, since the operators are already trained","7 radios, 4 operators, and a shortfall in operation and maintenance funds to report"],"answer":1,"explanation":"Page 12: check what equipment is on hand, serviceable, unserviceable, committed or in reserve; personnel staffing, shortages and deployments; and funds for installation, operation, maintenance and administration. Count usable capability, not just equipment: 10 - 3 - 2 = 5 radios, 6 - 2 = 4 operators, and unfunded operation and maintenance is a shortfall.","sourceSlides":[12]},{"id":16,"difficulty":"hard","category":"Tactical Considerations","tags":["disruption","PACE","CSIRT","compromise"],"prompt":"In one night, (1) enemy jamming hits a battalion's primary net, (2) suspicious intrusion is detected on the TOC network, and (3) a squad radio is captured. Which set of responses reflects what the plan should already provide?","options":["(1) planned protection and PACE backups; (2) report, then coordinated frequency change; (3) monitoring, first responders and CSIRT","(1) planned protection and PACE backups; (2) monitoring, first responders and CSIRT; (3) report, then coordinated frequency change","(1) monitoring, first responders and CSIRT; (2) planned protection and PACE backups; (3) report, then coordinated frequency change","(1) planned protection and PACE backups; (2) monitoring, first responders and CSIRT; (3) the squad picks its own new frequency"],"answer":1,"explanation":"Page 13: plans provide protection against jamming and interception, network monitoring and incident response for cyberattacks, procedures for changing compromised frequencies, and PACE plans. Pages 18-19: first responders and CSIRT handle network incidents; lost or captured equipment is reported and changes are coordinated by authorized personnel because several units may be affected.","sourceSlides":[13,18,19]},{"id":17,"difficulty":"hard","category":"Tactical Considerations","tags":["three questions","tactical considerations"],"prompt":"A tactical signal plan connects every element at the start of a five-day operation, but provides no power resupply or maintenance support and no PACE or alternate routing. How does it fare against the lesson's three questions?","options":["Connect: yes; Sustain: yes, as all elements start connected; Recover: no, as no backup is prepared","Connect: no, as power is missing; Sustain: no, as maintenance is missing; Recover: yes, as repair can follow","Connect: yes; Sustain: no, as power and maintenance are missing; Recover: no, as no backup is prepared","Connect: yes; Sustain: no, as power and maintenance are missing; Recover: yes, as backups can be issued later"],"answer":2,"explanation":"Page 14: Can we connect the force? Can we sustain that connection as the situation changes? Can we recover it after disruption? Page 11: having radios is only the beginning. Page 9: sustaining needs personnel, power, maintenance, protection and support. Page 13: PACE and alternate routing must be prepared before the disruption occurs.","sourceSlides":[9,11,13,14]},{"id":18,"difficulty":"hard","category":"Signal Estimate and Requirements","tags":["signal estimate","update"],"prompt":"A Signal Estimate was written only for a combined arms force's assembly area. During the operation the force moves to a distant objective, an attached company arrives, and enemy jamming is reported. Which statement best describes what the estimate should have done and must do now?","options":["Cover the destination only, since the assembly area, the route, and the move are short and secure","Cover preparation, movement and the destination, then be updated as the situation changes","Stay unchanged once approved, since revising it would confuse the supported units","Update only the Troops factor, since the new company is the only real change"],"answer":1,"explanation":"Page 15: in the assembly-area example the estimate must consider communication during preparation, movement and operations at the destination, and it is updated as the situation changes. Page 12: the Signal Estimate must be updated when the situation changes; here Troops and Enemy both changed.","sourceSlides":[12,15]},{"id":19,"difficulty":"hard","category":"Signal Estimate and Requirements","tags":["communication requirements","combined arms elements"],"prompt":"The commander's intent: an infantry-armor team seizes a bridge, artillery supports the attack, and engineers clear obstacles on the approach. Which set of requirements correctly translates this intent for the four elements?","options":["Infantry: coordinate movement with armor and HQ; armor: send SITREPs, get instructions; artillery: mobility support with maneuver; engineers: support requests by set procedure","Infantry: send SITREPs, get instructions; armor: support requests by set procedure; artillery: coordinate movement with infantry and HQ; engineers: mobility support with maneuver","Infantry: send SITREPs, get instructions; armor: coordinate movement with infantry and HQ; artillery: mobility support with maneuver; engineers: support requests by set procedure","Infantry: send SITREPs, get instructions; armor: coordinate movement with infantry and HQ; artillery: support requests by set procedure; engineers: mobility support with maneuver"],"answer":3,"explanation":"Page 15 table: infantry submit situation reports and receive instructions; armor coordinate movement with infantry and headquarters; artillery exchange support requests and coordination information through established procedures; engineers coordinate mobility support with maneuver units.","sourceSlides":[15]},{"id":20,"difficulty":"hard","category":"Signal Estimate and Requirements","tags":["MDMP","signal estimate timing"],"prompt":"A battalion begins the Military Decision-Making Process for an attack. The S6 announces he will start the Signal Estimate after the operations order is published and pick the systems then. What is the best critique?","options":["Signal planning runs alongside MDMP, so the estimate must be developed during it","None; signal planning properly begins only after the operations order is published","None; signal sections follow Troop Leading Procedures, not MDMP, so his timing is fine","Only his sequence is wrong; he should pick the systems first, then do the estimate"],"answer":0,"explanation":"Page 14: the Signal Estimate and Signal Planning Process work alongside MDMP (and TLP for small units), and the first step is to understand the mission and prepare the Signal Estimate before selecting systems. Page 9: determine the communication requirement first, then select systems.","sourceSlides":[9,14]},{"id":21,"difficulty":"hard","category":"Priorities, Continuity and Coordination","tags":["tentative plan","C4S annex","publish"],"prompt":"A planner has requirements, resources, priorities and PACE arrangements in hand. What remains before and after the order is issued?","options":["Send the PACE as a separate memo, skip coordination since units get the order, and file the estimate as final","Coordinate only with higher headquarters, let adjacent units make their own links, and publish it by voice only","Publish the requirements list as the annex, leave locations and security to operators, and freeze the plan","Combine them into one plan, confirm units can use it, publish it as the C4S Annex, and keep the estimate updated"],"answer":3,"explanation":"Pages 16-17: the tentative plan brings requirements, resources, priorities and recovery arrangements into one plan covering resource allocation, facility locations, security, interconnections and alternate routing; coordination confirms units understand and can use it; the approved arrangements are published as the Signal Plan or C4S Annex with diagrams, instructions, appendices and tabs, and the estimate is updated as conditions change.","sourceSlides":[16,17]},{"id":22,"difficulty":"hard","category":"Priorities, Continuity and Coordination","tags":["PACE","definitions"],"prompt":"A company's draft PACE reads: Primary, the combat net radio; Alternate, \"used only if jamming occurs\"; Contingency, \"the substitute whenever the primary fails\"; Emergency, \"the normal daily reporting means.\" Which correction is right?","options":["Alternate is the substitute if primary fails, Contingency is for a set disruption, Emergency for urgent unmet needs","Only Emergency is wrong; it should be the means used whenever the primary fails, with the rest left as written","Only Alternate and Contingency are wrong; swap their labels, and keep Emergency as the normal daily means","Nothing is wrong, since PACE labels are local choices, and a company may assign them in any order it prefers"],"answer":0,"explanation":"Page 16: Primary is the normal arrangement; Alternate is a planned substitute if the primary fails; Contingency is an additional option for a specified disruption or situation; Emergency is the arrangement available when other planned options cannot meet the urgent requirement.","sourceSlides":[16]},{"id":23,"difficulty":"hard","category":"Security Measures and Protocols","tags":["disaster-response net","sensitive information"],"prompt":"During flood relief, an officer wants to pass the route and timings of an armed security escort, under threat from an armed group, over the disaster-response net he shares with civilian responders, because \"everyone is already on it.\" What should be done?","options":["Send the details only by authorized secure means, since the relief net is unclassified and unsecured","Send the escort details over the relief net, since humanitarian operations suspend the COMSEC requirements","Merge the relief net with the secured operational net for a while, so that both groups can share the details","Send the escort details over the relief net in an improvised code, so that the civilians cannot follow them"],"answer":0,"explanation":"Page 19: the disaster-response net is different and separate from the Army's secured operational net and is considered unclassified and unsecured; sensitive operational information must be handled through the appropriate authorized arrangements. Page 18: personnel follow prescribed instructions rather than invent their own procedures.","sourceSlides":[5,18,19]},{"id":24,"difficulty":"hard","category":"Security Measures and Protocols","tags":["frequency hopping","anti-jamming"],"prompt":"Heavy jamming is expected in the coming operation, but only half of the brigade's radios have frequency hopping and anti-jamming capability. How should the signal plan handle electronic protection?","options":["Assume every unit can frequency hop, since the brigade owns radios with that capability and can share them","Give units lacking the capability personal phones as backup, since phones are not affected by the jamming","Plan and coordinate protection per each unit's equipment and procedures, with authorized backups for the rest","Turn off frequency hopping in every unit, since a single common mode makes all of the units interoperable"],"answer":2,"explanation":"Page 19: frequency hopping and anti-jamming capabilities are electronic protection measures, but they must be planned and coordinated and their use depends on available equipment and prescribed procedures; availability is supported by redundancy and backup arrangements, which must also comply with security requirements.","sourceSlides":[13,19]},{"id":25,"difficulty":"hard","category":"Security Measures and Protocols","tags":["security planning","protocols"],"prompt":"A brigade S6 reviews the security section of a signal plan. Which version best meets the lesson's standard for determining security measures and protocols?","options":["It defers security to a COMSEC annex written after the operation, since it slows planning, rehearsal, and movement","It names what to protect, the threats, and the prescribed procedures such as COMSEC, CEOI, CESI and CSIRT use","It protects confidentiality only, since availability and integrity are maintenance, repair, and recovery matters","It lists the threats only, and leaves operators to devise their own procedures, codes, and frequencies in the field"],"answer":1,"explanation":"Page 17: determining security measures means identifying what must be protected, what threats could affect it, and which prescribed procedures personnel must follow; security is included in the signal plan and applied throughout, and covers confidentiality, integrity and availability. Page 18: plans include network monitoring (including mobile ad hoc networks) and procedures for first responders and the CSIRT, and personnel follow SOPs, CEOI and CESI.","sourceSlides":[17,18]}]</script>
+  <script>
+  (function () {
+    'use strict';
+
+    // =======================================================================
+    // CLASS HISTORY CONFIGURATION (the only setting most instructors change)
+    //
+    // Paste the Google Apps Script web app URL (it ends in /exec) between the
+    // quotes, then run `node scripts/build.mjs`. Leave it empty ('') to switch
+    // class history off. Setup steps: apps-script/SETUP.md.
+    //
+    // On finishing an attempt the app sends only the name, difficulty, score,
+    // total, percentage, mastery band and finish time. Answers are never sent.
+    // This URL is the only network address the page ever contacts.
+    // =======================================================================
+    var HISTORY_ENDPOINT = 'https://script.google.com/macros/s/AKfycbwTNNYOiebIGo46PzM3fUA9VT6XnS740D72prOPg-0OJ5Kvg4W8LVl-xJEo_gxImxqnmg/exec';
+    // Most recent attempts requested for the score history table (the sheet caps this at 200).
+    var HISTORY_LIMIT = 100;
+    // Names the score-history tab for this lesson in the shared Google Sheet (see apps-script/Code.gs LESSONS).
+    var HISTORY_LESSON = 'signal';
+
+    var MODES = ['easy', 'medium', 'hard'];
+    var MODE_LABELS = { easy: 'Easy', medium: 'Medium', hard: 'Hard' };
+    var QUESTION_COUNT = 25;
+    var LETTERS = ['A', 'B', 'C', 'D'];
+    var CATEGORY_ORDER = [
+      'Signal Support Concepts',
+      'Operational Environment',
+      'Roles of Signal Support',
+      'Systems and Technologies',
+      'Principles of Signal Support',
+      'Tactical Considerations',
+      'Signal Estimate and Requirements',
+      'Priorities, Continuity and Coordination',
+      'Security Measures and Protocols'
+    ];
+    // A primary topic counts as a strength at or above this percentage, otherwise a gap.
+    var STRENGTH_THRESHOLD = 75;
+    // Mastery bands, checked from the top: the first band whose minimum is met applies.
+    var MASTERY_BANDS = [
+      { min: 90, name: 'Mastery', description: 'Consistent command of the lesson at this difficulty.' },
+      { min: 75, name: 'Proficient', description: 'Solid understanding. Restudy the topics listed as gaps.' },
+      { min: 60, name: 'Developing', description: 'Partial understanding. Restudy the lesson before retaking.' },
+      { min: 0, name: 'Needs review', description: 'Study the complete lesson again before another attempt.' }
+    ];
+
+    // Mirrors validateQuestion in scripts/build.mjs; the verifier checks both agree error-for-error.
+    function validateQuestion(question, expectedDifficulty, expectedId) {
+      if (question === null || typeof question !== 'object' || Array.isArray(question)) {
+        return ['question must be an object'];
+      }
+      var errors = [];
+      if (!Number.isInteger(question.id) || question.id !== expectedId) {
+        errors.push('id must be integer ' + expectedId);
+      }
+      if (question.difficulty !== expectedDifficulty) {
+        errors.push('difficulty must be ' + expectedDifficulty);
+      }
+      ['category', 'prompt', 'explanation'].forEach(function (field) {
+        if (typeof question[field] !== 'string' || !question[field].trim()) {
+          errors.push(field + ' must be a nonempty string');
+        }
+      });
+      if (!Array.isArray(question.tags) || question.tags.some(function (tag) { return typeof tag !== 'string' || !tag.trim(); })) {
+        errors.push('tags must be an array of nonempty strings');
+      }
+      if (!Array.isArray(question.options) || question.options.length !== 4 || question.options.some(function (option) { return typeof option !== 'string' || !option.trim(); })) {
+        errors.push('options must contain four nonempty strings');
+      }
+      if (!Number.isInteger(question.answer) || question.answer < 0 || question.answer > 3) {
+        errors.push('answer must be an integer from 0 to 3');
+      }
+      if (!Array.isArray(question.sourceSlides) || question.sourceSlides.length === 0 || question.sourceSlides.some(function (slide) { return !Number.isInteger(slide) || slide < 1 || slide > 19; })) {
+        errors.push('sourceSlides must contain integers from 1 to 19');
+      }
+      return errors;
+    }
+
+    function validateBanks(banks) {
+      if (banks === null || typeof banks !== 'object') {
+        return { valid: false, errors: ['question banks must be an object'] };
+      }
+      var errors = [];
+      MODES.forEach(function (mode) {
+        var bank = banks[mode];
+        if (!Array.isArray(bank)) {
+          errors.push(mode + ' bank must be an array of ' + QUESTION_COUNT + ' questions');
+          return;
+        }
+        if (bank.length !== QUESTION_COUNT) {
+          errors.push(mode + ' bank must contain exactly ' + QUESTION_COUNT + ' questions (found ' + bank.length + ')');
+        }
+        bank.forEach(function (question, index) {
+          validateQuestion(question, mode, index + 1).forEach(function (error) {
+            errors.push(mode + ' question ' + (index + 1) + ': ' + error);
+          });
+        });
+      });
+      return { valid: errors.length === 0, errors: errors };
+    }
+
+    // Fisher-Yates shuffle of a copy; the source array is never mutated.
+    function shuffleQuestions(bank, random) {
+      if (typeof random !== 'function') random = Math.random;
+      var copy = Array.prototype.slice.call(bank);
+      for (var i = copy.length - 1; i > 0; i--) {
+        var j = Math.min(i, Math.max(0, Math.floor(random() * (i + 1))));
+        var held = copy[i];
+        copy[i] = copy[j];
+        copy[j] = held;
+      }
+      return copy;
+    }
+
+    function createAttempt(mode, banks, random) {
+      if (MODES.indexOf(mode) === -1) throw new Error('Unknown difficulty: ' + mode);
+      var questions = shuffleQuestions(banks[mode], random);
+      return {
+        mode: mode,
+        questions: questions,
+        current: 0,
+        responses: questions.map(function () { return { selected: null, checked: false }; })
+      };
+    }
+
+    function masteryBand(percentage) {
+      for (var i = 0; i < MASTERY_BANDS.length; i++) {
+        if (percentage >= MASTERY_BANDS[i].min) return MASTERY_BANDS[i];
+      }
+      return MASTERY_BANDS[MASTERY_BANDS.length - 1];
+    }
+
+    function computeResults(attempt) {
+      var byCategory = {};
+      var order = CATEGORY_ORDER.slice();
+      var score = 0;
+      var review = attempt.questions.map(function (question, index) {
+        var response = attempt.responses[index];
+        var correct = response.selected === question.answer;
+        if (correct) score++;
+        if (!byCategory[question.category]) {
+          byCategory[question.category] = { category: question.category, correct: 0, total: 0 };
+          if (order.indexOf(question.category) === -1) order.push(question.category);
+        }
+        byCategory[question.category].total++;
+        if (correct) byCategory[question.category].correct++;
+        return { number: index + 1, question: question, selected: response.selected, correct: correct };
+      });
+      var total = attempt.questions.length;
+      var percentage = total ? Math.round((score / total) * 100) : 0;
+      var categories = order.filter(function (name) { return byCategory[name]; }).map(function (name) {
+        var entry = byCategory[name];
+        entry.percentage = Math.round((entry.correct / entry.total) * 100);
+        entry.status = entry.percentage >= STRENGTH_THRESHOLD ? 'Strength' : 'Gap';
+        return entry;
+      });
+      return {
+        mode: attempt.mode,
+        score: score,
+        total: total,
+        percentage: percentage,
+        band: masteryBand(percentage),
+        categories: categories,
+        review: review
+      };
+    }
+
+    function deepFreeze(value) {
+      if (value && typeof value === 'object' && !Object.isFrozen(value)) {
+        Object.freeze(value);
+        Object.keys(value).forEach(function (key) { deepFreeze(value[key]); });
+      }
+      return value;
+    }
+
+    // ----- Student name -----
+
+    var NAME_MIN_LENGTH = 2;
+    var NAME_MAX_LENGTH = 40;
+
+    // Collapses whitespace, turns control and invisible formatting characters into spaces, and drops
+    // leading spreadsheet formula triggers (=, +, -, @) exactly as the class history sheet does.
+    function normalizeName(raw) {
+      return String(raw === null || raw === undefined ? '' : raw)
+        .replace(/[\u0000-\u001F\u007F-\u009F\u200B-\u200F\u2028-\u202E\u2060-\u2064\uFEFF]/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim()
+        .replace(/^[=+\-@\s]+/, '');
+    }
+
+    function validateName(raw) {
+      var name = normalizeName(raw);
+      var length = Array.from(name).length;
+      var message = '';
+      if (!length) message = 'Enter your name or username to continue.';
+      else if (length < NAME_MIN_LENGTH) message = 'Your name must be at least ' + NAME_MIN_LENGTH + ' characters.';
+      else if (length > NAME_MAX_LENGTH) message = 'Your name must be ' + NAME_MAX_LENGTH + ' characters or fewer.';
+      else if (!/[\p{L}\p{N}]/u.test(name)) message = 'Your name must include at least one letter or number.';
+      return { valid: !message, name: message ? '' : name, message: message };
+    }
+
+    // ----- Sound cues (Web Audio only; no audio files) -----
+
+    // Each cue is a list of [frequency Hz, start offset s, duration s, waveform, peak gain, end frequency].
+    // Every cue ends within 400 ms and peaks at a low volume.
+    var SOUND_CUES = {
+      select: [[1320, 0, 0.035, 'triangle', 0.035]],
+      correct: [[659.25, 0, 0.12, 'sine', 0.07], [987.77, 0.1, 0.2, 'sine', 0.07]],
+      incorrect: [[196, 0, 0.26, 'triangle', 0.08, 164.81]],
+      start: [[523.25, 0, 0.09, 'sine', 0.06], [783.99, 0.08, 0.16, 'sine', 0.06]],
+      error: [[392, 0, 0.09, 'sine', 0.05, 330]],
+      'finish-mastery': [[523.25, 0, 0.1, 'sine', 0.06], [659.25, 0.08, 0.1, 'sine', 0.06], [783.99, 0.16, 0.1, 'sine', 0.06], [1046.5, 0.24, 0.16, 'sine', 0.06]],
+      'finish-proficient': [[523.25, 0, 0.1, 'sine', 0.06], [659.25, 0.09, 0.1, 'sine', 0.06], [783.99, 0.18, 0.18, 'sine', 0.06]],
+      'finish-developing': [[523.25, 0, 0.12, 'sine', 0.06], [659.25, 0.11, 0.2, 'sine', 0.06]],
+      'finish-review': [[440, 0, 0.14, 'sine', 0.05], [392, 0.13, 0.22, 'sine', 0.05]]
+    };
+
+    // The AudioContext is created lazily by the first cue, which always runs inside a user gesture.
+    function createWebAudioPlayer() {
+      var context = null;
+      return function (cue) {
+        var notes = SOUND_CUES[cue];
+        var AudioCtor = window.AudioContext || window.webkitAudioContext;
+        if (!notes || typeof AudioCtor !== 'function') return;
+        if (!context) context = new AudioCtor();
+        if (context.state === 'suspended' && typeof context.resume === 'function') context.resume();
+        var now = context.currentTime + 0.01;
+        notes.forEach(function (note) {
+          var start = now + note[1];
+          var end = start + note[2];
+          var oscillator = context.createOscillator();
+          var gain = context.createGain();
+          oscillator.type = note[3];
+          oscillator.frequency.setValueAtTime(note[0], start);
+          if (note[5]) oscillator.frequency.exponentialRampToValueAtTime(note[5], end);
+          gain.gain.setValueAtTime(0.0001, start);
+          gain.gain.exponentialRampToValueAtTime(note[4], start + 0.012);
+          gain.gain.exponentialRampToValueAtTime(0.0001, end);
+          oscillator.connect(gain);
+          gain.connect(context.destination);
+          oscillator.start(start);
+          oscillator.stop(end + 0.02);
+        });
+      };
+    }
+
+    function finishCue(bandName) {
+      return {
+        Mastery: 'finish-mastery',
+        Proficient: 'finish-proficient',
+        Developing: 'finish-developing'
+      }[bandName] || 'finish-review';
+    }
+
+    // ----- State and DOM -----
+
+    var HISTORY_FILTERS = ['all', 'easy', 'medium', 'hard'];
+    var ENDPOINT = String(HISTORY_ENDPOINT || '').trim();
+
+    var state = {
+      available: false,
+      errors: [],
+      banks: null,
+      studyConfirmed: false,
+      studentName: '',
+      nameValid: false,
+      view: 'landing',
+      attempt: null,
+      results: null,
+      submission: null,
+      history: { filter: 'all', status: 'idle', rows: [], request: 0 },
+      soundEnabled: true,
+      soundPlayer: createWebAudioPlayer(),
+      random: Math.random
+    };
+    var defaultSoundPlayer = state.soundPlayer;
+    var pending = [];
+
+    function byId(id) { return document.getElementById(id); }
+
+    var ui = {
+      views: {
+        landing: byId('view-landing'),
+        quiz: byId('view-quiz'),
+        results: byId('view-results'),
+        unavailable: byId('view-unavailable')
+      },
+      nameInput: byId('student-name'),
+      nameMessage: byId('student-name-message'),
+      studyConfirm: byId('study-confirm'),
+      modeHint: byId('mode-hint'),
+      difficultyHeading: byId('difficulty-heading'),
+      unavailableHeading: byId('unavailable-heading'),
+      modeButtons: {
+        easy: byId('mode-easy'),
+        medium: byId('mode-medium'),
+        hard: byId('mode-hard')
+      },
+      soundToggle: byId('btn-sound'),
+      soundState: byId('sound-state'),
+      quizHeading: byId('quiz-heading'),
+      quizStudent: byId('quiz-student'),
+      quizProgress: byId('quiz-progress'),
+      quizStatus: byId('quiz-status'),
+      questionHeading: byId('question-heading'),
+      questionCategory: byId('question-category'),
+      questionArea: byId('question-area'),
+      validation: byId('validation-message'),
+      feedback: byId('answer-feedback'),
+      btnPrev: byId('btn-prev'),
+      btnCheck: byId('btn-check'),
+      btnNext: byId('btn-next'),
+      btnFinish: byId('btn-finish'),
+      resultsHeading: byId('results-heading'),
+      resultsSummary: byId('results-summary'),
+      resultsCategories: byId('results-categories-body'),
+      resultsStrengths: byId('results-strengths'),
+      resultsGaps: byId('results-gaps'),
+      resultsReview: byId('results-review'),
+      saveBox: byId('history-save'),
+      saveMessage: byId('history-save-message'),
+      btnSaveRetry: byId('btn-history-retry'),
+      btnPrint: byId('btn-print'),
+      btnRetake: byId('btn-retake'),
+      btnChoose: byId('btn-choose'),
+      btnHistory: byId('btn-history'),
+      historyPanel: byId('history-panel'),
+      historyHeading: byId('history-heading'),
+      historyRefresh: byId('btn-history-refresh'),
+      historyFilters: {
+        all: byId('history-filter-all'),
+        easy: byId('history-filter-easy'),
+        medium: byId('history-filter-medium'),
+        hard: byId('history-filter-hard')
+      },
+      historyStatus: byId('history-status'),
+      historyTableWrap: byId('history-table-wrap'),
+      historyBody: byId('history-body'),
+      radios: [],
+      options: []
+    };
+
+    // Every node is built with textContent; remote or authored strings never pass through an HTML parser.
+    function make(tag, className, text) {
+      var node = document.createElement(tag);
+      if (className) node.className = className;
+      if (text !== undefined) node.textContent = text;
+      return node;
+    }
+
+    function textNode(text) { return document.createTextNode(text); }
+
+    function iconNode(name) {
+      var icon = make('span', 'icon icon-' + name);
+      icon.setAttribute('aria-hidden', 'true');
+      return icon;
+    }
+
+    function tagNode(kind, icon, text) {
+      var tag = make('span', 'tag tag-' + kind);
+      if (icon) tag.appendChild(iconNode(icon));
+      tag.appendChild(textNode(text));
+      return tag;
+    }
+
+    // Empties a node and appends the given nodes; avoids the Safari 14+ only children-replacement API.
+    function setChildren(node, children) {
+      node.textContent = '';
+      children.forEach(function (child) { node.appendChild(child); });
+    }
+
+    function optionText(question, index) {
+      return LETTERS[index] + '. ' + question.options[index];
+    }
+
+    // Keeps a promise visible to whenSettled() until it finishes (used by the verifier and never rejects).
+    function track(promise) {
+      pending.push(promise);
+      var done = function () {
+        var index = pending.indexOf(promise);
+        if (index !== -1) pending.splice(index, 1);
+      };
+      promise.then(done, done);
+      return promise;
+    }
+
+    function whenSettled() {
+      if (!pending.length) return Promise.resolve();
+      return Promise.all(pending.slice()).then(whenSettled);
+    }
+
+    function showView(name) {
+      state.view = name;
+      Object.keys(ui.views).forEach(function (key) {
+        ui.views[key].hidden = key !== name;
+      });
+      ui.historyPanel.hidden = !(name === 'landing' || name === 'results');
+      // Lets the stylesheet compact the hero outside the landing view.
+      document.body.setAttribute('data-view', name);
+    }
+
+    // Difficulty accent for the page: theme-easy, theme-medium or theme-hard; null clears it.
+    function setTheme(mode) {
+      MODES.forEach(function (key) {
+        document.body.classList.toggle('theme-' + key, key === mode);
+      });
+    }
+
+    function hideValidation() {
+      ui.validation.textContent = '';
+      ui.validation.hidden = true;
+    }
+
+    function showValidation(message) {
+      setChildren(ui.validation, [iconNode('alert'), make('span', null, message)]);
+      ui.validation.hidden = false;
+      ui.validation.focus();
+      playCue('error');
+    }
+
+    function checkedCount(attempt) {
+      return attempt.responses.filter(function (response) { return response.checked; }).length;
+    }
+
+    function firstUncheckedIndex(attempt) {
+      for (var i = 0; i < attempt.responses.length; i++) {
+        if (!attempt.responses[i].checked) return i;
+      }
+      return -1;
+    }
+
+    // ----- Sound -----
+
+    function playCue(cue) {
+      if (!state.soundEnabled || typeof state.soundPlayer !== 'function') return false;
+      try {
+        state.soundPlayer(cue);
+      } catch (error) {
+        // Audio is an enhancement only; a failing audio stack must never interrupt the quiz.
+      }
+      return true;
+    }
+
+    function setSoundEnabled(enabled) {
+      state.soundEnabled = Boolean(enabled);
+      ui.soundToggle.setAttribute('aria-pressed', String(state.soundEnabled));
+      ui.soundState.textContent = state.soundEnabled ? 'On' : 'Off';
+      return state.soundEnabled;
+    }
+
+    // ----- Start gate: a valid name and the study confirmation -----
+
+    function gateOpen() {
+      return state.available && state.studyConfirmed && state.nameValid;
+    }
+
+    function updateGate() {
+      var open = gateOpen();
+      MODES.forEach(function (mode) {
+        ui.modeButtons[mode].disabled = !open;
+      });
+      if (state.available) {
+        var missing = [];
+        if (!state.nameValid) missing.push('enter your name');
+        if (!state.studyConfirmed) missing.push('check the study confirmation');
+        ui.modeHint.textContent = open
+          ? 'Difficulty buttons enabled. Choose Easy, Medium, or Hard to begin.'
+          : 'To enable the difficulty buttons, ' + missing.join(' and ') + ' above.';
+      }
+      return open;
+    }
+
+    function setStudyConfirmed(confirmed) {
+      state.studyConfirmed = Boolean(confirmed) && state.available;
+      ui.studyConfirm.checked = state.studyConfirmed;
+      updateGate();
+      return state.studyConfirmed;
+    }
+
+    function renderNameMessage(result, force) {
+      var show = !result.valid && (force || normalizeName(ui.nameInput.value) !== '');
+      ui.nameInput.setAttribute('aria-invalid', show ? 'true' : 'false');
+      if (show) {
+        setChildren(ui.nameMessage, [iconNode('alert'), make('span', null, result.message)]);
+        ui.nameMessage.hidden = false;
+      } else {
+        ui.nameMessage.textContent = '';
+        ui.nameMessage.hidden = true;
+      }
+    }
+
+    // Validates and stores the student's name; `showMessage` forces the message even for an empty field.
+    function setStudentName(raw, showMessage) {
+      if (!state.available) return false;
+      if (ui.nameInput.value !== String(raw)) ui.nameInput.value = String(raw);
+      var result = validateName(raw);
+      state.nameValid = result.valid;
+      state.studentName = result.name;
+      renderNameMessage(result, Boolean(showMessage));
+      updateGate();
+      if (state.history.status === 'ready') renderHistory();
+      return result.valid;
+    }
+
+    // ----- Quiz flow -----
+
+    function startQuiz(mode) {
+      if (!gateOpen() || MODES.indexOf(mode) === -1) return false;
+      state.attempt = createAttempt(mode, state.banks, state.random);
+      state.attempt.studentName = state.studentName;
+      state.results = null;
+      state.submission = null;
+      setTheme(mode);
+      showView('quiz');
+      renderQuestion();
+      ui.questionHeading.focus();
+      playCue('start');
+      return true;
+    }
+
+    function renderQuestion() {
+      var attempt = state.attempt;
+      var index = attempt.current;
+      var question = attempt.questions[index];
+      var response = attempt.responses[index];
+      var done = checkedCount(attempt);
+      var total = attempt.questions.length;
+
+      ui.quizHeading.textContent = MODE_LABELS[attempt.mode] + ' examination';
+      var student = make('strong', null, attempt.studentName);
+      setChildren(ui.quizStudent, [textNode('Student: '), student]);
+      ui.quizProgress.setAttribute('max', String(total));
+      ui.quizProgress.setAttribute('value', String(done));
+      ui.quizStatus.textContent = 'Question ' + (index + 1) + ' of ' + total + '. ' + done + ' of ' + total + ' answers checked.';
+      ui.questionHeading.textContent = 'Question ' + (index + 1) + ' of ' + total;
+      ui.questionCategory.textContent = 'Topic: ' + question.category;
+
+      var fieldset = make('fieldset', 'question-fieldset');
+      fieldset.id = 'question-fieldset';
+      var legend = make('legend', 'question-prompt', question.prompt);
+      legend.id = 'question-prompt';
+      fieldset.appendChild(legend);
+      ui.options = [];
+      ui.radios = question.options.map(function (option, optionIndex) {
+        var inputId = 'answer-option-' + optionIndex;
+        var label = make('label', 'option');
+        label.htmlFor = inputId;
+        var input = document.createElement('input');
+        input.type = 'radio';
+        input.name = 'answer';
+        input.id = inputId;
+        input.value = String(optionIndex);
+        input.checked = response.selected === optionIndex;
+        input.disabled = response.checked;
+        input.addEventListener('change', function () { selectAnswer(optionIndex); });
+        var letter = make('span', 'option-letter');
+        letter.append(make('span', null, LETTERS[optionIndex]), make('span', 'sr-only', '.'));
+        var body = make('span', 'option-body');
+        var tags = make('span', 'option-tags');
+        body.append(make('span', 'option-text', option), tags);
+        label.append(input, letter, textNode(' '), body);
+        fieldset.appendChild(label);
+        ui.options.push({ label: label, tags: tags });
+        return input;
+      });
+      setChildren(ui.questionArea, [fieldset]);
+      applyOptionStates(question, response);
+
+      hideValidation();
+      renderFeedback(question, response);
+
+      var allChecked = done === total;
+      ui.btnPrev.hidden = index === 0;
+      ui.btnCheck.hidden = response.checked;
+      ui.btnNext.hidden = !response.checked || index === total - 1;
+      ui.btnFinish.hidden = !allChecked;
+    }
+
+    // Unselected, selected, correct, incorrect and dimmed states, each with a text tag, never colour alone.
+    function applyOptionStates(question, response) {
+      ui.options.forEach(function (entry, index) {
+        var classes = ['option'];
+        var tags = [];
+        if (response.checked) {
+          classes.push('option-locked');
+          if (index === question.answer) {
+            classes.push('option-correct');
+            tags.push(tagNode('correct', 'check', 'Correct answer'));
+            if (index === response.selected) tags.push(tagNode('correct', 'check', 'Your answer'));
+          } else if (index === response.selected) {
+            classes.push('option-incorrect');
+            tags.push(tagNode('incorrect', 'cross', 'Your answer'));
+          } else {
+            classes.push('option-dimmed');
+          }
+        } else if (index === response.selected) {
+          classes.push('option-selected');
+          tags.push(tagNode('selected', 'check', 'Selected'));
+        }
+        entry.label.className = classes.join(' ');
+        setChildren(entry.tags, tags);
+      });
+    }
+
+    function answerLine(kind, label, question, index) {
+      var line = make('p', 'answer-line answer-line-' + kind + ' feedback-' + (label === 'Your answer:' ? 'selected' : 'answer'));
+      line.append(make('span', 'answer-label', label), textNode(' ' + optionText(question, index)));
+      return line;
+    }
+
+    function explanationBlock(question, className) {
+      var block = make('div', 'explanation ' + className);
+      block.append(
+        make('p', 'section-label', 'Explanation'),
+        make('p', 'explanation-text', question.explanation),
+        make('p', 'source-ref', 'Lesson reference: page ' + question.sourceSlides.join(', '))
+      );
+      return block;
+    }
+
+    function renderFeedback(question, response) {
+      if (!response.checked) {
+        ui.feedback.className = 'feedback';
+        setChildren(ui.feedback, []);
+        ui.feedback.hidden = true;
+        return;
+      }
+      var correct = response.selected === question.answer;
+      ui.feedback.className = 'feedback ' + (correct ? 'feedback-correct' : 'feedback-incorrect');
+      var header = make('p', 'feedback-header feedback-verdict');
+      var mark = make('span', 'feedback-mark');
+      mark.appendChild(iconNode(correct ? 'check' : 'cross'));
+      header.append(mark, make('span', null, correct ? 'Correct.' : 'Incorrect.'));
+      var body = make('div', 'feedback-body');
+      if (correct) {
+        body.appendChild(answerLine('correct', 'Correct answer:', question, question.answer));
+      } else {
+        body.append(
+          answerLine('incorrect', 'Your answer:', question, response.selected),
+          answerLine('correct', 'Correct answer:', question, question.answer)
+        );
+      }
+      body.appendChild(explanationBlock(question, 'feedback-explanation'));
+      setChildren(ui.feedback, [header, body]);
+      ui.feedback.hidden = false;
+    }
+
+    function selectAnswer(index) {
+      var attempt = state.attempt;
+      if (state.view !== 'quiz' || !attempt) return false;
+      var question = attempt.questions[attempt.current];
+      var response = attempt.responses[attempt.current];
+      if (response.checked || !Number.isInteger(index) || index < 0 || index > 3) {
+        ui.radios.forEach(function (radio, radioIndex) { radio.checked = response.selected === radioIndex; });
+        return false;
+      }
+      response.selected = index;
+      ui.radios.forEach(function (radio, radioIndex) { radio.checked = radioIndex === index; });
+      applyOptionStates(question, response);
+      hideValidation();
+      playCue('select');
+      return true;
+    }
+
+    function checkAnswer() {
+      var attempt = state.attempt;
+      if (state.view !== 'quiz' || !attempt) return false;
+      var question = attempt.questions[attempt.current];
+      var response = attempt.responses[attempt.current];
+      if (response.checked) return false;
+      if (response.selected === null) {
+        showValidation('Select an answer before pressing Check answer.');
+        return false;
+      }
+      response.checked = true;
+      renderQuestion();
+      ui.feedback.focus();
+      playCue(response.selected === question.answer ? 'correct' : 'incorrect');
+      return true;
+    }
+
+    function goToQuestion(index) {
+      var attempt = state.attempt;
+      if (state.view !== 'quiz' || !attempt || !Number.isInteger(index)) return false;
+      if (index < 0 || index >= attempt.questions.length) return false;
+      var limit = firstUncheckedIndex(attempt);
+      if (limit !== -1 && index > limit) return false;
+      attempt.current = index;
+      renderQuestion();
+      ui.questionHeading.focus();
+      return true;
+    }
+
+    function finishQuiz() {
+      var attempt = state.attempt;
+      if (state.view !== 'quiz' || !attempt) return false;
+      if (firstUncheckedIndex(attempt) !== -1) {
+        showValidation('Check all ' + attempt.questions.length + ' answers before viewing results.');
+        return false;
+      }
+      state.results = computeResults(attempt);
+      state.results.studentName = attempt.studentName;
+      renderResults(state.results);
+      showView('results');
+      ui.resultsHeading.focus();
+      playCue(finishCue(state.results.band.name));
+      submitAttempt(buildSubmission(state.results));
+      return true;
+    }
+
+    function retakeQuiz() {
+      var mode = state.attempt ? state.attempt.mode : null;
+      if (!mode) return false;
+      return startQuiz(mode);
+    }
+
+    function resetToDifficulty() {
+      if (!state.available) return false;
+      state.attempt = null;
+      state.results = null;
+      state.submission = null;
+      setTheme(null);
+      showView('landing');
+      setStudyConfirmed(state.studyConfirmed);
+      ui.difficultyHeading.focus();
+      if (ENDPOINT) loadHistory(state.history.filter);
+      return true;
+    }
+
+    // ----- Results -----
+
+    function bandClass(name) {
+      return 'band-' + String(name).toLowerCase().replace(/[^a-z]+/g, '-');
+    }
+
+    function renderResults(results) {
+      ui.resultsHeading.textContent = MODE_LABELS[results.mode] + ' examination results';
+
+      var card = make('div', 'score-card ' + bandClass(results.band.name));
+      var figure = make('p', 'score-figure results-score');
+      figure.append(make('span', 'score-percent', results.percentage + '%'), make('span', 'score-count', results.score + ' of ' + results.total + ' correct'));
+      var meta = make('div', 'score-meta');
+      var student = make('p', 'results-student');
+      student.append(make('span', 'meta-label', 'Student'), make('span', 'meta-value', results.studentName));
+      var mode = make('p', 'results-mode');
+      mode.append(make('span', 'meta-label', 'Difficulty'), make('span', 'meta-value', MODE_LABELS[results.mode]));
+      var bandLabel = make('p', 'meta-label', 'Mastery band');
+      var band = make('p', 'band-badge results-band');
+      band.append(iconNode(results.percentage >= STRENGTH_THRESHOLD ? 'check' : 'alert'), make('span', null, results.band.name));
+      meta.append(student, mode, bandLabel, band, make('p', 'band-description', results.band.description));
+      card.append(figure, meta);
+      setChildren(ui.resultsSummary, [card]);
+
+      var rows = results.categories.map(function (entry) {
+        var strength = entry.status === 'Strength';
+        var row = document.createElement('tr');
+        var name = make('th', null, entry.category);
+        name.setAttribute('scope', 'row');
+        var count = make('td', 'topic-count');
+        var bar = make('span', 'bar');
+        bar.setAttribute('aria-hidden', 'true');
+        var fill = make('span', 'bar-fill ' + (strength ? 'bar-strength' : 'bar-gap'));
+        fill.setAttribute('style', 'width: ' + entry.percentage + '%');
+        bar.appendChild(fill);
+        count.append(make('span', null, entry.correct + ' of ' + entry.total + ' (' + entry.percentage + '%)'), bar);
+        var status = make('td', 'topic-status');
+        status.appendChild(tagNode(strength ? 'strength' : 'gap', strength ? 'check' : 'alert', entry.status));
+        row.append(name, count, status);
+        return row;
+      });
+      setChildren(ui.resultsCategories, rows);
+
+      renderTopicList(ui.resultsStrengths, results.categories.filter(function (entry) { return entry.status === 'Strength'; }), 'No topic reached 75% in this attempt.');
+      renderTopicList(ui.resultsGaps, results.categories.filter(function (entry) { return entry.status === 'Gap'; }), 'No gaps in this attempt. Keep studying the complete lesson.');
+
+      var items = results.review.map(function (entry) {
+        var question = entry.question;
+        var item = make('li', 'review-item ' + (entry.correct ? 'review-correct' : 'review-incorrect'));
+        var head = make('h4', 'review-head');
+        head.append(
+          make('span', null, 'Question ' + entry.number),
+          make('span', 'sr-only', ': '),
+          tagNode(entry.correct ? 'correct' : 'incorrect', entry.correct ? 'check' : 'cross', entry.correct ? 'Correct' : 'Incorrect')
+        );
+        item.append(
+          head,
+          make('p', 'review-topic', 'Topic: ' + question.category),
+          make('p', 'review-prompt', question.prompt),
+          answerLine(entry.correct ? 'correct' : 'incorrect', 'Your answer:', question, entry.selected),
+          answerLine('correct', 'Correct answer:', question, question.answer),
+          explanationBlock(question, 'review-explanation')
+        );
+        return item;
+      });
+      setChildren(ui.resultsReview, items);
+    }
+
+    function renderTopicList(list, entries, emptyText) {
+      if (!entries.length) {
+        setChildren(list, [make('li', 'topic-empty', emptyText)]);
+        return;
+      }
+      setChildren(list, entries.map(function (entry) {
+        return make('li', null, entry.category + ': ' + entry.correct + ' of ' + entry.total + ' correct');
+      }));
+    }
+
+    // ----- Class history (network) -----
+
+    // The single network call in the app. It only ever contacts HISTORY_ENDPOINT, and it
+    // resolves with the parsed {ok: true, ...} body or rejects on any HTTP, JSON or {ok: false} failure.
+    function historyRequest(url, init) {
+      if (!ENDPOINT || url.indexOf(ENDPOINT) !== 0) return Promise.reject(new Error('Class history is not configured.'));
+      if (typeof window.fetch !== 'function') return Promise.reject(new Error('This browser cannot reach the class history.'));
+      return window.fetch(url, init).then(function (response) {
+        if (!response || !response.ok) throw new Error('The class history returned an error.');
+        return response.json();
+      }).then(function (body) {
+        if (!body || body.ok !== true) throw new Error('The class history rejected the request.');
+        return body;
+      });
+    }
+
+    function buildSubmission(results) {
+      return {
+        name: results.studentName,
+        lesson: HISTORY_LESSON,
+        mode: results.mode,
+        score: results.score,
+        total: results.total,
+        percent: results.percentage,
+        band: results.band.name,
+        finishedAt: new Date().toISOString()
+      };
+    }
+
+    // Saves one finished attempt. Failure only changes the small notice; results are already on screen.
+    function submitAttempt(payload) {
+      var submission = { payload: payload, status: ENDPOINT ? 'saving' : 'not-configured' };
+      state.submission = submission;
+      renderSaveStatus();
+      if (!ENDPOINT) return Promise.resolve(false);
+      return track(historyRequest(ENDPOINT, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify(payload)
+      }).then(function () {
+        if (state.submission !== submission) return false;
+        submission.status = 'saved';
+        renderSaveStatus();
+        loadHistory(state.history.filter);
+        return true;
+      }, function () {
+        if (state.submission !== submission) return false;
+        submission.status = 'failed';
+        renderSaveStatus();
+        return false;
+      }));
+    }
+
+    function retrySubmission() {
+      if (!state.submission || state.submission.status !== 'failed') return Promise.resolve(false);
+      return submitAttempt(state.submission.payload);
+    }
+
+    function renderSaveStatus() {
+      var submission = state.submission;
+      var status = submission ? submission.status : 'none';
+      var copy = {
+        none: null,
+        saving: ['dot', 'Saving your score to the class history…'],
+        saved: ['check', 'Saved to the class history.'],
+        failed: ['alert', 'Could not save to class history. Your results below are unaffected.'],
+        'not-configured': ['dot', 'Class history is not set up, so this score was not saved to a class list.']
+      }[status];
+      ui.saveBox.className = 'history-save save-' + status;
+      setChildren(ui.saveMessage, copy ? [iconNode(copy[0]), make('span', null, copy[1])] : []);
+      ui.saveBox.hidden = !copy;
+      ui.btnSaveRetry.hidden = status !== 'failed';
+    }
+
+    function historyUrl(filter) {
+      return ENDPOINT + (ENDPOINT.indexOf('?') === -1 ? '?' : '&') + 'lesson=' + encodeURIComponent(HISTORY_LESSON) + '&mode=' + encodeURIComponent(filter) + '&limit=' + HISTORY_LIMIT;
+    }
+
+    function toInteger(value) {
+      if (value === null || value === undefined || value === '') return null;
+      var number = Number(value);
+      return Number.isFinite(number) ? Math.round(number) : null;
+    }
+
+    // Treats every remote field as untrusted: coerced to plain strings or numbers, clipped and validated.
+    function cleanHistoryRow(row) {
+      if (!row || typeof row !== 'object') return null;
+      var mode = String(row.mode === null || row.mode === undefined ? '' : row.mode).trim().toLowerCase();
+      if (MODES.indexOf(mode) === -1) return null;
+      var name = Array.from(normalizeName(row.name)).slice(0, 60).join('');
+      if (!name) return null;
+      var finishedAt = String(row.finishedAt === null || row.finishedAt === undefined ? '' : row.finishedAt);
+      var time = Date.parse(finishedAt);
+      return {
+        name: name,
+        mode: mode,
+        score: toInteger(row.score),
+        total: toInteger(row.total),
+        percent: toInteger(row.percent),
+        band: normalizeName(row.band).slice(0, 40),
+        finishedAt: finishedAt,
+        time: isNaN(time) ? null : time
+      };
+    }
+
+    function loadHistory(filter) {
+      if (HISTORY_FILTERS.indexOf(filter) === -1) filter = state.history.filter;
+      var history = state.history;
+      history.filter = filter;
+      if (!ENDPOINT) {
+        history.status = 'not-configured';
+        history.rows = [];
+        renderHistory();
+        return Promise.resolve(false);
+      }
+      var request = ++history.request;
+      history.status = 'loading';
+      renderHistory();
+      return track(historyRequest(historyUrl(filter), { method: 'GET', cache: 'no-store' }).then(function (body) {
+        if (request !== history.request) return false;
+        var rows = Array.isArray(body.rows) ? body.rows : [];
+        history.rows = rows.map(cleanHistoryRow).filter(function (row) {
+          return row && (filter === 'all' || row.mode === filter);
+        }).map(function (row, index) {
+          row.order = index;
+          return row;
+        }).sort(function (a, b) {
+          // Newest first; rows without a readable date keep the sheet's order after dated rows.
+          if (a.time !== null && b.time !== null && a.time !== b.time) return b.time - a.time;
+          if (a.time === null && b.time !== null) return 1;
+          if (b.time === null && a.time !== null) return -1;
+          return a.order - b.order;
+        }).slice(0, HISTORY_LIMIT);
+        history.status = history.rows.length ? 'ready' : 'empty';
+        renderHistory();
+        return true;
+      }, function () {
+        if (request !== history.request) return false;
+        history.status = 'error';
+        history.rows = [];
+        renderHistory();
+        return false;
+      }));
+    }
+
+    function isCurrentStudent(name) {
+      return Boolean(state.studentName) && name.toLowerCase() === state.studentName.toLowerCase();
+    }
+
+    function pad(number) { return (number < 10 ? '0' : '') + number; }
+
+    function formatDate(time) {
+      var date = new Date(time);
+      return date.getFullYear() + '-' + pad(date.getMonth() + 1) + '-' + pad(date.getDate()) + ' ' + pad(date.getHours()) + ':' + pad(date.getMinutes());
+    }
+
+    function historyCell(label, content, className) {
+      var cell = make('td', className);
+      cell.setAttribute('data-label', label);
+      if (typeof content === 'string') cell.textContent = content;
+      else cell.appendChild(content);
+      return cell;
+    }
+
+    function historyRowNode(row) {
+      var self = isCurrentStudent(row.name);
+      var tr = make('tr', 'history-row' + (self ? ' history-row-self' : ''));
+      var name = make('span', 'history-name');
+      name.appendChild(make('span', 'history-name-text', row.name));
+      if (self) name.append(textNode(' '), tagNode('you', null, 'You'));
+      var date;
+      if (row.time === null) {
+        date = make('span', null, 'Unknown');
+      } else {
+        date = make('time', null, formatDate(row.time));
+        date.setAttribute('datetime', new Date(row.time).toISOString());
+      }
+      tr.append(
+        historyCell('Name', name, 'history-name-cell'),
+        historyCell('Mode', MODE_LABELS[row.mode]),
+        historyCell('Score', row.score !== null && row.total !== null ? row.score + '/' + row.total : '—'),
+        historyCell('%', row.percent !== null ? row.percent + '%' : '—'),
+        historyCell('Band', row.band || '—'),
+        historyCell('Date', date)
+      );
+      return tr;
+    }
+
+    function renderHistory() {
+      var history = state.history;
+      HISTORY_FILTERS.forEach(function (filter) {
+        ui.historyFilters[filter].setAttribute('aria-pressed', String(filter === history.filter));
+        ui.historyFilters[filter].disabled = !ENDPOINT;
+      });
+      ui.historyRefresh.disabled = !ENDPOINT;
+      var scope = history.filter === 'all' ? '' : ' ' + MODE_LABELS[history.filter];
+      var copy = {
+        idle: ['dot', ''],
+        'not-configured': ['alert', 'Class history is not set up yet, so scores are not being collected. Instructors: follow apps-script/SETUP.md in the quiz repository to connect a Google Sheet, then set HISTORY_ENDPOINT.'],
+        loading: ['dot', 'Loading class history…'],
+        empty: ['dot', 'No' + scope + ' attempts have been recorded yet.'],
+        error: ['alert', 'Could not load the class history. Check your connection, then select Refresh to try again.'],
+        ready: [null, 'Showing the ' + history.rows.length + ' most recent' + scope + ' attempts, newest first.']
+      }[history.status];
+      ui.historyStatus.className = 'history-status status-' + history.status;
+      setChildren(ui.historyStatus, (copy[0] ? [iconNode(copy[0])] : []).concat([make('span', null, copy[1])]));
+      ui.historyTableWrap.hidden = history.status !== 'ready';
+      ui.historyTableWrap.setAttribute('aria-busy', String(history.status === 'loading'));
+      setChildren(ui.historyBody, history.status === 'ready' ? history.rows.map(historyRowNode) : []);
+    }
+
+    function showHistory() {
+      if (ui.historyPanel.hidden) return false;
+      ui.historyHeading.focus();
+      if (ENDPOINT) loadHistory(state.history.filter);
+      return true;
+    }
+
+    // ----- Startup -----
+
+    function readBanks() {
+      var banks = {};
+      var errors = [];
+      MODES.forEach(function (mode) {
+        var element = byId('questions-' + mode);
+        if (!element) {
+          errors.push(mode + ' bank data is missing');
+          return;
+        }
+        try {
+          banks[mode] = JSON.parse(element.textContent);
+        } catch (error) {
+          errors.push(mode + ' bank data is not valid JSON');
+        }
+      });
+      return { banks: banks, errors: errors };
+    }
+
+    function init() {
+      var loaded = readBanks();
+      var validation = validateBanks(loaded.banks);
+      state.errors = loaded.errors.concat(validation.errors);
+      state.available = state.errors.length === 0;
+
+      ui.soundToggle.addEventListener('click', function () { setSoundEnabled(!state.soundEnabled); });
+      setSoundEnabled(true);
+
+      if (!state.available) {
+        state.banks = null;
+        ui.studyConfirm.checked = false;
+        ui.studyConfirm.disabled = true;
+        ui.nameInput.disabled = true;
+        MODES.forEach(function (mode) { ui.modeButtons[mode].disabled = true; });
+        showView('unavailable');
+        ui.unavailableHeading.focus();
+        console.error('Signal Support Mastery Quiz is unavailable: ' + state.errors.join('; '));
+        return;
+      }
+
+      state.banks = deepFreeze(loaded.banks);
+      ui.nameInput.addEventListener('input', function () { setStudentName(ui.nameInput.value, false); });
+      ui.nameInput.addEventListener('change', function () { setStudentName(ui.nameInput.value, true); });
+      ui.nameInput.addEventListener('blur', function () { setStudentName(ui.nameInput.value, true); });
+      ui.studyConfirm.addEventListener('change', function () { setStudyConfirmed(ui.studyConfirm.checked); });
+      MODES.forEach(function (mode) {
+        ui.modeButtons[mode].addEventListener('click', function () { startQuiz(mode); });
+      });
+      ui.btnCheck.addEventListener('click', checkAnswer);
+      ui.btnPrev.addEventListener('click', function () { if (state.attempt) goToQuestion(state.attempt.current - 1); });
+      ui.btnNext.addEventListener('click', function () { if (state.attempt) goToQuestion(state.attempt.current + 1); });
+      ui.btnFinish.addEventListener('click', finishQuiz);
+      ui.btnPrint.addEventListener('click', function () { window.print(); });
+      ui.btnRetake.addEventListener('click', retakeQuiz);
+      ui.btnChoose.addEventListener('click', resetToDifficulty);
+      ui.btnHistory.addEventListener('click', showHistory);
+      ui.btnSaveRetry.addEventListener('click', retrySubmission);
+      ui.historyRefresh.addEventListener('click', function () { loadHistory(state.history.filter); });
+      HISTORY_FILTERS.forEach(function (filter) {
+        ui.historyFilters[filter].addEventListener('click', function () { loadHistory(filter); });
+      });
+
+      showView('landing');
+      setStudentName(ui.nameInput.value, false);
+      setStudyConfirmed(false);
+      renderSaveStatus();
+      loadHistory('all');
+    }
+
+    function getState() {
+      return JSON.parse(JSON.stringify({
+        available: state.available,
+        errors: state.errors,
+        studyConfirmed: state.studyConfirmed,
+        studentName: state.studentName,
+        nameValid: state.nameValid,
+        view: state.view,
+        attempt: state.attempt,
+        results: state.results,
+        submission: state.submission,
+        history: { filter: state.history.filter, status: state.history.status, rows: state.history.rows },
+        historyConfigured: Boolean(ENDPOINT),
+        soundEnabled: state.soundEnabled
+      }));
+    }
+
+    init();
+
+    globalThis.__signalQuiz = Object.freeze({
+      validateBanks: validateBanks,
+      shuffleQuestions: shuffleQuestions,
+      createAttempt: createAttempt,
+      computeResults: computeResults,
+      masteryBand: masteryBand,
+      validateName: validateName,
+      setStudentName: setStudentName,
+      setStudyConfirmed: setStudyConfirmed,
+      startQuiz: startQuiz,
+      selectAnswer: selectAnswer,
+      checkAnswer: checkAnswer,
+      goToQuestion: goToQuestion,
+      finishQuiz: finishQuiz,
+      retakeQuiz: retakeQuiz,
+      resetToDifficulty: resetToDifficulty,
+      loadHistory: loadHistory,
+      retrySubmission: retrySubmission,
+      whenSettled: whenSettled,
+      setSoundEnabled: setSoundEnabled,
+      // Replaces the Web Audio player (tests inject a recorder); null restores the default player.
+      setSoundPlayer: function (player) { state.soundPlayer = typeof player === 'function' ? player : defaultSoundPlayer; },
+      getState: getState,
+      getBanks: function () { return state.banks; },
+      setRandom: function (random) { state.random = typeof random === 'function' ? random : Math.random; }
+    });
+  })();
+  </script>
+</body>
+</html>
