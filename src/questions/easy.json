@@ -130,21 +130,21 @@
     "difficulty": "easy",
     "category": "Roles of Signal Support",
     "tags": [
-      "HADR",
-      "disaster-response net"
+      "fixed communication",
+      "video teleconferencing"
     ],
-    "prompt": "An Army battalion joins flood relief in Pampanga and must coordinate with local government responders and NGOs. How should Signal Support arrange that coordination?",
+    "prompt": "A brigade headquarters at Camp Evangelista holds its daily coordination meeting with division by video teleconference and exchanges reports by email, both over Army systems that link established headquarters. Under the Signal Support role of enabling command and control, which communication service is this?",
     "options": [
-      "Admit the civilian responders to the secured operational net so all share one net",
-      "Avoid any radio contact with civilian responders to protect communication security",
-      "Set up a disaster-response radio net separate from the Army's secured operational net",
-      "Route civilian coordination through a partner nation's sovereign network"
+      "Special purpose communication",
+      "Tactical communication",
+      "Fixed communication",
+      "Restoration communication"
     ],
     "answer": 2,
-    "explanation": "Pages 5 and 19: in humanitarian assistance and disaster response, Signal Support connects military units and other response organizations, and the disaster-response radio net remains separate from the Army's secured operational net. Refusing contact defeats the role; merging nets breaks the required separation.",
+    "explanation": "Page 4: under the command and control role, fixed communication connects headquarters and established facilities, with examples such as Army telephone systems, PANET, email and video teleconferencing. Page 6 adds that email, video teleconferencing and collaboration systems let headquarters exchange information and conduct coordination meetings, and that fixed systems form the backbone of the Army's voice and data communications. Tactical communication connects troops moving or halted; special purpose communication (cellular phones, satellite phones, commercial videoconferencing) only supplements fixed and tactical systems; restoration is a separate role.",
     "sourceSlides": [
-      5,
-      19
+      4,
+      6
     ]
   },
   {
@@ -281,9 +281,9 @@
     "category": "Principles of Signal Support",
     "tags": [
       "secured",
-      "COMSEC"
+      "satellite phones"
     ],
-    "prompt": "A platoon leader wants to send movement orders and unit locations through a popular commercial messaging app because it is fast and everyone already has it. Which principle of Signal Support is most directly at stake?",
+    "prompt": "A battalion issues satellite phones to its detachments on remote islands. The executive officer says that, as the phones are new and advanced technology, the COMSEC policies written for older radios do not apply to them. Which principle of Signal Support does his view contradict?",
     "options": [
       "Operations Focused",
       "Scalable",
@@ -291,8 +291,9 @@
       "Secured"
     ],
     "answer": 3,
-    "explanation": "Page 10: the Secured principle requires compliance with COMSEC regardless of the technology used, and a convenient platform must be assessed against those requirements before it carries operational information such as orders and locations.",
+    "explanation": "Page 10: the Secured principle requires compliance with COMSEC policies regardless of the technology used, and advances in technology do not remove the requirement for security. Page 7 lists satellite phones as special purpose communication whose use must follow existing COMSEC policies.",
     "sourceSlides": [
+      7,
       10
     ]
   },
@@ -390,17 +391,19 @@
       "TLP",
       "MDMP"
     ],
-    "prompt": "A platoon leader preparing a short-notice patrol must work out how the platoon will communicate. Alongside which process does the lesson place signal planning for a small unit like this?",
+    "prompt": "A platoon leader in Quezon has two hours to prepare a short-notice patrol. He tells his radio operator: \"Signal planning is for battalion staffs running MDMP; we will just grab the radios and go.\" Which response best fits the lesson?",
     "options": [
-      "Military Decision-Making Process (MDMP)",
-      "PMESII-PT analysis",
-      "Communication-Electronics Standing Instructions (CESI)",
-      "Troop Leading Procedures (TLP)"
+      "He is right, since the Signal Estimate and signal planning apply only when a staff runs MDMP",
+      "He should wait for a PMESII-PT analysis before deciding how the platoon will communicate",
+      "He should rely on the CESI alone, since it replaces signal planning for small units",
+      "He should plan communication within his Troop Leading Procedures, which signal planning works alongside"
     ],
     "answer": 3,
-    "explanation": "Page 14: the Signal Estimate and Signal Planning Process work alongside the Military Decision-Making Process and, for small units, Troop Leading Procedures.",
+    "explanation": "Page 14: the Signal Estimate and Signal Planning Process work alongside the Military Decision-Making Process and, for small units, Troop Leading Procedures, and planning starts by understanding the mission before selecting systems. PMESII-PT is the commander's analysis of the operational environment (page 3), and the CESI explains the use of the CEOI (page 18); neither replaces signal planning.",
     "sourceSlides": [
-      14
+      3,
+      14,
+      18
     ]
   },
   {

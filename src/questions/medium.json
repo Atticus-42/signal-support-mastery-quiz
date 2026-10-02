@@ -201,7 +201,7 @@
     ],
     "prompt": "A battalion staff wants to use an authorized commercial videoconference platform for (a) its weekly administrative meeting and (b) a briefing on tomorrow's convoy routes and timings. Which assessment matches the lesson?",
     "options": [
-      "(a) and (b) are both acceptable, as an authorized platform is therefore suitable for every kind of traffic",
+      "(a) and (b) are both acceptable, since an authorized platform is suitable for every kind of traffic",
       "(a) can suit routine use under COMSEC policy; (b) is sensitive and needs the appropriate authorized means",
       "(a) and (b) are both prohibited, as commercial platforms may never be used by Army units for any purpose",
       "(b) is preferred over (a), as operational briefings need the fastest platform that the staff has available"
@@ -218,18 +218,20 @@
     "difficulty": "medium",
     "category": "Systems and Technologies",
     "tags": [
+      "VoIP",
+      "BONTEX",
       "ROIP",
-      "VoIP"
+      "ad hoc networks"
     ],
-    "prompt": "A brigade wants its field radio nets to reach a distant headquarters through the Army's IP network, so that radio traffic travels over the network links. Which technology fits this requirement?",
+    "prompt": "A brigade S6 must meet four needs: (1) staff telephone calls carried over the brigade's IP network; (2) Army telephone lines connected with higher headquarters; (3) field radio nets linked through IP networks to a distant headquarters; (4) tactical networking among the participating equipment of the maneuver companies. Which matching is correct?",
     "options": [
-      "Radio over IP (ROIP)",
-      "Voice over Internet Protocol (VoIP)",
-      "Bonifacio Telephone Exchange (BONTEX)",
-      "Ad hoc network technologies"
+      "(1) VoIP; (2) BONTEX; (3) ROIP; (4) ad hoc network technologies",
+      "(1) ROIP; (2) BONTEX; (3) VoIP; (4) ad hoc network technologies",
+      "(1) VoIP; (2) PANET; (3) ROIP; (4) combat net radio networks",
+      "(1) BONTEX; (2) VoIP; (3) ad hoc network technologies; (4) ROIP"
     ],
     "answer": 0,
-    "explanation": "Page 7: Radio over IP links radio communications through IP networks. Page 6: VoIP carries telephone conversations through an IP network and BONTEX connects Army telephone systems with higher headquarters; ad hoc technologies support tactical networking among participating equipment.",
+    "explanation": "Page 6: VoIP carries telephone conversations through an IP network, BONTEX connects Army telephone systems with higher headquarters, and PANET is the secured, managed Army intranet. Page 7: ROIP links radio communications through IP networks, ad hoc network technologies support tactical networking among participating equipment, and combat net radio provides radio networks through which operating units communicate.",
     "sourceSlides": [
       6,
       7
@@ -305,19 +307,20 @@
     "category": "Tactical Considerations",
     "tags": [
       "facility location",
-      "projected operations"
+      "administrative and logistical requirements"
     ],
-    "prompt": "An S6 chooses a relay site that covers the companies' current positions well, but no vehicle can reach it and it will fall far behind the units once the planned advance begins. Which location considerations were neglected?",
+    "prompt": "For a week-long operation, an S6 compares two relay sites. Both cover the companies' current and projected positions equally well and lie on the same all-weather road. Site A has room for the generator, fuel stock, spare parts and the crew's shelter; Site B is a cramped rooftop with space for the antenna alone. Which location consideration chiefly favors Site A?",
     "options": [
       "Terrain and signal propagation",
-      "Positions of supported and support units",
-      "None, since good current coverage decides",
-      "Accessibility and projected operations"
+      "Where supported and support units are positioned",
+      "Accessibility",
+      "Administrative and logistical requirements"
     ],
     "answer": 3,
-    "explanation": "Page 12: facility locations must consider unit positions, terrain and propagation, projected operations, accessibility, and administrative and logistical requirements. Current coverage is good here, but the site is unreachable and will not suit the advance; a location good at the start may become unsuitable later.",
+    "explanation": "Page 12: communication facilities are located with consideration of unit positions, terrain and signal propagation, projected operations, accessibility, and administrative and logistical requirements. The two sites match on coverage of current and projected positions and on road access, so the deciding factor is that Site A can accommodate the power, fuel, spares and crew support the relay needs. Page 16 repeats that facility locations must consider logistics.",
     "sourceSlides": [
-      12
+      12,
+      16
     ]
   },
   {
@@ -328,7 +331,7 @@
       "communication failure",
       "hostile disruption"
     ],
-    "prompt": "Which pairing of threats and planned provisions matches the lesson's requirements for preparing against communication failure and hostile disruption?",
+    "prompt": "A battalion S6 preparing for an operation in Sulu expects four problems: links lost to equipment failure, enemy jamming and interception, intrusion attempts on the TOC network, and frequencies compromised by a captured radio. Which set of planned provisions gives each problem the measure the lesson calls for?",
     "options": [
       "Lost links: monitoring and response; EW: backups and repair; cyberattack: change procedures; compromised frequencies: jamming protection",
       "Lost links: change procedures; EW: monitoring and response; cyberattack: jamming protection; compromised frequencies: backups and repair",
@@ -417,14 +420,15 @@
     "prompt": "An operation needs eight communication links, but three of the radios meant for them are unserviceable. What is the planner's next step according to the lesson?",
     "options": [
       "Plan all eight links anyway, since unserviceable radios are often repaired in time for use",
-      "Drop the three links at once, since the unit can only plan with what works",
+      "Drop the three links quietly, without telling the commander about the resulting gap",
       "Identify the shortfall and decide whether repair, reallocation or more support is needed",
       "Ask to cancel that phase of the operation, since a shortfall makes it unsupportable"
     ],
     "answer": 2,
-    "explanation": "Page 15: compare requirements with what the unit can actually provide; when some equipment is unserviceable, the planner identifies the shortfall and determines whether repair, reallocation or additional support is needed.",
+    "explanation": "Page 15: compare requirements with what the unit can actually provide; when some equipment is unserviceable, the planner identifies the shortfall and determines whether repair, reallocation or additional support is needed. Page 16: when resources are insufficient, the planner explains the limitations and recommends priorities; requirements are not silently dropped.",
     "sourceSlides": [
-      15
+      15,
+      16
     ]
   },
   {
@@ -457,15 +461,15 @@
       "coordination",
       "tentative plan"
     ],
-    "prompt": "Before finalizing the tentative signal plan, the planner coordinates with four parties. Which pairing of party and what to confirm matches the lesson?",
+    "prompt": "While coordinating the tentative signal plan for a ten-day operation, the S6 must confirm that spare batteries, replacement sets and repair support will be on hand to keep the links running throughout. With which party should this chiefly be confirmed?",
     "options": [
-      "Higher headquarters: that the plan supports the operational concept, priorities, and phases",
-      "Logistics and maintenance personnel: resources for sustained operation, repair, and replacement",
-      "Adjacent units: their requirements, capabilities, operating arrangements, and responsibilities",
-      "Commander and operations staff: the required connections and the support available"
+      "Adjacent units",
+      "Logistics and maintenance personnel",
+      "Commander and operations staff",
+      "Subordinate and supporting units"
     ],
     "answer": 1,
-    "explanation": "Page 16: logistics and maintenance personnel confirm resources for sustained operation, repair and replacement. The concept, priorities and phases are confirmed with the commander and operations staff; required connections and available support with higher headquarters; requirements and capabilities with subordinate and supporting units; adjacent units confirm necessary coordination links.",
+    "explanation": "Page 16: the planner confirms resources for sustained operation, repair and replacement with logistics and maintenance personnel. The commander and operations staff confirm that the plan supports the operational concept, priorities and phases; subordinate and supporting units confirm their requirements, capabilities, operating arrangements and responsibilities; adjacent units confirm necessary coordination links.",
     "sourceSlides": [
       16
     ]
@@ -497,18 +501,21 @@
     "category": "Security Measures and Protocols",
     "tags": [
       "CSIRT",
-      "incident response"
+      "network monitoring",
+      "mobile ad hoc networks"
     ],
-    "prompt": "Staff notice suspicious activity on a headquarters network. One officer suggests that the section's computer-savvy lieutenant quietly investigate and fix it to avoid an embarrassing report. What should happen instead?",
+    "prompt": "A brigade S6 reviews the cyber-defense part of the signal plan. It monitors only the fixed TOC network, leaving the maneuver companies' mobile ad hoc networks unwatched, and it describes the CSIRT as a team called only to replace damaged cables. Which correction matches the lesson?",
     "options": [
-      "Let the lieutenant fix it quietly, then file a report only if data turns out to be lost",
-      "Report through prescribed channels so first responders and the CSIRT can investigate and act",
-      "Disconnect the headquarters from PANET for the rest of the operation, without reporting",
-      "Ignore it until the network fails, since activity alone is not yet an incident worth reporting"
+      "Keep monitoring the TOC network only; have the CSIRT also take over radio repair, SMMART visits, and refresher training",
+      "Monitor the mobile ad hoc networks too; the CSIRT keeps the response plan, investigates, manages updates, remediates, and recommends improvements",
+      "Drop routine monitoring altogether; the CSIRT is enough, as it investigates, remediates, and recommends improvements after each incident occurs",
+      "Monitor the mobile ad hoc networks too; the CSIRT replaces the first responders, the prescribed reporting channels, and the unit procedures"
     ],
     "answer": 1,
-    "explanation": "Page 18: signal plans include procedures for employing first responders and the CSIRT, which maintains an incident response plan, investigates incidents, manages updates, remediates problems and recommends improvements. Personnel report suspicious activity through the prescribed channels so authorized responders can act.",
+    "explanation": "Page 18: signal plans include network monitoring, including mobile ad hoc networks, and procedures for employing first responders and the CSIRT. The CSIRT maintains an incident response plan, investigates incidents, manages incident updates, remediates problems and recommends improvements. Page 8: SMMART, not the CSIRT, inspects, repairs and trains, and page 13 requires network monitoring and incident response arrangements against cyberattacks.",
     "sourceSlides": [
+      8,
+      13,
       18
     ]
   },
@@ -517,21 +524,22 @@
     "difficulty": "medium",
     "category": "Security Measures and Protocols",
     "tags": [
-      "jamming",
-      "electronic protection"
+      "COMSEC",
+      "unit policies",
+      "cellular phones"
     ],
-    "prompt": "Interference disrupts a platoon's radio link during an operation. The platoon leader proposes inventing a new frequency and calling procedure on the spot. What should the platoon do?",
+    "prompt": "A company commander in a remote barangay wants to text the unit's personnel roster from his issued cellular phone. He reads the COMSEC guidance, finds no rule naming that kind of message, and concludes that it is therefore allowed. What is the best assessment?",
     "options": [
-      "Adopt the improvised frequency and procedure, as speed matters most under jamming",
-      "Apply the authorized protection and backup procedures set for its equipment and unit",
-      "Keep transmitting on the jammed frequency, as moving would confuse adjacent units",
-      "Move all traffic to a commercial messaging app, as apps are not affected by jamming"
+      "He is right, as anything the COMSEC guidance does not name is permitted for any kind of information",
+      "COMSEC sets the requirement rather than every procedure, so he must check that unit policy authorizes this use",
+      "He is wrong, as cellular phones are banned outright for Army units under every circumstance and purpose",
+      "He is right, as cellular phones are special purpose means and so fall outside COMSEC policy altogether"
     ],
     "answer": 1,
-    "explanation": "Page 19: if interference disrupts a radio connection, personnel use the authorized protection and backup procedures established for their equipment and unit; protection capabilities such as frequency hopping must be planned and coordinated. Page 18: personnel use the applicable instructions rather than invent their own procedures.",
+    "explanation": "Page 18: commercial devices such as cellular phones, satellite phones and commercial videoconferencing must be used prudently and according to existing COMSEC policies; the user must first determine whether a use is authorized for the information to be sent, and learn and follow the applicable unit policies. The guidance establishes the requirement to follow COMSEC; it does not provide every detailed security procedure. Page 7 lists cellular phones as special purpose communication for routine or administrative use, neither banned nor exempt.",
     "sourceSlides": [
-      18,
-      19
+      7,
+      18
     ]
   }
 ]

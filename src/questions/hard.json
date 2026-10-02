@@ -188,21 +188,22 @@
     "difficulty": "hard",
     "category": "Systems and Technologies",
     "tags": [
-      "determining systems",
-      "field unit"
+      "fixed systems backbone",
+      "special purpose communication",
+      "determining systems"
     ],
-    "prompt": "A battalion will deploy to a remote island. Its companies must communicate while moving, its command post must reach Army information systems, and the services must stay available for weeks. Which package best meets these requirements?",
+    "prompt": "A brigade S6 drafts the system plan for an operation from its garrison headquarters: (1) the headquarters' reporting, information-system access and coordination meetings with division; (2) companies maneuvering in the field; (3) cellular and satellite phones issued to staff officers. Which description of the three parts matches the lesson?",
     "options": [
-      "PANET terminals for moving companies, combat net radio at the command post, and CSIRT support for radio repairs",
-      "Commercial phones for all operational traffic, BONTEX at the command post, and electro-optic repair support",
-      "Ad hoc links for the command post only, VoIP phones for the moving companies, and no planned maintenance support",
-      "Tactical radios on combat nets for movement, a PANET link at the command post, and maintenance and restoration support"
+      "(1) special purpose means such as commercial videoconferencing as the main channel; (2) tactical radios and CNR; (3) the fixed backbone for routine traffic",
+      "(1) fixed systems; (2) cellular and satellite phones as the main field voice means; (3) tactical radios kept only as a supplement for routine traffic",
+      "(1) tactical CNR extended to division; (2) PANET terminals carried on the move; (3) special purpose means for operational reports whenever convenient",
+      "(1) fixed systems such as PANET, email, VTC and collaboration tools as the backbone; (2) tactical radios and CNR; (3) a COMSEC-governed supplement"
     ],
     "answer": 3,
-    "explanation": "Page 9: a field unit may need tactical radios during movement, a connection to Army information networks at its command post, and maintenance and restoration support; determine the requirement first. Page 6: PANET is the secured Army intranet; tactical systems support communication on the move. Page 8: CSIRT handles cybersecurity incidents and the electro-optic facility supports night fighting systems.",
+    "explanation": "Page 6: fixed communication systems connect headquarters and established facilities and form the backbone of the Army's voice and data communications; PANET provides the secured Army intranet, and email, video teleconferencing and collaboration systems let headquarters exchange information and conduct coordination meetings. Tactical systems connect troops on the move and at the halt, and voice remains their foundation. Page 7: HF, VHF and UHF radios and combat net radio are tactical technologies, while cellular phones, satellite phones and commercial videoconferencing are special purpose means that supplement fixed and tactical systems for routine or administrative communication under COMSEC policies. Page 9: determine the requirement first, then select the systems.",
     "sourceSlides": [
       6,
-      8,
+      7,
       9
     ]
   },
@@ -278,20 +279,22 @@
     "tags": [
       "redundant",
       "secured",
-      "trade-off"
+      "satellite phones"
     ],
-    "prompt": "The only alternate path available for a company's operational traffic is an unauthorized commercial messaging app. The S3 wants it listed as the Alternate so the plan \"has redundancy.\" What should the signal planner recommend?",
+    "prompt": "The only alternate path available for a company's operational traffic is the staff's satellite phones, which unit COMSEC policy authorizes only for routine administrative calls. The S3 wants them listed as the Alternate so the plan \"has redundancy.\" What should the signal planner recommend?",
     "options": [
-      "Accept the app as the alternate because redundancy outweighs security whenever the primary path has failed",
-      "Accept the app for orders and locations only because that traffic is brief and is sent infrequently",
-      "Reject the app because backups must meet COMSEC, and report the shortfall if no authorized path exists",
+      "Accept the phones as the alternate because redundancy outweighs security whenever the primary path has failed",
+      "Accept the phones for orders and locations only because that traffic is brief and is sent infrequently",
+      "Reject the phones for this traffic because backups must meet COMSEC, and report the shortfall if no authorized path exists",
       "Leave the plan with no alternate because an empty backup line is safer than reporting a shortfall"
     ],
     "answer": 2,
-    "explanation": "Page 19: backup arrangements must also comply with applicable security requirements. Page 10: a working connection must also meet the required security standard. Page 13: when requirements exceed capability, the planner identifies the shortfall and recommends priorities under the commander's guidance.",
+    "explanation": "Page 19: backup arrangements must also comply with applicable security requirements. Page 7: satellite phones are special purpose means for routine or administrative communication under COMSEC policies, and page 18 requires checking whether a use is authorized for the information. Page 10: a working connection must also meet the required security standard. Page 13: when requirements exceed capability, the planner identifies the shortfall and recommends priorities under the commander's guidance.",
     "sourceSlides": [
+      7,
       10,
       13,
+      18,
       19
     ]
   },
@@ -479,20 +482,25 @@
     "difficulty": "hard",
     "category": "Priorities, Continuity and Coordination",
     "tags": [
-      "PACE",
-      "definitions"
+      "tentative plan",
+      "alternate routing",
+      "network monitoring"
     ],
-    "prompt": "A company's draft PACE reads: Primary, the combat net radio; Alternate, \"used only if jamming occurs\"; Contingency, \"the substitute whenever the primary fails\"; Emergency, \"the normal daily reporting means.\" Which correction is right?",
+    "prompt": "Coordinating the tentative signal plan for a coastal operation, a brigade S6 receives three notes: (1) logistics personnel cannot support the generator, fuel and crew at the chosen relay site; (2) the maneuver companies' mobile ad hoc networks are left out of network monitoring; (3) the BONTEX trunk to higher headquarters has a single route. Which revision answers all three?",
     "options": [
-      "Alternate is the substitute if primary fails, Contingency is for a set disruption, Emergency for urgent unmet needs",
-      "Only Emergency is wrong; it should be the means used whenever the primary fails, with the rest left as written",
-      "Only Alternate and Contingency are wrong; swap their labels, and keep Emergency as the normal daily means",
-      "Nothing is wrong, since PACE labels are local choices, and a company may assign them in any order it prefers"
+      "Relocate the relay with its administrative and logistical needs in view; add the ad hoc networks to monitoring; plan alternate routing for the trunk",
+      "Keep the relay site, as its coverage is good; add the ad hoc networks to network monitoring; plan alternate routing for the BONTEX trunk",
+      "Relocate the relay with its administrative and logistical needs in view; leave ad hoc networks to the CSIRT after incidents; plan alternate routing for the trunk",
+      "Relocate the relay with its administrative and logistical needs in view; add the ad hoc networks to monitoring; keep the single route, as BONTEX is fixed"
     ],
     "answer": 0,
-    "explanation": "Page 16: Primary is the normal arrangement; Alternate is a planned substitute if the primary fails; Contingency is an additional option for a specified disruption or situation; Emergency is the arrangement available when other planned options cannot meet the urgent requirement.",
+    "explanation": "Page 16: the tentative plan covers resource allocation, facility locations, security, interconnections and alternate routing; facility locations must consider logistics among other factors, and logistics and maintenance personnel confirm resources for sustained operation. Page 12 lists administrative and logistical requirements among the facility-location considerations. Page 18: signal plans include network monitoring, including mobile ad hoc networks, with the CSIRT as the incident response capability, not a substitute for monitoring. Page 6: BONTEX connects Army telephone systems with higher headquarters, and page 13 calls for alternate routing as part of preparing for communication failure.",
     "sourceSlides": [
-      16
+      6,
+      12,
+      13,
+      16,
+      18
     ]
   },
   {
