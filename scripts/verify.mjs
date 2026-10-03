@@ -1651,8 +1651,8 @@ await test('Keyboard hint sits under the quiz controls with <kbd> keys, a full s
   assert.equal(hint.parentNode, quiz, 'the hint belongs to the quiz view');
   assert.ok(quiz.children.indexOf(hint) > quiz.children.indexOf(actions), 'the hint follows the question controls');
   const hintKeys = findAll(hint, node => node.localName === 'kbd').map(node => node.textContent);
-  for (const key of ['A', 'D', 'Enter', '←', '→', '?']) assert.ok(hintKeys.includes(key), `hint shows <kbd>${key}</kbd>`);
-  assert.match(hint.textContent.replace(/\s+/g, ' '), /^Keyboard: A–D choose · Enter check \/ next · ← → previous \/ next · \? help$/);
+  assert.deepEqual(hintKeys, ['↑', '↓', '←', '→', 'A', 'D', 'Enter', 'P', 'N', '?'], 'hint shows the four arrow <kbd>s first, then A–D, Enter, P / N and ?');
+  assert.match(hint.textContent.replace(/\s+/g, ' '), /^Keyboard: ↑ ↓ ← → or A–D choose · Enter check \/ next · P \/ N previous \/ next question · \? help$/);
   const resultsHint = byId(app, 'results-keyboard-hint');
   assert.ok(findAll(byId(app, 'view-results'), node => node === resultsHint).length, 'results view has its own hint');
   assert.deepEqual(findAll(resultsHint, node => node.localName === 'kbd').map(node => node.textContent), ['R', 'C', '?']);
@@ -1661,11 +1661,14 @@ await test('Keyboard hint sits under the quiz controls with <kbd> keys, a full s
   assert.equal(help.localName, 'details');
   assert.equal(findAll(help, node => node.localName === 'summary')[0]?.textContent, 'Keyboard shortcuts');
   const helpKeys = findAll(help, node => node.localName === 'kbd').map(node => node.textContent);
-  for (const key of ['A', 'D', '1', '4', 'Enter', '→', 'N', '←', 'P', 'R', 'C', 'S', '?', 'H']) assert.ok(helpKeys.includes(key), `help lists ${key}`);
+  for (const key of ['↓', '→', '↑', '←', 'A', 'D', '1', '4', 'Enter', 'N', 'Page Down', 'P', 'Page Up', 'R', 'C', 'S', '?', 'H']) assert.ok(helpKeys.includes(key), `help lists ${key}`);
+  assert.match(help.textContent, /Select the next answer \(after D, back to A\); once the answer is checked, go to the next question/);
+  assert.match(help.textContent, /Select the previous answer \(before A, back to D\); once the answer is checked, go to the previous question/);
+  assert.doesNotMatch(help.textContent, /arrow keys still move between answers/);
   assert.equal(isShown(help), false, 'no shortcut list in the landing view');
   startConfirmed(app);
   assert.ok(isShown(help) && isShown(hint), 'hint and list show in the quiz view');
-  for (const [id, keys] of [['btn-check', 'Enter'], ['btn-next', 'ArrowRight N'], ['btn-prev', 'ArrowLeft P'], ['btn-finish', 'Enter'], ['btn-retake', 'R'], ['btn-choose', 'C'], ['btn-sound', 'S']]) {
+  for (const [id, keys] of [['btn-check', 'Enter'], ['btn-next', 'N'], ['btn-prev', 'P'], ['btn-finish', 'Enter'], ['btn-retake', 'R'], ['btn-choose', 'C'], ['btn-sound', 'S']]) {
     assert.equal(byId(app, id).getAttribute('aria-keyshortcuts'), keys, `${id} advertises its shortcut`);
   }
 
@@ -1717,7 +1720,7 @@ await test('Keyboard: shortcuts stay off in the landing view, while typing, with
   const app = loadApp();
   const nameInput = byId(app, 'student-name');
   nameInput.focus();
-  for (const key of ['a', '1', 'Enter', 's', '?', 'h', 'n', 'r', 'c', 'ArrowRight']) {
+  for (const key of ['a', '1', 'Enter', 's', '?', 'h', 'n', 'r', 'c', 'ArrowRight', 'ArrowLeft', 'ArrowUp', 'ArrowDown', 'PageDown']) {
     assert.equal(press(app, key).defaultPrevented, false, `${key} does nothing in the landing view`);
   }
   assert.equal(plain(app.api.getState()).soundEnabled, true);
@@ -1730,12 +1733,12 @@ await test('Keyboard: shortcuts stay off in the landing view, while typing, with
   editable.setAttribute('contenteditable', 'true');
   const select = app.document.createElement('select');
   for (const target of [nameInput, textarea, editable, select]) {
-    for (const key of ['a', '2', 'Enter', 's', '?', 'n']) {
+    for (const key of ['a', '2', 'Enter', 's', '?', 'n', 'ArrowDown', 'ArrowUp', 'ArrowLeft', 'ArrowRight']) {
       assert.equal(press(app, key, { target }).defaultPrevented, false, `${key} in a ${target.localName} is left to typing`);
     }
   }
   for (const modifier of ['ctrlKey', 'altKey', 'metaKey']) {
-    for (const key of ['a', '2', 'Enter', 's']) {
+    for (const key of ['a', '2', 'Enter', 's', 'ArrowDown', 'ArrowUp', 'ArrowLeft', 'ArrowRight']) {
       assert.equal(press(app, key, { [modifier]: true }).defaultPrevented, false, `${modifier}+${key} is left alone`);
     }
   }
@@ -1794,48 +1797,198 @@ await test('Keyboard: Enter checks, then moves on; with nothing chosen it shows 
   assert.match(byId(app, 'question-heading').textContent, /Question 2 of 25/);
 });
 
-await test('Keyboard: arrows and N/P move between questions without skipping the first unchecked question or wrapping', () => {
+const ARROW_STEP = { ArrowDown: 1, ArrowRight: 1, ArrowUp: -1, ArrowLeft: -1 };
+
+// Simulates a browser for one key press: the keydown is dispatched exactly once and, only if no handler
+// called preventDefault, the browser's own radio-group arrow move follows (focus, check, change event).
+function pressWithNativeRadio(app, key, options) {
+  const event = press(app, key, options);
+  const target = event.target;
+  const step = ARROW_STEP[key];
+  if (!event.defaultPrevented && step && target?.localName === 'input' && target.type === 'radio') {
+    const group = radios(app).filter(radio => !radio.disabled);
+    const at = group.indexOf(target);
+    if (at !== -1) {
+      const next = group[(at + step + group.length) % group.length];
+      next.focus();
+      next.click();
+    }
+  }
+  return event;
+}
+
+function assertSelected(app, expected, message) {
+  const response = attemptOf(app).responses[attemptOf(app).current];
+  assert.equal(response.selected, expected, `${message}: option ${LETTERS[expected]} is selected`);
+  assert.equal(response.checked, false, `${message}: nothing is submitted`);
+  assert.deepEqual(radios(app).map(radio => radio.checked), [0, 1, 2, 3].map(index => index === expected), `${message}: only radio ${LETTERS[expected]} is checked`);
+  assert.equal(app.document.activeElement, radios(app)[expected], `${message}: focus moves to radio ${LETTERS[expected]}`);
+  assert.match(radios(app)[expected].parentNode.getAttribute('class'), /option-selected/);
+}
+
+await test('Keyboard: ↓/→ and ↑/← cycle through the answers with wrap-around, select without checking, and move focus to the radio', () => {
+  for (const [forward, backward] of [['ArrowDown', 'ArrowUp'], ['ArrowRight', 'ArrowLeft'], ['ArrowRight', 'ArrowUp'], ['ArrowDown', 'ArrowLeft']]) {
+    const app = loadApp();
+    const cues = [];
+    app.api.setSoundPlayer(cue => cues.push(cue));
+    startConfirmed(app, 'easy');
+    cues.length = 0;
+    assert.equal(attemptOf(app).responses[0].selected, null);
+    for (const expected of [0, 1, 2, 3, 0, 1]) {
+      assert.equal(press(app, forward).defaultPrevented, true, `${forward} is handled`);
+      assertSelected(app, expected, forward);
+    }
+    for (const expected of [0, 3, 2, 1, 0, 3]) {
+      assert.equal(press(app, backward).defaultPrevented, true, `${backward} is handled`);
+      assertSelected(app, expected, backward);
+    }
+    assert.deepEqual(cues, Array(12).fill('select'), 'one select tick per arrow press');
+    assert.equal(attemptOf(app).current, 0, 'arrows never advance an unchecked question');
+    assert.equal(isShown(byId(app, 'answer-feedback')), false, 'arrows never submit');
+    assert.ok(isShown(byId(app, 'btn-check')), 'Check answer is still waiting');
+
+    const fresh = loadApp();
+    startConfirmed(fresh, 'medium');
+    assert.ok(press(fresh, backward).defaultPrevented);
+    assertSelected(fresh, 3, `${backward} from nothing selected`);
+    for (const expected of [2, 1, 0, 3]) {
+      press(fresh, backward);
+      assertSelected(fresh, expected, backward);
+    }
+    press(fresh, forward);
+    assertSelected(fresh, 0, `${forward} wraps from D to A`);
+  }
+});
+
+await test('Keyboard: one arrow press changes the selection exactly once, whatever has focus, and suppresses the native radio arrow move', () => {
+  const app = loadApp();
+  const cues = [];
+  app.api.setSoundPlayer(cue => cues.push(cue));
+  startConfirmed(app, 'hard');
+  const changes = [];
+  radios(app).forEach((radio, index) => radio.addEventListener('change', () => changes.push(index)));
+  cues.length = 0;
+  const targets = [
+    () => app.document.body,
+    () => byId(app, 'btn-check'),
+    () => byId(app, 'btn-sound'),
+    () => byId(app, 'question-heading'),
+    () => app.document.activeElement,
+    () => radios(app)[(attemptOf(app).responses[0].selected + 2) % 4],
+  ];
+  let expected = null;
+  for (const [round, key] of ['ArrowDown', 'ArrowRight', 'ArrowDown', 'ArrowUp', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowLeft', 'ArrowLeft', 'ArrowRight'].entries()) {
+    const target = targets[round % targets.length]();
+    const step = ARROW_STEP[key];
+    expected = expected === null ? (step > 0 ? 0 : 3) : (expected + step + 4) % 4;
+    const before = cues.length;
+    const event = pressWithNativeRadio(app, key, { target });
+    assert.equal(event.defaultPrevented, true, `${key} on ${target.id || target.localName} is handled and the native move is suppressed`);
+    assertSelected(app, expected, `${key} on ${target.id || target.localName}`);
+    assert.equal(cues.length - before, 1, `${key} changes the selection exactly once`);
+  }
+  assert.deepEqual(changes, [], 'the native radio-group move never ran on top of the shortcut');
+
+  // The simulated native move is real: with Ctrl held the page leaves the key alone and the browser moves once.
+  const before = attemptOf(app).responses[0].selected;
+  const event = pressWithNativeRadio(app, 'ArrowDown', { ctrlKey: true, target: radios(app)[before] });
+  assert.equal(event.defaultPrevented, false);
+  assert.equal(attemptOf(app).responses[0].selected, (before + 1) % 4, 'exactly one step, from the browser alone');
+  assert.deepEqual(changes, [(before + 1) % 4]);
+});
+
+await test('Keyboard: once the answer is checked, arrows move between questions (no skip, no wrap); P/N and Page Up/Down work at any time', () => {
   const app = loadApp();
   startConfirmed(app, 'easy');
-  for (const key of ['ArrowLeft', 'p', 'P']) {
+  for (const key of ['p', 'P', 'PageUp', 'n', 'N', 'PageDown']) {
+    assert.equal(press(app, key).defaultPrevented, false, `${key} cannot leave an unchecked question 1`);
+    assert.equal(attemptOf(app).current, 0);
+  }
+  press(app, 'ArrowDown');
+  assert.equal(attemptOf(app).responses[0].selected, 0);
+  assert.ok(press(app, 'Enter').defaultPrevented, 'Enter checks the arrow-selected answer');
+  assert.equal(attemptOf(app).responses[0].checked, true);
+  assert.equal(attemptOf(app).current, 0);
+  for (const key of ['ArrowLeft', 'ArrowUp']) {
     assert.equal(press(app, key).defaultPrevented, false, `${key} cannot go before question 1`);
     assert.equal(attemptOf(app).current, 0);
+    assert.equal(attemptOf(app).responses[0].selected, 0, 'a checked answer cannot change');
   }
-  for (const key of ['ArrowRight', 'n', 'N']) {
-    assert.equal(press(app, key).defaultPrevented, false, `${key} cannot skip an unchecked question`);
-    assert.equal(attemptOf(app).current, 0);
-  }
-  for (let index = 0; index < 3; index++) { press(app, 'a'); press(app, 'Enter'); press(app, 'Enter'); }
-  assert.equal(attemptOf(app).current, 3);
-  assert.equal(press(app, 'ArrowRight').defaultPrevented, false, 'question 4 is unchecked, so no skipping');
-  assert.ok(press(app, 'ArrowLeft').defaultPrevented);
-  assert.equal(attemptOf(app).current, 2);
+  assert.ok(press(app, 'ArrowRight').defaultPrevented, '→ goes to the next question once checked');
+  assert.equal(attemptOf(app).current, 1);
   assert.equal(app.document.activeElement?.id, 'question-heading');
-  assert.ok(press(app, 'p').defaultPrevented);
-  assert.ok(press(app, 'P').defaultPrevented);
+  assert.equal(attemptOf(app).responses[1].selected, null, 'moving on selects nothing on the new question');
+
+  // Question 2 is unchecked again, so the arrows choose answers there and N cannot skip it.
+  press(app, 'ArrowUp');
+  press(app, 'ArrowLeft');
+  assert.equal(attemptOf(app).responses[1].selected, 2);
+  assert.equal(attemptOf(app).current, 1);
+  for (const key of ['n', 'N', 'PageDown']) {
+    assert.equal(press(app, key).defaultPrevented, false, `${key} cannot skip the unchecked question 2`);
+    assert.equal(attemptOf(app).current, 1);
+  }
+  assert.ok(press(app, 'p').defaultPrevented, 'P goes back from an unchecked question');
   assert.equal(attemptOf(app).current, 0);
   assert.ok(radios(app).every(choice => choice.disabled), 'a revisited checked question stays locked');
-  assert.ok(press(app, 'N').defaultPrevented);
+  assert.ok(press(app, 'ArrowDown').defaultPrevented, '↓ goes to the next question from a checked one');
+  assert.equal(attemptOf(app).current, 1);
+  assert.equal(attemptOf(app).responses[1].selected, 2, 'the unchecked selection was kept');
+  assert.ok(press(app, 'PageUp').defaultPrevented);
+  assert.equal(attemptOf(app).current, 0);
+  assert.ok(press(app, 'PageDown').defaultPrevented);
+  assert.equal(attemptOf(app).current, 1);
+  press(app, 'Enter');
+  assert.equal(attemptOf(app).responses[1].checked, true);
+  assert.ok(press(app, 'ArrowUp').defaultPrevented, '↑ goes to the previous question once checked');
+  assert.equal(attemptOf(app).current, 0);
   assert.ok(press(app, 'ArrowRight').defaultPrevented);
-  assert.ok(press(app, 'n').defaultPrevented);
-  assert.equal(attemptOf(app).current, 3);
-  assert.equal(app.document.activeElement?.id, 'question-heading');
-  press(app, 'b');
-  assert.equal(app.document.activeElement, radios(app)[1]);
-  assert.equal(press(app, 'ArrowLeft').defaultPrevented, false, 'arrows on a focused answer keep their native radio-group job');
-  assert.equal(attemptOf(app).current, 3);
-  assert.ok(press(app, 'p').defaultPrevented, 'P still goes back from a focused answer');
+  assert.ok(press(app, 'ArrowDown').defaultPrevented, 'the first unchecked question is reachable');
   assert.equal(attemptOf(app).current, 2);
+  assert.ok(press(app, 'ArrowRight').defaultPrevented, 'on unchecked question 3 → selects instead of skipping');
+  assert.equal(attemptOf(app).current, 2);
+  assert.equal(attemptOf(app).responses[2].selected, 0);
+  assert.ok(press(app, 'N', { target: radios(app)[0] }).defaultPrevented === false, 'N cannot skip from a focused answer');
+  assert.ok(press(app, 'P', { target: radios(app)[0] }).defaultPrevented, 'P still goes back from a focused answer');
+  assert.equal(attemptOf(app).current, 1);
 
   const done = loadApp();
   startConfirmed(done, 'easy');
   completeAttempt(done);
   assert.equal(attemptOf(done).current, KEY_TOTAL - 1);
-  assert.equal(press(done, 'ArrowRight', { target: done.document.body }).defaultPrevented, false, 'no wrap-around past the last question');
-  assert.equal(attemptOf(done).current, KEY_TOTAL - 1);
+  for (const key of ['ArrowRight', 'ArrowDown', 'n', 'PageDown']) {
+    assert.equal(press(done, key, { target: done.document.body }).defaultPrevented, false, `${key}: no wrap-around past the last question`);
+    assert.equal(attemptOf(done).current, KEY_TOTAL - 1);
+  }
   done.api.goToQuestion(0);
-  assert.equal(press(done, 'ArrowLeft').defaultPrevented, false, 'no wrap-around before the first question');
-  assert.equal(attemptOf(done).current, 0);
+  for (const key of ['ArrowLeft', 'ArrowUp', 'p', 'PageUp']) {
+    assert.equal(press(done, key).defaultPrevented, false, `${key}: no wrap-around before the first question`);
+    assert.equal(attemptOf(done).current, 0);
+  }
+  const answer = attemptOf(done).responses[0].selected;
+  for (let index = 1; index < KEY_TOTAL; index++) {
+    assert.ok(press(done, index % 2 ? 'ArrowRight' : 'ArrowDown').defaultPrevented);
+    assert.equal(attemptOf(done).current, index);
+  }
+  assert.equal(attemptOf(done).responses[0].selected, answer, 'navigating never changes a checked answer');
+});
+
+await test('Keyboard: a full run with arrows only to choose (↓ presses, Enter to check and go on) scores like clicking', () => {
+  const app = loadApp();
+  app.api.setRandom(seededRandom(5));
+  startConfirmed(app, 'medium');
+  for (let index = 0; index < KEY_TOTAL; index++) {
+    const answer = attemptOf(app).questions[index].answer;
+    const useUp = index % 2 === 1;
+    const presses = useUp ? 4 - answer : answer + 1;
+    for (let count = 0; count < presses; count++) press(app, useUp ? 'ArrowUp' : 'ArrowDown');
+    assert.equal(attemptOf(app).responses[index].selected, answer);
+    press(app, 'Enter');
+    press(app, 'Enter');
+  }
+  const state = plain(app.api.getState());
+  assert.equal(state.view, 'results');
+  assert.equal(state.results.score, KEY_TOTAL);
 });
 
 await test('Keyboard: a full 25-question run by keyboard alone matches clicking, including results, sound cues and the history submission', async () => {
@@ -1907,7 +2060,7 @@ await test('Keyboard: R retakes and C chooses another difficulty on results; S t
   press(app, '?');
   assert.equal(help.open, true);
   press(app, '?');
-  for (const key of ['a', '1', 'n', 'p', 'Enter', 'ArrowLeft']) {
+  for (const key of ['a', '1', 'n', 'p', 'Enter', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'PageUp']) {
     assert.equal(press(app, key).defaultPrevented, false, `${key} does nothing on the results page`);
   }
   assert.equal(plain(app.api.getState()).view, 'results');
