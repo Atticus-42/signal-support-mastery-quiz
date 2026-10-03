@@ -858,12 +858,12 @@
       <p id="validation-message" class="validation-message" role="alert" tabindex="-1" hidden></p>
       <div id="answer-feedback" class="feedback" tabindex="-1" hidden></div>
       <div class="quiz-actions">
-        <button type="button" id="btn-prev" class="secondary" aria-keyshortcuts="P">Previous question</button>
+        <button type="button" id="btn-prev" class="secondary" aria-keyshortcuts="ArrowLeft P">Previous question</button>
         <button type="button" id="btn-check" aria-keyshortcuts="Enter">Check answer</button>
-        <button type="button" id="btn-next" aria-keyshortcuts="N">Next question</button>
+        <button type="button" id="btn-next" aria-keyshortcuts="Enter N">Next question</button>
         <button type="button" id="btn-finish" aria-keyshortcuts="Enter">View results</button>
       </div>
-      <p id="keyboard-hint" class="keyboard-hint"><span class="hint-label">Keyboard:</span> <span class="hint-item"><kbd>↑</kbd> <kbd>↓</kbd> <kbd>←</kbd> <kbd>→</kbd> or <kbd>A</kbd>–<kbd>D</kbd> choose</span> · <span class="hint-item"><kbd>Enter</kbd> check / next</span> · <span class="hint-item"><kbd>P</kbd> / <kbd>N</kbd> previous / next question</span> · <span class="hint-item"><kbd>?</kbd> help</span></p>
+      <p id="keyboard-hint" class="keyboard-hint"><span class="hint-label">Keyboard:</span> <span class="hint-item"><kbd>→</kbd> or <kbd>A</kbd>–<kbd>D</kbd> choose</span> · <span class="hint-item"><kbd>Enter</kbd> check / next</span> · <span class="hint-item"><kbd>←</kbd> previous</span> · <span class="hint-item"><kbd>↑</kbd> <kbd>↓</kbd> scroll</span> · <span class="hint-item"><kbd>?</kbd> help</span></p>
     </section>
 
     <section id="view-results" class="view view-results" hidden aria-labelledby="results-heading">
@@ -912,12 +912,13 @@
     <details id="keyboard-help" class="keyboard-help" hidden>
       <summary>Keyboard shortcuts</summary>
       <dl class="shortcut-list">
-        <dt><kbd>↓</kbd> or <kbd>→</kbd></dt><dd>Select the next answer (after D, back to A); once the answer is checked, go to the next question</dd>
-        <dt><kbd>↑</kbd> or <kbd>←</kbd></dt><dd>Select the previous answer (before A, back to D); once the answer is checked, go to the previous question</dd>
+        <dt><kbd>→</kbd></dt><dd>Select the next answer: A, B, C, D, then back to A (with nothing chosen yet, A); it is not checked until you press Enter</dd>
         <dt><kbd>A</kbd>–<kbd>D</kbd> or <kbd>1</kbd>–<kbd>4</kbd></dt><dd>Choose that answer (it is not checked until you press Enter)</dd>
         <dt><kbd>Enter</kbd></dt><dd>Check the answer; once checked, go to the next question; on the last question, view results</dd>
-        <dt><kbd>N</kbd> or <kbd>Page Down</kbd></dt><dd>Next question</dd>
-        <dt><kbd>P</kbd> or <kbd>Page Up</kbd></dt><dd>Previous question</dd>
+        <dt><kbd>←</kbd></dt><dd>Previous question (your answers stay as they are)</dd>
+        <dt><kbd>↑</kbd> <kbd>↓</kbd></dt><dd>Scroll the page (they never change your answer)</dd>
+        <dt><kbd>N</kbd> or <kbd>Page Down</kbd></dt><dd>Also: next question</dd>
+        <dt><kbd>P</kbd> or <kbd>Page Up</kbd></dt><dd>Also: previous question</dd>
         <dt><kbd>R</kbd></dt><dd>On the results page: retake the same difficulty</dd>
         <dt><kbd>C</kbd></dt><dd>On the results page: choose another difficulty</dd>
         <dt><kbd>S</kbd></dt><dd>Turn sound effects on or off</dd>
@@ -1697,12 +1698,16 @@
 
     // ----- Keyboard shortcuts -----
     // One document-level keydown listener, registered once in init(). It only acts in the quiz and
-    // results views, leaves typing, modified keys and key repeats alone, and calls preventDefault
-    // only for keys it handles. Every shortcut goes through the same functions as the buttons, so
+    // results views, leaves typing, modified keys and key repeats (except → and ↑ / ↓) alone, and calls
+    // preventDefault only for keys it handles. Every shortcut goes through the same functions as the buttons, so
     // validation, focus, live-region announcements and sound cues match clicking exactly.
 
     var OPTION_KEYS = { a: 0, b: 1, c: 2, d: 3, '1': 0, '2': 1, '3': 2, '4': 3 };
-    var ARROW_STEPS = { ArrowDown: 1, ArrowRight: 1, ArrowUp: -1, ArrowLeft: -1 };
+    // Arrow keys: → chooses the next answer, ← goes to the previous question, ↑ / ↓ only scroll the page.
+    var ARROW_KEYS = ['ArrowRight', 'ArrowLeft', 'ArrowUp', 'ArrowDown'];
+    // Held keys that may auto-repeat: → keeps cycling, ↑ / ↓ keep scrolling. All others (← included) act once per press.
+    var REPEATABLE_KEYS = ['ArrowRight', 'ArrowUp', 'ArrowDown'];
+    var ARROW_SCROLL_PX = 80;
     // Enter on these is a native activation (click or toggle); handling it too would act twice.
     var NATIVE_ENTER_TAGS = ['BUTTON', 'A', 'SUMMARY'];
     var NON_TEXT_INPUTS = ['radio', 'checkbox', 'button', 'submit', 'reset', 'image', 'range', 'color', 'file'];
@@ -1717,6 +1722,17 @@
 
     function tagOf(target) {
       return target && target.nodeType === 1 ? String(target.tagName).toUpperCase() : '';
+    }
+
+    function isRadio(target) {
+      return tagOf(target) === 'INPUT' && String(target.type).toLowerCase() === 'radio';
+    }
+
+    // ↑ / ↓ on a focused answer: the browser would move the radio selection, so the page scrolls itself instead.
+    function scrollPageBy(direction) {
+      if (typeof window === 'undefined' || typeof window.scrollBy !== 'function') return;
+      var reduceMotion = typeof window.matchMedia === 'function' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      window.scrollBy({ top: direction * ARROW_SCROLL_PX, left: 0, behavior: reduceMotion ? 'auto' : 'smooth' });
     }
 
     function toggleShortcutHelp() {
@@ -1752,22 +1768,28 @@
         }
         return true;
       }
-      if (Object.prototype.hasOwnProperty.call(ARROW_STEPS, key)) {
-        var step = ARROW_STEPS[key];
-        // Answers locked: the arrows navigate like P / N (same no-skip rule, no wrap-around).
-        if (response.checked) return goToQuestion(attempt.current + step);
-        // Otherwise they cycle through the answers with wrap-around; with nothing chosen, Down/Right start at A
-        // and Up/Left at D. The same from a radio, a button or the body: handleKeydown's preventDefault stops the
-        // browser's own radio-group arrow move, so each press changes the selection exactly once.
+      if (key === 'ArrowRight') {
+        // → only chooses: the next answer, A, B, C, D, then back to A (nothing chosen yet: A). It never checks and
+        // does nothing once the answer is checked. handleKeydown's preventDefault stops the browser's own
+        // radio-group arrow move, so each press changes the selection exactly once.
+        if (response.checked) return false;
         var count = Math.min(question.options.length, ui.radios.length);
         if (!count) return false;
-        var next = response.selected === null ? (step > 0 ? 0 : count - 1) : (response.selected + step + count) % count;
+        var next = response.selected === null ? 0 : (response.selected + 1) % count;
         selectAnswer(next);
         ui.radios[next].focus();
         return true;
       }
+      // ← (like P and Page Up) goes to the previous question, checked or not; it never wraps or changes an answer.
+      if (key === 'ArrowLeft' || key === 'p' || key === 'PageUp') return goToQuestion(attempt.current - 1);
       if (key === 'n' || key === 'PageDown') return goToQuestion(attempt.current + 1);
-      if (key === 'p' || key === 'PageUp') return goToQuestion(attempt.current - 1);
+      // ↑ / ↓ just scroll. Off a radio the browser does that itself; on a focused answer it would change the
+      // selection instead, so scroll by hand (and handleKeydown cancels the native move).
+      if (key === 'ArrowUp' || key === 'ArrowDown') {
+        if (!isRadio(target)) return false;
+        scrollPageBy(key === 'ArrowDown' ? 1 : -1);
+        return true;
+      }
       return false;
     }
 
@@ -1778,12 +1800,18 @@
     }
 
     function handleKeydown(event) {
-      if (!event || event.defaultPrevented || event.repeat || event.isComposing) return;
+      if (!event || event.defaultPrevented || event.isComposing) return;
       if (event.ctrlKey || event.altKey || event.metaKey) return;
       if (state.view !== 'quiz' && state.view !== 'results') return;
       if (isTypingTarget(event.target)) return;
       var key = typeof event.key === 'string' ? event.key : '';
       if (key.length === 1) key = key.toLowerCase();
+      // Arrow keys on a focused answer never get the browser's radio-group move: they must not change the answer.
+      var guardRadio = state.view === 'quiz' && ARROW_KEYS.indexOf(key) !== -1 && isRadio(event.target);
+      if (event.repeat && REPEATABLE_KEYS.indexOf(key) === -1) {
+        if (guardRadio) event.preventDefault();
+        return;
+      }
       var handled = false;
       if (key === '?' || key === 'h') {
         toggleShortcutHelp();
@@ -1796,7 +1824,7 @@
       } else {
         handled = resultsShortcut(key);
       }
-      if (handled) event.preventDefault();
+      if (handled || guardRadio) event.preventDefault();
     }
 
     // ----- Results -----
