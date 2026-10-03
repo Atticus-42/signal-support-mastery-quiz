@@ -317,6 +317,14 @@ Object.defineProperties(FakeElement.prototype, {
   htmlFor: reflectAttribute('htmlFor', 'for'),
   hidden: reflectBoolean('hidden'),
   disabled: reflectBoolean('disabled'),
+  open: reflectBoolean('open'),
+  isContentEditable: {
+    get() { return this.hasAttribute('contenteditable') && this.getAttribute('contenteditable') !== 'false'; },
+  },
+  tabIndex: {
+    get() { return Number(this.getAttribute('tabindex') ?? 0); },
+    set(value) { this.setAttribute('tabindex', value); },
+  },
   tabIndex: {
     get() { return Number(this.getAttribute('tabindex') ?? 0); },
     set(value) { this.setAttribute('tabindex', value); },
@@ -327,6 +335,23 @@ class FakeDocument {
   constructor() {
     this.root = new FakeElement('#document', this);
     this.activeElement = null;
+    this.listeners = new Map();
+  }
+  // Document-level listeners (the app's keydown shortcuts); keyboard events are dispatched here with their target set.
+  addEventListener(type, listener) {
+    if (!this.listeners.has(type)) this.listeners.set(type, []);
+    this.listeners.get(type).push(listener);
+  }
+  removeEventListener(type, listener) {
+    const list = this.listeners.get(type) ?? [];
+    const index = list.indexOf(listener);
+    if (index !== -1) list.splice(index, 1);
+  }
+  listenerCount(type) { return (this.listeners.get(type) ?? []).length; }
+  dispatchEvent(event) {
+    event.currentTarget = this;
+    for (const listener of [...(this.listeners.get(event.type) ?? [])]) listener.call(this, event);
+    return !event.defaultPrevented;
   }
   get body() { return findAll(this.root, node => node.localName === 'body')[0] ?? null; }
   createElement(tagName) { return new FakeElement(tagName, this); }
@@ -1577,6 +1602,363 @@ await test('Banner and photo are hidden in print and outside the landing view', 
   assert.match(css, /@media print \{[\s\S]*\.banner, \.class-photo[^{]*\{ display: none !important; \}/);
   assert.match(css, /body:not\(\[data-view="landing"\]\) \.banner, body:not\(\[data-view="landing"\]\) \.class-photo \{ display: none; \}/);
   assert.ok(/<body data-view="landing">/.test(builtHtml), 'body starts on the landing view');
+});
+// ---------------------------------------------------------------------------
+// Keyboard shortcuts. Key presses go through the page's real document-level
+// keydown listener; the target defaults to the focused element, as in a browser.
+// ---------------------------------------------------------------------------
+
+const KEY_TOTAL = 25;
+
+function keyEvent(app, key, options = {}) {
+  return {
+    type: 'keydown',
+    key,
+    target: app.document.activeElement ?? app.document.body,
+    ctrlKey: false, altKey: false, metaKey: false, shiftKey: false, repeat: false, isComposing: false,
+    ...options,
+    defaultPrevented: Boolean(options.defaultPrevented),
+    preventDefault() { this.defaultPrevented = true; },
+  };
+}
+
+function press(app, key, options) {
+  const event = keyEvent(app, key, options);
+  app.document.dispatchEvent(event);
+  return event;
+}
+
+// Answers every question with the keyboard only: a letter or digit, Enter to check, Enter to go on (or finish).
+function completeAttemptByKeyboard(app, chooseCorrect = () => true) {
+  for (let index = 0; index < KEY_TOTAL; index++) {
+    const attempt = attemptOf(app);
+    assert.equal(attempt.current, index);
+    const question = attempt.questions[index];
+    const choice = chooseCorrect(index) ? question.answer : (question.answer + 1) % 4;
+    const key = index % 3 === 0 ? String(choice + 1) : index % 3 === 1 ? LETTERS[choice] : LETTERS[choice].toLowerCase();
+    assert.ok(press(app, key).defaultPrevented, `${key} is handled on question ${index + 1}`);
+    assert.ok(press(app, 'Enter').defaultPrevented, `Enter checks question ${index + 1}`);
+    assert.equal(attemptOf(app).responses[index].checked, true);
+    assert.ok(press(app, 'Enter').defaultPrevented, `Enter moves on from question ${index + 1}`);
+  }
+}
+
+await test('Keyboard hint sits under the quiz controls with <kbd> keys, a full shortcut list exists, and both hide in print and on touch screens', () => {
+  const app = loadApp();
+  const quiz = byId(app, 'view-quiz');
+  const hint = byId(app, 'keyboard-hint');
+  const actions = quiz.children.find(node => node.getAttribute('class') === 'quiz-actions');
+  assert.equal(hint.parentNode, quiz, 'the hint belongs to the quiz view');
+  assert.ok(quiz.children.indexOf(hint) > quiz.children.indexOf(actions), 'the hint follows the question controls');
+  const hintKeys = findAll(hint, node => node.localName === 'kbd').map(node => node.textContent);
+  for (const key of ['A', 'D', 'Enter', '←', '→', '?']) assert.ok(hintKeys.includes(key), `hint shows <kbd>${key}</kbd>`);
+  assert.match(hint.textContent.replace(/\s+/g, ' '), /^Keyboard: A–D choose · Enter check \/ next · ← → previous \/ next · \? help$/);
+  const resultsHint = byId(app, 'results-keyboard-hint');
+  assert.ok(findAll(byId(app, 'view-results'), node => node === resultsHint).length, 'results view has its own hint');
+  assert.deepEqual(findAll(resultsHint, node => node.localName === 'kbd').map(node => node.textContent), ['R', 'C', '?']);
+
+  const help = byId(app, 'keyboard-help');
+  assert.equal(help.localName, 'details');
+  assert.equal(findAll(help, node => node.localName === 'summary')[0]?.textContent, 'Keyboard shortcuts');
+  const helpKeys = findAll(help, node => node.localName === 'kbd').map(node => node.textContent);
+  for (const key of ['A', 'D', '1', '4', 'Enter', '→', 'N', '←', 'P', 'R', 'C', 'S', '?', 'H']) assert.ok(helpKeys.includes(key), `help lists ${key}`);
+  assert.equal(isShown(help), false, 'no shortcut list in the landing view');
+  startConfirmed(app);
+  assert.ok(isShown(help) && isShown(hint), 'hint and list show in the quiz view');
+  for (const [id, keys] of [['btn-check', 'Enter'], ['btn-next', 'ArrowRight N'], ['btn-prev', 'ArrowLeft P'], ['btn-finish', 'Enter'], ['btn-retake', 'R'], ['btn-choose', 'C'], ['btn-sound', 'S']]) {
+    assert.equal(byId(app, id).getAttribute('aria-keyshortcuts'), keys, `${id} advertises its shortcut`);
+  }
+
+  const { rules } = parseCss(stylesheetText());
+  const hides = (media, selector) => rules.some(rule => rule.media && media.test(rule.media) && rule.selectors.includes(selector) && /^none\b/.test(rule.declarations.get('display') ?? ''));
+  for (const selector of ['.keyboard-hint', '.keyboard-help']) {
+    assert.ok(hides(/^@media print$/, selector), `${selector} is hidden in print`);
+    assert.ok(hides(/hover:\s*none\) and \(pointer:\s*coarse/, selector), `${selector} is hidden on touch screens`);
+  }
+  assert.ok(rules.some(rule => !rule.media && rule.selectors.includes('.keyboard-hint .hint-item') && rule.declarations.get('white-space') === 'nowrap'), 'hint items wrap as whole units at 375px');
+  assert.ok(rules.some(rule => !rule.media && rule.selectors.includes('kbd')), '<kbd> is styled');
+});
+
+await test('Keyboard: A-D and 1-4 select that option, focus its radio, never check it, and are ignored once checked', () => {
+  const app = loadApp();
+  const cues = [];
+  app.api.setSoundPlayer(cue => cues.push(cue));
+  startConfirmed(app, 'easy');
+  cues.length = 0;
+  for (const [key, index] of [['b', 1], ['D', 3], ['1', 0], ['3', 2], ['A', 0], ['4', 3], ['c', 2]]) {
+    const event = press(app, key);
+    assert.equal(event.defaultPrevented, true, `${key} is handled`);
+    const response = attemptOf(app).responses[0];
+    assert.equal(response.selected, index, `${key} selects option ${index}`);
+    assert.equal(response.checked, false, `${key} never checks the answer`);
+    assert.ok(radios(app)[index].checked, `${key} checks radio ${index}`);
+    assert.equal(app.document.activeElement, radios(app)[index], 'focus moves to the selected radio');
+    assert.match(radios(app)[index].parentNode.getAttribute('class'), /option-selected/);
+  }
+  assert.deepEqual(cues, Array(7).fill('select'), 'one select tick per change, as when clicking');
+  assert.equal(press(app, 'C').defaultPrevented, true);
+  assert.equal(cues.length, 7, 're-choosing the selected option is silent, like clicking a checked radio');
+  for (const key of ['e', '5', '0', 'x', ' ']) {
+    assert.equal(press(app, key).defaultPrevented, false, `${JSON.stringify(key)} is not a shortcut`);
+  }
+  assert.equal(attemptOf(app).responses[0].selected, 2);
+  assert.equal(isShown(byId(app, 'answer-feedback')), false, 'nothing is submitted by choosing');
+
+  press(app, 'Enter');
+  const checked = attemptOf(app).responses[0];
+  assert.equal(checked.checked, true);
+  for (const key of ['a', 'B', '4']) {
+    assert.equal(press(app, key).defaultPrevented, false, `${key} is ignored once the answer is checked`);
+    assert.equal(attemptOf(app).responses[0].selected, 2, 'a checked answer cannot change');
+  }
+});
+
+await test('Keyboard: shortcuts stay off in the landing view, while typing, with Ctrl/Alt/Meta, on key repeat and after another handler', () => {
+  const app = loadApp();
+  const nameInput = byId(app, 'student-name');
+  nameInput.focus();
+  for (const key of ['a', '1', 'Enter', 's', '?', 'h', 'n', 'r', 'c', 'ArrowRight']) {
+    assert.equal(press(app, key).defaultPrevented, false, `${key} does nothing in the landing view`);
+  }
+  assert.equal(plain(app.api.getState()).soundEnabled, true);
+  assert.equal(byId(app, 'keyboard-help').open, false);
+  assert.equal(plain(app.api.getState()).view, 'landing');
+
+  startConfirmed(app, 'medium');
+  const textarea = app.document.createElement('textarea');
+  const editable = app.document.createElement('div');
+  editable.setAttribute('contenteditable', 'true');
+  const select = app.document.createElement('select');
+  for (const target of [nameInput, textarea, editable, select]) {
+    for (const key of ['a', '2', 'Enter', 's', '?', 'n']) {
+      assert.equal(press(app, key, { target }).defaultPrevented, false, `${key} in a ${target.localName} is left to typing`);
+    }
+  }
+  for (const modifier of ['ctrlKey', 'altKey', 'metaKey']) {
+    for (const key of ['a', '2', 'Enter', 's']) {
+      assert.equal(press(app, key, { [modifier]: true }).defaultPrevented, false, `${modifier}+${key} is left alone`);
+    }
+  }
+  assert.equal(press(app, 'b', { repeat: true }).defaultPrevented, false, 'a held key does not repeat');
+  const handledElsewhere = keyEvent(app, 'b', { defaultPrevented: true });
+  app.document.dispatchEvent(handledElsewhere);
+  const state = plain(app.api.getState());
+  assert.equal(state.attempt.responses[0].selected, null, 'none of those keys chose an answer');
+  assert.equal(state.soundEnabled, true);
+  assert.equal(byId(app, 'keyboard-help').open, false);
+  assert.ok(press(app, 'b', { shiftKey: true }).defaultPrevented, 'Shift is allowed (B and b both choose)');
+  assert.equal(attemptOf(app).responses[0].selected, 1);
+});
+
+await test('Keyboard: Enter checks, then moves on; with nothing chosen it shows the same validation as the button; native Enter on buttons is not doubled', () => {
+  const clicked = loadApp();
+  startConfirmed(clicked, 'hard');
+  byId(clicked, 'btn-check').click();
+  const buttonMessage = byId(clicked, 'validation-message').textContent;
+
+  const app = loadApp();
+  const cues = [];
+  app.api.setSoundPlayer(cue => cues.push(cue));
+  startConfirmed(app, 'hard');
+  assert.ok(press(app, 'Enter').defaultPrevented);
+  assert.ok(isShown(byId(app, 'validation-message')));
+  assert.equal(byId(app, 'validation-message').textContent, buttonMessage, 'same message as the Check answer button');
+  assert.match(buttonMessage, /Select an answer before pressing Check answer/);
+  assert.equal(app.document.activeElement?.id, 'validation-message');
+  assert.equal(cues.at(-1), 'error');
+  assert.equal(attemptOf(app).current, 0, 'no advance without an answer');
+  assert.equal(attemptOf(app).responses[0].checked, false);
+
+  const [first] = attemptOf(app).questions;
+  press(app, LETTERS[first.answer]);
+  assert.equal(isShown(byId(app, 'validation-message')), false, 'choosing clears the message');
+  // Enter on a focused button is the button's own click; the shortcut must not act a second time.
+  for (const id of ['btn-check', 'btn-prev']) {
+    assert.equal(press(app, 'Enter', { target: byId(app, id) }).defaultPrevented, false, `Enter on #${id} is native`);
+  }
+  const summary = findAll(byId(app, 'keyboard-help'), node => node.localName === 'summary')[0];
+  assert.equal(press(app, 'Enter', { target: summary }).defaultPrevented, false, 'Enter on the summary toggles natively');
+  const link = app.document.createElement('a');
+  assert.equal(press(app, 'Enter', { target: link }).defaultPrevented, false, 'Enter on a link is native');
+  assert.equal(attemptOf(app).responses[0].checked, false, 'none of those checked the answer');
+
+  assert.ok(press(app, 'Enter').defaultPrevented, 'Enter on the focused radio checks');
+  assert.equal(attemptOf(app).responses[0].checked, true);
+  assert.equal(cues.at(-1), 'correct');
+  assert.equal(app.document.activeElement?.id, 'answer-feedback', 'focus lands on the feedback');
+  assert.match(byId(app, 'answer-feedback').textContent, /^\s*Correct\./);
+  assert.match(byId(app, 'quiz-status').textContent, /1 of 25 answers checked/, 'the live status announces progress');
+  assert.ok(press(app, 'Enter').defaultPrevented, 'Enter again moves on');
+  assert.equal(attemptOf(app).current, 1);
+  assert.equal(app.document.activeElement?.id, 'question-heading', 'focus moves to the new question heading');
+  assert.match(byId(app, 'question-heading').textContent, /Question 2 of 25/);
+});
+
+await test('Keyboard: arrows and N/P move between questions without skipping the first unchecked question or wrapping', () => {
+  const app = loadApp();
+  startConfirmed(app, 'easy');
+  for (const key of ['ArrowLeft', 'p', 'P']) {
+    assert.equal(press(app, key).defaultPrevented, false, `${key} cannot go before question 1`);
+    assert.equal(attemptOf(app).current, 0);
+  }
+  for (const key of ['ArrowRight', 'n', 'N']) {
+    assert.equal(press(app, key).defaultPrevented, false, `${key} cannot skip an unchecked question`);
+    assert.equal(attemptOf(app).current, 0);
+  }
+  for (let index = 0; index < 3; index++) { press(app, 'a'); press(app, 'Enter'); press(app, 'Enter'); }
+  assert.equal(attemptOf(app).current, 3);
+  assert.equal(press(app, 'ArrowRight').defaultPrevented, false, 'question 4 is unchecked, so no skipping');
+  assert.ok(press(app, 'ArrowLeft').defaultPrevented);
+  assert.equal(attemptOf(app).current, 2);
+  assert.equal(app.document.activeElement?.id, 'question-heading');
+  assert.ok(press(app, 'p').defaultPrevented);
+  assert.ok(press(app, 'P').defaultPrevented);
+  assert.equal(attemptOf(app).current, 0);
+  assert.ok(radios(app).every(choice => choice.disabled), 'a revisited checked question stays locked');
+  assert.ok(press(app, 'N').defaultPrevented);
+  assert.ok(press(app, 'ArrowRight').defaultPrevented);
+  assert.ok(press(app, 'n').defaultPrevented);
+  assert.equal(attemptOf(app).current, 3);
+  assert.equal(app.document.activeElement?.id, 'question-heading');
+  press(app, 'b');
+  assert.equal(app.document.activeElement, radios(app)[1]);
+  assert.equal(press(app, 'ArrowLeft').defaultPrevented, false, 'arrows on a focused answer keep their native radio-group job');
+  assert.equal(attemptOf(app).current, 3);
+  assert.ok(press(app, 'p').defaultPrevented, 'P still goes back from a focused answer');
+  assert.equal(attemptOf(app).current, 2);
+
+  const done = loadApp();
+  startConfirmed(done, 'easy');
+  completeAttempt(done);
+  assert.equal(attemptOf(done).current, KEY_TOTAL - 1);
+  assert.equal(press(done, 'ArrowRight', { target: done.document.body }).defaultPrevented, false, 'no wrap-around past the last question');
+  assert.equal(attemptOf(done).current, KEY_TOTAL - 1);
+  done.api.goToQuestion(0);
+  assert.equal(press(done, 'ArrowLeft').defaultPrevented, false, 'no wrap-around before the first question');
+  assert.equal(attemptOf(done).current, 0);
+});
+
+await test('Keyboard: a full 25-question run by keyboard alone matches clicking, including results, sound cues and the history submission', async () => {
+  const run = async useKeyboard => {
+    const fetch = fakeFetch(call => (call.method === 'POST' ? { body: { ok: true } } : okHistory([])));
+    const app = loadApp(configuredHtml, { fetch });
+    await settle(app);
+    const cues = [];
+    app.api.setSoundPlayer(cue => cues.push(cue));
+    app.api.setRandom(seededRandom(11));
+    startConfirmed(app, 'medium', 'Maria Santos');
+    const wrong = new Set([2, 7, 8, 19]);
+    if (useKeyboard) {
+      completeAttemptByKeyboard(app, index => !wrong.has(index));
+    } else {
+      completeAttempt(app, index => !wrong.has(index));
+      byId(app, 'btn-finish').click();
+    }
+    await settle(app);
+    const posts = fetch.calls.filter(call => call.method === 'POST');
+    assert.equal(posts.length, 1, 'one history submission');
+    return { app, cues, payload: { ...JSON.parse(posts[0].body), finishedAt: undefined }, state: plain(app.api.getState()) };
+  };
+  const clicked = await run(false);
+  const keyed = await run(true);
+  assert.equal(keyed.state.view, 'results', 'the final Enter shows the results');
+  assert.equal(keyed.app.document.activeElement?.id, 'results-heading');
+  assert.deepEqual(keyed.state.results, clicked.state.results, 'same scored results');
+  assert.deepEqual(keyed.state.attempt, clicked.state.attempt, 'same recorded answers');
+  assert.deepEqual(keyed.payload, clicked.payload, 'same history payload');
+  assert.deepEqual(keyed.payload, { lesson: 'signal', name: 'Maria Santos', mode: 'medium', score: 21, total: 25, percent: 84, band: 'Proficient', finishedAt: undefined });
+  assert.deepEqual(keyed.cues, clicked.cues, 'same cues in the same order: start, select, correct/incorrect, finish');
+  assert.equal(keyed.cues.filter(cue => cue === 'select').length, KEY_TOTAL);
+  assert.equal(keyed.cues.at(-1), 'finish-proficient');
+  assert.match(keyed.app.document.getElementById('history-save-message').textContent, /Saved to the class history/);
+});
+
+await test('Keyboard: R retakes and C chooses another difficulty on results; S toggles sound; ? and H toggle the shortcut list', () => {
+  const app = loadApp();
+  const cues = [];
+  app.api.setSoundPlayer(cue => cues.push(cue));
+  startConfirmed(app, 'hard');
+  const toggle = byId(app, 'btn-sound');
+  assert.ok(press(app, 's').defaultPrevented);
+  assert.equal(toggle.getAttribute('aria-pressed'), 'false');
+  assert.match(byId(app, 'sound-state').textContent, /Off/);
+  assert.equal(plain(app.api.getState()).soundEnabled, false);
+  const muted = cues.length;
+  press(app, 'a');
+  assert.equal(cues.length, muted, 'S really mutes the cues');
+  assert.ok(press(app, 'S').defaultPrevented);
+  assert.equal(toggle.getAttribute('aria-pressed'), 'true');
+  assert.match(byId(app, 'sound-state').textContent, /On/);
+
+  const help = byId(app, 'keyboard-help');
+  assert.ok(press(app, '?', { shiftKey: true }).defaultPrevented);
+  assert.equal(help.open, true, '? opens the list');
+  assert.ok(press(app, '?', { shiftKey: true }).defaultPrevented);
+  assert.equal(help.open, false, '? closes it again');
+  press(app, 'h');
+  assert.equal(help.open, true);
+  press(app, 'H');
+  assert.equal(help.open, false);
+
+  completeAttempt(app);
+  byId(app, 'btn-finish').click();
+  assert.equal(plain(app.api.getState()).view, 'results');
+  assert.ok(isShown(help), 'the shortcut list is available on the results page');
+  press(app, '?');
+  assert.equal(help.open, true);
+  press(app, '?');
+  for (const key of ['a', '1', 'n', 'p', 'Enter', 'ArrowLeft']) {
+    assert.equal(press(app, key).defaultPrevented, false, `${key} does nothing on the results page`);
+  }
+  assert.equal(plain(app.api.getState()).view, 'results');
+  const before = attemptOf(app).questions.map(item => item.id);
+  assert.ok(press(app, 'R').defaultPrevented, 'R retakes');
+  let state = plain(app.api.getState());
+  assert.equal(state.view, 'quiz');
+  assert.equal(state.attempt.mode, 'hard', 'same difficulty');
+  assert.ok(state.attempt.responses.every(response => response.selected === null && !response.checked), 'a clean attempt');
+  assert.ok(state.attempt.questions.length === KEY_TOTAL && before.length === KEY_TOTAL);
+  assert.equal(app.document.activeElement?.id, 'question-heading');
+  assert.equal(cues.at(-1), 'start');
+  assert.equal(press(app, 'r').defaultPrevented, false, 'R does nothing during the quiz');
+  assert.equal(press(app, 'c').defaultPrevented, true, 'C is option C during the quiz');
+  assert.equal(attemptOf(app).responses[0].selected, 2);
+
+  completeAttempt(app);
+  byId(app, 'btn-finish').click();
+  assert.ok(press(app, 'c').defaultPrevented, 'C chooses another difficulty');
+  state = plain(app.api.getState());
+  assert.equal(state.view, 'landing');
+  assert.equal(state.attempt, null);
+  assert.equal(app.document.activeElement?.id, 'difficulty-heading');
+  assert.equal(isShown(help), false);
+  assert.equal(press(app, 's').defaultPrevented, false, 'S is off in the landing view so the name field can be typed in');
+});
+
+await test('Keyboard: exactly one keydown listener, never re-registered by retakes or resets', () => {
+  const app = loadApp();
+  const cues = [];
+  app.api.setSoundPlayer(cue => cues.push(cue));
+  assert.equal(app.document.listenerCount('keydown'), 1, 'one document keydown listener');
+  for (let round = 0; round < 3; round++) {
+    // The name and study confirmation carry over after C, so later rounds just pick a difficulty.
+    if (round === 0) startConfirmed(app, MODES[round]); else byId(app, `mode-${MODES[round]}`).click();
+    completeAttempt(app);
+    byId(app, 'btn-finish').click();
+    byId(app, 'btn-retake').click();
+    completeAttemptByKeyboard(app);
+    press(app, 'c');
+    assert.equal(app.document.listenerCount('keydown'), 1, `still one listener after round ${round + 1}`);
+  }
+  assert.equal(findAll(app.document.root, node => (node.listeners.get('keydown') ?? []).length > 0).length, 0, 'no per-element keydown listeners');
+  byId(app, 'mode-easy').click();
+  cues.length = 0;
+  press(app, 'a');
+  assert.deepEqual(cues, ['select'], 'one key press acts once');
+  press(app, 'Enter');
+  assert.equal(cues.length, 2, 'one check per Enter');
+  press(app, 'Enter');
+  assert.equal(attemptOf(app).current, 1, 'one advance per Enter');
 });
 
 if (failures > 0) {
